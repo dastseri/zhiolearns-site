@@ -132,6 +132,7 @@
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:26px}
 .product{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
 .product svg{width:100%;height:120px}
+.product img{width:100%;aspect-ratio:1/1;object-fit:contain;background:#f8f6f1;border-radius:14px}
 .product h3{margin:0;font-family:"Baloo 2",sans-serif;font-size:22px}
 .product p{margin:0;color:var(--muted);font-size:15px;flex:1}
 .price-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:10px}
@@ -442,43 +443,63 @@ footer .fine a{color:var(--teal-dark)}
       <div class="intro reveal">
         <p class="eyebrow">The Romy shop</p>
         <h2 class="section-title">Romy&rsquo;s books on Amazon.</h2>
-        <p>10 picture books &amp; workbooks for ages 3&ndash;8 &mdash; illustrated stories and playful learning with Romy the raccoon.</p>
+        <p>10 picture books &amp; workbooks for ages 3&ndash;6 &mdash; illustrated stories and playful learning with Romy the raccoon.</p>
       </div>
       <div class="shop-grid">
         <article class="product reveal">
-          <svg viewBox="0 0 200 120" aria-hidden="true"><rect x="55" y="12" width="90" height="96" rx="8" fill="#7fb069"/><rect x="55" y="12" width="16" height="96" rx="8" fill="#5d8a3c"/><text x="112" y="70" text-anchor="middle" font-size="30" font-weight="bold" fill="#fff">♥</text></svg>
-          <h3>Romy and the Forest of Feelings</h3><p>An illustrated picture book about feelings, friendship, and understanding big emotions.</p>
+          <img src="img/books/book-forest-of-feelings.jpg" alt="Romy and the Forest of Feelings book cover" loading="lazy">
+          <h3>Romy and the Forest of Feelings</h3><p>A gentle picture book about feelings, friendship, and understanding big emotions.</p>
           <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
         <article class="product reveal">
-          <svg viewBox="0 0 200 120" aria-hidden="true"><rect x="55" y="12" width="90" height="96" rx="8" fill="#69bce4"/><rect x="55" y="12" width="16" height="96" rx="8" fill="#4a97c4"/><text x="112" y="70" text-anchor="middle" font-size="30" font-weight="bold" fill="#fff">ABC</text></svg>
-          <h3>Romy&rsquo;s Alphabet Adventure</h3><p>A playful workbook journey through the ABCs &mdash; Romy&rsquo;s Learning Series.</p>
+          <img src="img/books/book-alphabet-adventure-trace.jpg" alt="Romy's Alphabet Adventure Trace Write and Say book cover" loading="lazy">
+          <h3>Romy’s Alphabet Adventure</h3><p>Trace, write &amp; say from A to Z with Romy — Romy’s Learning Series.</p>
           <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
         <article class="product reveal">
-          <svg viewBox="0 0 200 120" aria-hidden="true"><rect x="55" y="12" width="90" height="96" rx="8" fill="#ff8067"/><rect x="55" y="12" width="16" height="96" rx="8" fill="#d95f45"/><text x="112" y="70" text-anchor="middle" font-size="30" font-weight="bold" fill="#fff">123</text></svg>
-          <h3>Romy&rsquo;s Number Adventure</h3><p>First numbers and counting fun with Romy &mdash; Romy&rsquo;s Learning Series.</p>
+          <img src="img/books/book-number-adventure.jpg" alt="Romy's Number Adventure book cover" loading="lazy">
+          <h3>Romy’s Number Adventure</h3><p>Count, trace, and learn first numbers with Romy — Romy’s Learning Series.</p>
           <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
         <article class="product reveal">
-          <svg viewBox="0 0 200 120" aria-hidden="true"><rect x="55" y="12" width="90" height="96" rx="8" fill="#b388eb"/><rect x="55" y="12" width="16" height="96" rx="8" fill="#8f63c9"/><text x="112" y="70" text-anchor="middle" font-size="30" font-weight="bold" fill="#fff">▲●</text></svg>
-          <h3>Romy&rsquo;s Shape &amp; Color Adventure</h3><p>Discover shapes and colors through play &mdash; Romy&rsquo;s Learning Series.</p>
+          <img src="img/books/book-shape-color-adventure.jpg" alt="Romy's Shape and Color Adventure book cover" loading="lazy">
+          <h3>Romy’s Shape &amp; Color Adventure</h3><p>Discover shapes and colors through play — Romy’s Learning Series.</p>
           <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
         <article class="product reveal">
-          <svg viewBox="0 0 200 120" aria-hidden="true"><rect x="55" y="12" width="90" height="96" rx="8" fill="#f4a259"/><rect x="55" y="12" width="16" height="96" rx="8" fill="#cf7f33"/><text x="112" y="70" text-anchor="middle" font-size="30" font-weight="bold" fill="#fff">✿</text></svg>
-          <h3>Mandala Magic</h3><p>A creative mandala coloring book for little artists.</p>
+          <img src="img/books/book-big-number-adventure.jpg" alt="Romy's Big Number Adventure book cover" loading="lazy">
+          <h3>Romy’s Big Number Adventure</h3><p>A big, playful number adventure with Romy — Romy’s Learning Series.</p>
           <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
         <article class="product reveal">
-          <svg viewBox="0 0 200 120" aria-hidden="true"><rect x="55" y="12" width="90" height="96" rx="8" fill="#4db6ac"/><rect x="55" y="12" width="16" height="96" rx="8" fill="#35817b"/><text x="112" y="70" text-anchor="middle" font-size="30" font-weight="bold" fill="#fff">✎</text></svg>
-          <h3>Romy&rsquo;s Alphabet Writing Practice</h3><p>Romy&rsquo;s debut workbook &mdash; trace, write, and discover the alphabet with your raccoon buddy.</p>
+          <img src="img/books/book-mandala-magic.jpg" alt="Romy's Mandala Magic book cover" loading="lazy">
+          <h3>Romy’s Mandala Magic</h3><p>Relax, color &amp; grow with Romy! A creative mandala coloring book.</p>
+          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
+        </article>
+        <article class="product reveal">
+          <img src="img/books/book-alphabet-writing-practice.jpg" alt="Romy's Alphabet Writing Practice book cover" loading="lazy">
+          <h3>Romy’s Alphabet Writing Practice</h3><p>Learn, trace, and color the alphabet with Romy! Ages 3–5.</p>
+          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
+        </article>
+        <article class="product reveal">
+          <img src="img/books/book-alphabet-everyday-edition.jpg" alt="Romy's Alphabet Everyday Edition book cover" loading="lazy">
+          <h3>Romy’s Alphabet — Everyday Edition</h3><p>Everyday alphabet fun with Romy — Romy’s Learning Series.</p>
+          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
+        </article>
+        <article class="product reveal">
+          <img src="img/books/book-alphabet-adventure-explore.jpg" alt="Romy's Alphabet Adventure Let's Explore book cover" loading="lazy">
+          <h3>Romy’s Alphabet Adventure: Let’s Explore</h3><p>Let’s explore the world of letters together! — Romy’s Learning Series.</p>
+          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
+        </article>
+        <article class="product reveal">
+          <img src="img/books/book-alphabet-abc.jpg" alt="Romy's Alphabet A Fun and Colorful ABC book cover" loading="lazy">
+          <h3>Romy’s Alphabet: A Fun and Colorful ABC</h3><p>A fun and colorful ABC book with Romy — Romy’s Learning Series.</p>
           <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
       </div>
       <div class="reveal" style="text-align:center;margin-top:30px">
-        <p style="color:var(--muted)">Plus 4 more books &amp; workbooks on the shelf &mdash; see them all in one place.</p>
-        <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener" style="padding:15px 34px;font-size:18px">See all 10 books on Amazon</a>
+        <p style="color:var(--muted)">All 10 books are live on Amazon &mdash; paperbacks made for little hands.</p>
+        <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener" style="padding:15px 34px;font-size:18px">Visit Zhio&rsquo;s Amazon author page</a>
       </div>
     </section>
 
