@@ -534,7 +534,7 @@ footer .fine a{color:var(--teal-dark)}
           </div>
           <button class="order-btn" type="submit" style="width:100%;padding:14px">Join the family</button>
           <p class="join-note">We&rsquo;ll only email you about what you chose. No ads, no spam &mdash; unsubscribe anytime.</p>
-          <p class="join-note" id="join-done" aria-live="polite" style="display:none;color:var(--sun);font-weight:700">Thank you! Your email app should open with your signup ready to send.</p>
+          <p class="join-note" id="join-done" aria-live="polite" style="display:none;color:var(--sun);font-weight:700">Welcome to the family!</p>
         </form>
       </div>
     </section>
@@ -703,14 +703,6 @@ footer .fine a{color:var(--teal-dark)}
         });
       }
 
-      /* ---- Shop orders ---- */
-      document.querySelectorAll('.order-btn[data-product]').forEach(function(btn){
-        btn.addEventListener('click',function(){
-          var body='Hello ZhioLearns team,%0D%0A%0D%0AI would like to order:%0D%0A'+encodeURIComponent(btn.getAttribute('data-product'))+'%0D%0A%0D%0AName:%0D%0AAddress:%0D%0A';
-          window.location.href='mailto:zhiolearns@gmail.com?subject='+encodeURIComponent('Order: '+btn.getAttribute('data-product'))+'&body='+body;
-        });
-      });
-
       /* ---- Join us: grown-up gate + form ---- */
       var gateBtn=document.getElementById('gate-btn');
       if(gateBtn){
@@ -730,16 +722,29 @@ footer .fine a{color:var(--teal-dark)}
           var email=document.getElementById('jf-email').value.trim();
           var age=document.getElementById('jf-age').value;
           var interests=Array.prototype.map.call(document.querySelectorAll('#join-form input[name="interest"]:checked'),function(c){return c.value;}).join(', ');
+          var done=document.getElementById('join-done');
           if(!name||!email||email.indexOf('@')<0){
-            document.getElementById('join-done').style.display='block';
-            document.getElementById('join-done').textContent='Please add your name and a valid email so we can reach you.';
+            done.style.display='block';
+            done.textContent='Please add your name and a valid email so we can reach you.';
             return;
           }
-          var body=encodeURIComponent('New ZhioLearns family signup\n\nName: '+name+'\nEmail: '+email+'\nChild age: '+age+'\nInterested in: '+interests);
-          window.location.href='mailto:zhiolearns@gmail.com?subject='+encodeURIComponent('New ZhioLearns signup')+'&body='+body;
-          var done=document.getElementById('join-done');
-          done.style.display='block';
-          done.textContent='Thank you! Your email app should open with your signup ready to send.';
+          var btn=document.querySelector('#join-form button[type="submit"]');
+          btn.disabled=true;
+          btn.textContent='Joining...';
+          fetch('https://formsubmit.co/ajax/zhiolearns@gmail.com',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({name:name,email:email,child_age:age,interests:interests,_subject:'New ZhioLearns family signup',_template:'table',_captcha:'false'})
+          }).then(function(r){return r.json();}).then(function(){
+            done.style.display='block';
+            done.textContent='Welcome to the family! We will only email you about what you chose.';
+            btn.textContent='Joined!';
+          }).catch(function(){
+            btn.disabled=false;
+            btn.textContent='Join the family';
+            done.style.display='block';
+            done.textContent='Something went wrong \u2014 please try again in a moment.';
+          });
         });
       }
 
