@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="img/zhiolearns-logo.png" />
+  <title>پنل مدیریت — ZhioLearns</title>
+  <style>
+    /* سبک بصری هماهنگ با سایت اصلی، با فونت فارسی */
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap');
+    :root{
+      color-scheme:light dark;
+      --paper:#fffdf7; --ink:#18333a; --muted:#566c70; --line:#dbe7df;
+      --teal:#087f79; --teal-dark:#075e5c; --sun:#ffc93c; --coral:#ef694f;
+      --blue:#4aa9d8; --green:#6d9e45; --card:#ffffff; --soft:#eff8f3;
+      --shadow:0 18px 45px rgba(19,67,66,.13);
+    }
+    @media (prefers-color-scheme:dark){
+      :root{--paper:#102226;--ink:#f5f0df;--muted:#c2d0cb;--line:#365157;--teal:#3ec6b9;--teal-dark:#b5eee7;--sun:#ffd45f;--coral:#ff8067;--blue:#69bce4;--green:#9ecb76;--card:#183139;--soft:#142c31;--shadow:0 18px 48px rgba(0,0,0,.32)}
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:"Vazirmatn","Atkinson Hyperlegible",sans-serif;line-height:1.7}
+    button{font:inherit;cursor:pointer}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}
+    .brand img{width:44px;height:44px;border-radius:50%}
+    .top .who{color:var(--muted);font-size:14px}
+    .top .links{display:flex;gap:10px}
+    .tbtn{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 18px;font-weight:700;text-decoration:none;min-height:48px;display:inline-flex;align-items:center}
+    .tbtn:hover{background:var(--soft)}
+    .wrap{max-width:1060px;margin:0 auto;padding:28px 16px 90px}
+    h1{font-size:clamp(26px,4vw,36px);margin:6px 0 4px;font-weight:800}
+    .lede{color:var(--muted);margin:0 0 22px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+    .tab{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:14px 24px;font-weight:800;font-size:17px;min-height:56px}
+    .tab.active{background:var(--teal);border-color:var(--teal);color:#fff}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:clamp(20px,3vw,32px);margin-bottom:24px}
+    .card h2{margin:0 0 6px;font-size:22px;font-weight:800}
+    .card .hint{color:var(--muted);font-size:14px;margin:0 0 18px}
+    .form-grid{display:grid;gap:14px}
+    @media(min-width:720px){.form-grid.two{grid-template-columns:1fr 1fr}}
+    label.f{display:block;font-weight:700;margin-bottom:14px}
+    label.f span.lbl{display:block;margin-bottom:6px}
+    input[type=text],input[type=url],input[type=number],textarea,select{width:100%;border:2px solid var(--line);border-radius:14px;padding:13px 15px;font:inherit;background:var(--paper);color:var(--ink)}
+    input:focus,textarea:focus,select:focus{outline:3px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+    textarea{min-height:96px;resize:vertical}
+    .check{display:flex;align-items:center;gap:10px;font-weight:700}
+    .check input{width:26px;height:26px;accent-color:var(--teal)}
+    .btn{border:0;border-radius:14px;padding:15px 30px;font-weight:800;font-size:18px;min-height:58px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    .btn-add{background:var(--green);color:#fff;box-shadow:0 5px 0 #4a6e2c}
+    .btn-save{background:var(--teal);color:#fff;box-shadow:0 5px 0 var(--teal-dark)}
+    .btn:active{transform:translateY(3px);box-shadow:none}
+    .btn:disabled{opacity:.6;cursor:wait}
+    .btn-cancel{background:var(--soft);border:2px solid var(--line);color:var(--ink);box-shadow:none}
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+    table{width:100%;border-collapse:collapse;margin-top:6px}
+    th,td{text-align:right;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+    th{color:var(--muted);font-size:14px;font-weight:700}
+    .badge{display:inline-block;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:800}
+    .badge.free{background:#e9f7ef;color:#1e5b2e}
+    .badge.members{background:#fff6dd;color:#7a5b12}
+    .badge.off{background:#f1ecec;color:#8a7f7f}
+    .badge.admin{background:var(--teal);color:#fff}
+    @media (prefers-color-scheme:dark){.badge.free{background:#14301d;color:#a9e6c2}.badge.members{background:#3a2f10;color:#ffd45f}.badge.off{background:#2c3434;color:#b9c4c0}}
+    .mini{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 16px;font-weight:700;font-size:14px;min-height:44px;margin:2px}
+    .mini.danger{border-color:var(--coral);color:var(--coral)}
+    .mini:hover{background:var(--soft)}
+    .quick{display:flex;align-items:center;gap:6px}
+    .quick input{width:24px;height:24px;accent-color:var(--teal)}
+    .msg{border-radius:14px;padding:14px 18px;margin:0 0 20px;font-weight:700}
+    .msg.error{background:#fdecea;color:#8f2b1d;border:2px solid #f3b3a6}
+    .msg.success{background:#e9f7ef;color:#1e5b2e;border:2px solid #a9dcc0}
+    @media (prefers-color-scheme:dark){.msg.error{background:#3a1d16;color:#ffb4a3}.msg.success{background:#14301d;color:#a9e6c2}}
+    .empty{color:var(--muted);text-align:center;padding:30px 10px}
+    .denied{max-width:560px;margin:80px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:48px 32px;box-shadow:var(--shadow)}
+    .denied h1{font-size:28px}
+    .ltr{direction:ltr;unicode-bidi:embed}
+    .stepper-row{display:flex;align-items:center;justify-content:space-between;gap:14px;border:2px solid var(--line);border-radius:16px;padding:14px 18px}
+    .stepper-row .sname{font-weight:800;font-size:18px}
+    .stepper-row .sname small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+    .stepper{display:flex;align-items:center;gap:12px}
+    .stepper button{width:54px;height:54px;border-radius:14px;border:2px solid var(--line);background:var(--soft);color:var(--ink);font-size:26px;font-weight:800;line-height:1}
+    .stepper button:hover{background:var(--line)}
+    .stepper .sval{font-size:28px;font-weight:800;min-width:46px;text-align:center}
+    @media(max-width:640px){table,thead,tbody,th,td,tr{display:block}thead{display:none}tr{border:2px solid var(--line);border-radius:14px;margin-bottom:12px;padding:8px}td{border:0;padding:8px 10px}}
+  </style>
+</head>
+<body>
+  <div id="app" hidden>
+    <header class="top">
+      <div class="brand"><img src="img/zhiolearns-logo.png" alt="Romy" /> پنل مدیریت ZhioLearns</div>
+      <div class="who" id="who"></div>
+      <div class="links">
+        <a class="tbtn" href="index.html">مشاهده سایت</a>
+        <button class="tbtn" id="btn-logout" type="button">خروج</button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <h1>مدیریت محتوا ✏️</h1>
+      <p class="lede">اینجا می‌توانید بازی‌ها، چاپی‌ها، کتاب‌ها و متن‌های سایت را خودتان اضافه و ویرایش کنید — بدون نیاز به برنامه‌نویس.</p>
+      <div id="msg" class="msg" role="status" aria-live="polite" hidden></div>
+
+      <nav class="tabs" id="tabs"></nav>
+
+      <!-- محتواها -->
+      <section class="card" id="panel-items">
+        <h2 id="items-title"></h2>
+        <p class="hint" id="items-hint"></p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>عنوان</th><th>دسترسی</th><th>فعال</th><th>ترتیب</th><th>عملیات</th></tr></thead>
+          <tbody id="items-body"></tbody>
+        </table></div>
+        <div class="empty" id="items-empty" hidden>هنوز چیزی ثبت نشده — از فرم زیر اضافه کنید. 🌱</div>
+
+        <h2 id="form-title" style="margin-top:28px">افزودن جدید ➕</h2>
+        <form id="item-form" class="form-grid">
+          <label class="f"><span class="lbl">عنوان *</span>
+            <input type="text" id="f-title" required list="series-keys" placeholder="مثلاً: بسته الفبا" />
+            <datalist id="series-keys"><option value="adventure"></option><option value="puzzle"></option><option value="maze"></option></datalist>
+          </label>
+          <label class="f"><span class="lbl">توضیح (انگلیسی، برای نمایش در سایت)</span>
+            <textarea id="f-desc" placeholder="Short English description shown on the site"></textarea>
+          </label>
+          <div class="form-grid two">
+            <label class="f"><span class="lbl">لینک فایل (PDF / عکس / صفحه خرید)</span>
+              <input type="url" id="f-url" class="ltr" placeholder="https://…" />
+            </label>
+            <label class="f"><span class="lbl">دسترسی</span>
+              <select id="f-vis">
+                <option value="free">رایگان — همه می‌بینند</option>
+                <option value="members">اعضا — فقط والدین عضو</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-grid two">
+            <label class="f"><span class="lbl">ترتیب نمایش (عدد کوچک‌تر = بالاتر)</span>
+              <input type="number" id="f-order" value="0" min="0" />
+            </label>
+            <label class="f check"><input type="checkbox" id="f-active" checked /> فعال باشد (در سایت نمایش داده شود)</label>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-add" type="submit" id="btn-submit">➕ افزودن</button>
+            <button class="btn btn-cancel" type="button" id="btn-cancel" hidden>انصراف</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- تنظیمات سری‌ها -->
+      <section class="card" id="panel-series" hidden>
+        <h2>تنظیمات سری‌ها ⚙️</h2>
+        <p class="hint">تعداد مرحله‌های <strong>رایگان</strong> هر سری بازی — بدون نیاز به عضویت. مرحله‌های بعدی فقط برای والدین عضو باز می‌شود. صفر یعنی همه مرحله‌ها قفل. این تنظیم بلافاصله روی سایت اعمال می‌شود.</p>
+        <div id="series-rows" class="form-grid"></div>
+        <div class="btn-row" style="margin-top:18px">
+          <button class="btn btn-save" type="button" id="btn-series-save">💾 ذخیره تنظیمات</button>
+        </div>
+      </section>
+
+      <!-- متن‌های سایت -->
+      <section class="card" id="panel-texts" hidden>
+        <h2>متن‌های سایت 📝</h2>
+        <p class="hint">متن‌هایی که بعداً در صفحه اصلی سایت نمایش داده می‌شوند (مثل نوار اطلاع‌رسانی بالای صفحه). کلیدها انگلیسی و بدون فاصله باشند.</p>
+        <table>
+          <thead><tr><th>کلید</th><th>متن</th><th>عملیات</th></tr></thead>
+          <tbody id="texts-body"></tbody>
+        </table>
+        <div class="empty" id="texts-empty" hidden>هنوز متنی ثبت نشده است.</div>
+        <h2 style="margin-top:28px" id="text-form-title">افزودن متن ➕</h2>
+        <form id="text-form" class="form-grid">
+          <label class="f"><span class="lbl">کلید * <span class="hint" style="display:inline">(مثل: announcement_bar)</span></span>
+            <input type="text" id="t-key" required class="ltr" placeholder="announcement_bar" />
+          </label>
+          <label class="f"><span class="lbl">متن (انگلیسی)</span>
+            <textarea id="t-value" placeholder="Text shown on the site"></textarea>
+          </label>
+          <div class="btn-row">
+            <button class="btn btn-add" type="submit" id="btn-text-submit">➕ افزودن</button>
+            <button class="btn btn-cancel" type="button" id="btn-text-cancel" hidden>انصراف</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- اعضا -->
+      <section class="card" id="panel-members" hidden>
+        <h2>اعضا 👨‍👩‍👧</h2>
+        <p class="hint">فهرست والدین عضو — فقط خواندنی است. برای تغییر نقش مدیر از طریق دیتابیس اقدام کنید (راهنما: SETUP.md).</p>
+        <table>
+          <thead><tr><th>نام</th><th>ایمیل</th><th>مدیر؟</th><th>تاریخ عضویت</th></tr></thead>
+          <tbody id="members-body"></tbody>
+        </table>
+        <div class="empty" id="members-empty" hidden>هنوز عضوی ثبت‌نام نکرده است.</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    /* ====================================================================
+       پنل مدیریت ZhioLearns (پیش‌نویس)
+       - فقط مدیر (profiles.is_admin) می‌تواند این صفحه را ببیند.
+       - همه دسترسی‌ها در دیتابیس (RLS) کنترل می‌شود، نه فقط با دکمه.
+       ==================================================================== */
+    'use strict';
+
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var $ = function (id) { return document.getElementById(id); };
+    var msg = $('msg');
+
+    function toast(text, ok) {
+      msg.hidden = false;
+      msg.className = 'msg ' + (ok ? 'success' : 'error');
+      msg.textContent = text;
+      msg.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function clearToast() { msg.hidden = true; }
+
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    };
+    var faDate = function (iso) {
+      try { return new Date(iso).toLocaleDateString('fa-IR', { dateStyle: 'medium' }); }
+      catch (e) { return iso; }
+    };
+
+    /* ---------- تب‌ها ---------- */
+    var TABS = [
+      { id: 'printable', fa: '🖨️ چاپی‌ها',  title: 'چاپی‌ها', hint: 'فایل‌های PDF فعالیت چاپی. «لینک فایل» را وارد کنید؛ اگر «اعضا» را انتخاب کنید فقط والدین واردشده می‌بینند.' },
+      { id: 'game',      fa: '🎮 بازی‌ها',   title: 'بازی‌ها', hint: 'برای بازی‌ها «عنوان» باید دقیقاً کلید سری باشد: adventure یا puzzle یا maze. دسترسی «اعضا» یعنی آن سری قفل می‌شود.' },
+      { id: 'book',      fa: '📚 کتاب‌ها',   title: 'کتاب‌ها', hint: 'کتاب‌های آمازون. در «لینک فایل» آدرس صفحه خرید را بگذارید.' },
+      { id: 'video',     fa: '🎬 ویدیوها',   title: 'ویدیوها', hint: 'لینک ویدیو (مثلاً یوتیوب).' },
+      { id: 'series',    fa: '⚙️ تنظیمات سری‌ها', title: null, hint: null },
+      { id: 'texts',     fa: '📝 متن‌های سایت', title: null, hint: null },
+      { id: 'members',   fa: '👨‍👩‍👧 اعضا',    title: null, hint: null }
+    ];
+    var currentTab = 'printable';
+    var editingItemId = null;
+    var editingTextKey = null;
+
+    function renderTabs() {
+      $('tabs').innerHTML = TABS.map(function (t) {
+        return '<button type="button" class="tab' + (t.id === currentTab ? ' active' : '') +
+               '" data-tab="' + t.id + '">' + t.fa + '</button>';
+      }).join('');
+      Array.prototype.forEach.call(document.querySelectorAll('#tabs .tab'), function (b) {
+        b.addEventListener('click', function () { switchTab(b.getAttribute('data-tab')); });
+      });
+    }
+
+    function switchTab(id) {
+      currentTab = id; editingItemId = null; editingTextKey = null;
+      clearToast(); resetItemForm(); resetTextForm(); renderTabs();
+      $('panel-items').hidden = !(id === 'printable' || id === 'game' || id === 'book' || id === 'video');
+      $('panel-series').hidden = (id !== 'series');
+      $('panel-texts').hidden = (id !== 'texts');
+      $('panel-members').hidden = (id !== 'members');
+      if ($('panel-items').hidden === false) loadItems();
+      if (id === 'series') loadSeriesSettings();
+      if (id === 'texts') loadTexts();
+      if (id === 'members') loadMembers();
+    }
+
+    /* ---------- نگهبان: فقط مدیر ---------- */
+    async function guard() {
+      if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        document.body.innerHTML = '<div class="denied"><h1>⚙️ تنظیمات ناقص است</h1><p>ابتدا SUPABASE_URL و SUPABASE_ANON_KEY را در فایل supabase-config.js وارد کنید (راهنما: SETUP.md).</p></div>';
+        return false;
+      }
+      var s = await supabase.auth.getSession();
+      if (!s.data.session) {
+        location.href = 'auth.html?redirect=' + encodeURIComponent('admin.html');
+        return false;
+      }
+      var p = await supabase.from('profiles').select('is_admin,email,display_name')
+        .eq('id', s.data.session.user.id).single();
+      if (p.error || !p.data || !p.data.is_admin) {
+        document.body.innerHTML = '<div class="denied"><h1>🔒 دسترسی ندارید</h1>' +
+          '<p>این صفحه فقط برای مدیر سایت است.</p>' +
+          '<p><a class="tbtn" href="auth.html">رفتن به صفحه ورود</a> ' +
+          '<a class="tbtn" href="index.html">بازگشت به سایت</a></p></div>';
+        return false;
+      }
+      $('who').textContent = 'مدیر: ' + (p.data.display_name || p.data.email);
+      return true;
+    }
+
+    /* ---------- محتواها: خواندن ---------- */
+    async function loadItems() {
+      var tab = TABS.filter(function (t) { return t.id === currentTab; })[0];
+      $('items-title').textContent = tab.title;
+      $('items-hint').textContent = tab.hint;
+      var res = await supabase.from('content_items').select('*')
+        .eq('kind', currentTab).order('sort_order', { ascending: true }).order('created_at', { ascending: true });
+      if (res.error) { toast('خطا در خواندن اطلاعات: ' + res.error.message, false); return; }
+      var rows = res.data || [];
+      $('items-empty').hidden = rows.length > 0;
+      $('items-body').innerHTML = rows.map(function (r) {
+        var vis = r.visibility === 'members'
+          ? '<span class="badge members">🔒 اعضا</span>'
+          : '<span class="badge free">🌍 رایگان</span>';
+        var active = r.is_active
+          ? '<span class="badge free">فعال</span>'
+          : '<span class="badge off">غیرفعال</span>';
+        return '<tr>' +
+          '<td><strong>' + esc(r.title) + '</strong>' +
+          (r.description ? '<br /><small style="color:var(--muted)">' + esc(r.description).slice(0, 90) + '</small>' : '') + '</td>' +
+          '<td>' + vis + '</td>' +
+          '<td><label class="quick"><input type="checkbox" data-toggle="' + r.id + '"' + (r.is_active ? ' checked' : '') + ' /> ' + active + '</label></td>' +
+          '<td class="ltr">' + r.sort_order + '</td>' +
+          '<td><button type="button" class="mini" data-edit="' + r.id + '">✏️ ویرایش</button>' +
+          '<button type="button" class="mini danger" data-del="' + r.id + '">🗑️ حذف</button></td>' +
+          '</tr>';
+      }).join('');
+      bindItemRowButtons();
+    }
+
+    function bindItemRowButtons() {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-toggle]'), function (cb) {
+        cb.addEventListener('change', async function () {
+          var res = await supabase.from('content_items')
+            .update({ is_active: cb.checked }).eq('id', cb.getAttribute('data-toggle'));
+          if (res.error) { toast('خطا در ذخیره: ' + res.error.message, false); cb.checked = !cb.checked; }
+          else { toast(cb.checked ? 'فعال شد ✅' : 'غیرفعال شد (در سایت نمایش داده نمی‌شود)', true); loadItems(); }
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-edit]'), function (b) {
+        b.addEventListener('click', function () { startEditItem(b.getAttribute('data-edit')); });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function (b) {
+        b.addEventListener('click', function () { deleteItem(b.getAttribute('data-del')); });
+      });
+    }
+
+    /* ---------- محتواها: افزودن / ویرایش / حذف ---------- */
+    function resetItemForm() {
+      $('item-form').reset();
+      $('f-active').checked = true; $('f-order').value = 0; $('f-vis').value = 'free';
+      editingItemId = null;
+      $('form-title').textContent = 'افزودن جدید ➕';
+      $('btn-submit').textContent = '➕ افزودن';
+      $('btn-submit').className = 'btn btn-add';
+      $('btn-cancel').hidden = true;
+    }
+
+    async function startEditItem(id) {
+      var res = await supabase.from('content_items').select('*').eq('id', id).single();
+      if (res.error) { toast('خطا: ' + res.error.message, false); return; }
+      var r = res.data;
+      editingItemId = id;
+      $('f-title').value = r.title || '';
+      $('f-desc').value = r.description || '';
+      $('f-url').value = r.asset_url || '';
+      $('f-vis').value = r.visibility || 'free';
+      $('f-order').value = r.sort_order || 0;
+      $('f-active').checked = !!r.is_active;
+      $('form-title').textContent = 'ویرایش ✏️';
+      $('btn-submit').textContent = '💾 ذخیره تغییرات';
+      $('btn-submit').className = 'btn btn-save';
+      $('btn-cancel').hidden = false;
+      $('form-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    async function deleteItem(id) {
+      if (!confirm('این مورد حذف شود؟\nاین کار برگشت‌پذیر نیست!')) return;
+      var res = await supabase.from('content_items').delete().eq('id', id);
+      if (res.error) toast('خطا در حذف: ' + res.error.message, false);
+      else { toast('حذف شد 🗑️', true); loadItems(); }
+    }
+
+    $('item-form').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearToast();
+      var btn = $('btn-submit'); btn.disabled = true;
+      var payload = {
+        kind: currentTab,
+        title: $('f-title').value.trim(),
+        description: $('f-desc').value.trim() || null,
+        asset_url: $('f-url').value.trim() || null,
+        visibility: $('f-vis').value,
+        sort_order: parseInt($('f-order').value, 10) || 0,
+        is_active: $('f-active').checked
+      };
+      var res = editingItemId
+        ? await supabase.from('content_items').update(payload).eq('id', editingItemId)
+        : await supabase.from('content_items').insert(payload);
+      btn.disabled = false;
+      if (res.error) toast('خطا در ذخیره: ' + res.error.message, false);
+      else { toast(editingItemId ? 'تغییرات ذخیره شد ✅' : 'اضافه شد ✅', true); resetItemForm(); loadItems(); }
+    });
+    $('btn-cancel').addEventListener('click', resetItemForm);
+
+    /* ---------- متن‌های سایت ---------- */
+    async function loadTexts() {
+      var res = await supabase.from('site_texts').select('*').order('key');
+      if (res.error) { toast('خطا در خواندن متن‌ها: ' + res.error.message, false); return; }
+      var rows = res.data || [];
+      $('texts-empty').hidden = rows.length > 0;
+      $('texts-body').innerHTML = rows.map(function (r) {
+        return '<tr><td class="ltr"><strong>' + esc(r.key) + '</strong></td>' +
+          '<td>' + esc((r.value || '').slice(0, 120)) + '</td>' +
+          '<td><button type="button" class="mini" data-tedit="' + esc(r.key) + '">✏️ ویرایش</button>' +
+          '<button type="button" class="mini danger" data-tdel="' + esc(r.key) + '">🗑️ حذف</button></td></tr>';
+      }).join('');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-tedit]'), function (b) {
+        b.addEventListener('click', function () { startEditText(b.getAttribute('data-tedit')); });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-tdel]'), function (b) {
+        b.addEventListener('click', async function () {
+          if (!confirm('این متن حذف شود؟')) return;
+          var d = await supabase.from('site_texts').delete().eq('key', b.getAttribute('data-tdel'));
+          if (d.error) toast('خطا در حذف: ' + d.error.message, false);
+          else { toast('حذف شد 🗑️', true); loadTexts(); }
+        });
+      });
+    }
+
+    function resetTextForm() {
+      $('text-form').reset(); editingTextKey = null;
+      $('text-form-title').textContent = 'افزودن متن ➕';
+      $('btn-text-submit').textContent = '➕ افزودن';
+      $('btn-text-submit').className = 'btn btn-add';
+      $('btn-text-cancel').hidden = true;
+    }
+
+    async function startEditText(key) {
+      var res = await supabase.from('site_texts').select('*').eq('key', key).single();
+      if (res.error) { toast('خطا: ' + res.error.message, false); return; }
+      editingTextKey = key;
+      $('t-key').value = res.data.key;
+      $('t-key').disabled = true; // کلید اصلی است و نباید عوض شود
+      $('t-value').value = res.data.value || '';
+      $('text-form-title').textContent = 'ویرایش متن ✏️';
+      $('btn-text-submit').textContent = '💾 ذخیره تغییرات';
+      $('btn-text-submit').className = 'btn btn-save';
+      $('btn-text-cancel').hidden = false;
+    }
+
+    $('text-form').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearToast();
+      var btn = $('btn-text-submit'); btn.disabled = true;
+      var key = $('t-key').value.trim();
+      var value = $('t-value').value;
+      var res = editingTextKey
+        ? await supabase.from('site_texts').update({ value: value }).eq('key', editingTextKey)
+        : await supabase.from('site_texts').upsert({ key: key, value: value }, { onConflict: 'key' });
+      btn.disabled = false;
+      if (res.error) toast('خطا در ذخیره: ' + res.error.message, false);
+      else { toast('ذخیره شد ✅', true); $('t-key').disabled = false; resetTextForm(); loadTexts(); }
+    });
+    $('btn-text-cancel').addEventListener('click', function () { $('t-key').disabled = false; resetTextForm(); });
+
+    /* ---------- تنظیمات سری‌ها: چند مرحله رایگان؟ ---------- */
+    var SERIES_SETTINGS = [
+      { key: 'free_levels_adventure', fa: 'ماجراجویی رومی 🎒', total: 8, def: 3 },
+      { key: 'free_levels_puzzle',    fa: 'وقت پازل 🧩',        total: 5, def: 2 },
+      { key: 'free_levels_maze',      fa: 'دونده ماز 🌀',        total: 5, def: 2 }
+    ];
+    var seriesVals = {};
+
+    async function loadSeriesSettings() {
+      var keys = SERIES_SETTINGS.map(function (s) { return s.key; });
+      var res = await supabase.from('site_texts').select('key,value').in('key', keys);
+      if (res.error) { toast('خطا در خواندن تنظیمات: ' + res.error.message, false); return; }
+      var found = {};
+      (res.data || []).forEach(function (r) { found[r.key] = parseInt(r.value, 10); });
+      SERIES_SETTINGS.forEach(function (s) {
+        var v = found[s.key];
+        seriesVals[s.key] = (typeof v === 'number' && !isNaN(v))
+          ? Math.max(0, Math.min(v, s.total))
+          : s.def;
+      });
+      renderSeriesRows();
+    }
+
+    function renderSeriesRows() {
+      $('series-rows').innerHTML = SERIES_SETTINGS.map(function (s) {
+        return '<div class="stepper-row">' +
+          '<div class="sname">' + s.fa + '<small>از ' + s.total + ' مرحله رایگان است — بقیه برای اعضا</small></div>' +
+          '<div class="stepper">' +
+            '<button type="button" data-sminus="' + s.key + '" aria-label="یک مرحله کمتر">−</button>' +
+            '<span class="sval" id="sval-' + s.key + '">' + seriesVals[s.key] + '</span>' +
+            '<button type="button" data-splus="' + s.key + '" aria-label="یک مرحله بیشتر">+</button>' +
+          '</div></div>';
+      }).join('');
+      SERIES_SETTINGS.forEach(function (s) {
+        document.querySelector('[data-sminus="' + s.key + '"]').addEventListener('click', function () { stepSeries(s, -1); });
+        document.querySelector('[data-splus="' + s.key + '"]').addEventListener('click', function () { stepSeries(s, 1); });
+      });
+    }
+
+    function stepSeries(s, d) {
+      seriesVals[s.key] = Math.max(0, Math.min(s.total, seriesVals[s.key] + d));
+      document.getElementById('sval-' + s.key).textContent = seriesVals[s.key];
+    }
+
+    $('btn-series-save').addEventListener('click', async function () {
+      var btn = $('btn-series-save'); btn.disabled = true; clearToast();
+      var rows = SERIES_SETTINGS.map(function (s) { return { key: s.key, value: String(seriesVals[s.key]) }; });
+      var res = await supabase.from('site_texts').upsert(rows, { onConflict: 'key' });
+      btn.disabled = false;
+      if (res.error) toast('خطا در ذخیره: ' + res.error.message, false);
+      else toast('تنظیمات ذخیره شد ✅ — سایت بلافاصله به‌روز می‌شود', true);
+    });
+
+    /* ---------- اعضا (فقط خواندنی) ---------- */
+    async function loadMembers() {
+      var res = await supabase.from('profiles').select('display_name,email,is_admin,created_at')
+        .order('created_at', { ascending: false }).limit(500);
+      if (res.error) { toast('خطا در خواندن اعضا: ' + res.error.message, false); return; }
+      var rows = res.data || [];
+      $('members-empty').hidden = rows.length > 0;
+      $('members-body').innerHTML = rows.map(function (r) {
+        return '<tr><td>' + esc(r.display_name || '—') + '</td>' +
+          '<td class="ltr">' + esc(r.email || '') + '</td>' +
+          '<td>' + (r.is_admin ? '<span class="badge admin">مدیر</span>' : 'عضو') + '</td>' +
+          '<td>' + faDate(r.created_at) + '</td></tr>';
+      }).join('');
+    }
+
+    /* ---------- شروع ---------- */
+    $('btn-logout').addEventListener('click', async function () {
+      await supabase.auth.signOut();
+      location.href = 'auth.html';
+    });
+
+    (async function init() {
+      if (!(await guard())) return;
+      $('app').hidden = false;
+      renderTabs();
+      switchTab('printable');
+    })();
+  </script>
+</body>
+</html>

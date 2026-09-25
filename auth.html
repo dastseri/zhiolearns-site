@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" type="image/png" href="img/zhiolearns-logo.png" />
+  <title>Parents' area — ZhioLearns</title>
+  <meta name="description" content="Log in or create a ZhioLearns parent account to unlock members-only games and printables." />
+  <style>
+    /* Visual style mirrors the main ZhioLearns site (index.html). */
+    @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@500;600;700&display=swap');
+    :root{
+      color-scheme:light dark;
+      --paper:#fffdf7; --ink:#18333a; --muted:#566c70; --line:#dbe7df;
+      --teal:#087f79; --teal-dark:#075e5c; --sun:#ffc93c; --coral:#ef694f;
+      --blue:#4aa9d8; --green:#6d9e45; --card:#ffffff; --soft:#eff8f3;
+      --shadow:0 18px 45px rgba(19,67,66,.13);
+    }
+    @media (prefers-color-scheme:dark){
+      :root{--paper:#102226;--ink:#f5f0df;--muted:#c2d0cb;--line:#365157;--teal:#3ec6b9;--teal-dark:#b5eee7;--sun:#ffd45f;--coral:#ff8067;--blue:#69bce4;--green:#9ecb76;--card:#183139;--soft:#142c31;--shadow:0 18px 48px rgba(0,0,0,.32)}
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:"Atkinson Hyperlegible",sans-serif;line-height:1.55}
+    button,a{font:inherit}
+    .top{display:flex;align-items:center;justify-content:space-between;padding:13px clamp(18px,5vw,74px);border-bottom:1px solid var(--line)}
+    .top .brand{display:flex;align-items:center;gap:10px;font:700 22px "Baloo 2",sans-serif;text-decoration:none}
+    .top .brand img{width:40px;height:40px;border-radius:50%}
+    .top .back{text-decoration:none;font-weight:700;padding:9px 13px;border-radius:12px}
+    .top .back:hover{background:var(--soft)}
+    .auth-wrap{max-width:560px;margin:0 auto;padding:clamp(36px,7vw,72px) 20px 80px}
+    .auth-card{background:var(--card);border:1px solid var(--line);border-radius:32px;box-shadow:var(--shadow);padding:clamp(28px,5vw,48px)}
+    .auth-card .logo{display:block;width:96px;height:96px;border-radius:50%;margin:0 auto 8px;box-shadow:var(--shadow)}
+    h1{font:700 clamp(30px,5vw,42px)/1.05 "Baloo 2",sans-serif;text-align:center;margin:10px 0 6px}
+    .sub{text-align:center;color:var(--muted);margin:0 0 26px}
+    .sub strong{color:var(--ink)}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--soft);border-radius:16px;padding:8px;margin-bottom:24px}
+    .tab{border:0;background:transparent;border-radius:12px;padding:13px;font-weight:700;color:var(--muted);cursor:pointer}
+    .tab.active{background:var(--card);color:var(--ink);box-shadow:0 4px 14px rgba(19,67,66,.12)}
+    label{display:block;font-weight:700;margin:14px 0 6px}
+    input[type=email],input[type=password],input[type=text]{width:100%;border:2px solid var(--line);border-radius:14px;padding:14px 16px;font:inherit;background:var(--paper);color:var(--ink)}
+    input:focus{outline:3px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+    .hint{font-size:14px;color:var(--muted);margin:6px 0 0}
+    .btn{border:0;border-radius:14px;padding:15px 22px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;min-height:56px;font-size:17px;width:100%;margin-top:20px}
+    .primary{background:var(--coral);color:#fff;box-shadow:0 6px 0 #b34a36}
+    .primary:active{transform:translateY(4px);box-shadow:0 2px 0 #b34a36}
+    .primary:disabled{opacity:.6;cursor:wait;transform:none}
+    .secondary{background:var(--soft);border:2px solid var(--line);color:var(--ink);width:auto}
+    .forgot{background:none;border:0;color:var(--teal);font-weight:700;cursor:pointer;padding:10px 0;margin-top:6px;text-decoration:underline}
+    .msg{border-radius:14px;padding:14px 18px;margin-top:20px;font-weight:700}
+    .msg.error{background:#fdecea;color:#8f2b1d;border:2px solid #f3b3a6}
+    .msg.success{background:#e9f7ef;color:#1e5b2e;border:2px solid #a9dcc0}
+    @media (prefers-color-scheme:dark){.msg.error{background:#3a1d16;color:#ffb4a3}.msg.success{background:#14301d;color:#a9e6c2}}
+    .hello{text-align:center;font-size:19px}
+    .row{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+    .row .btn{width:auto;flex:1}
+    details.pw{margin-top:26px;border:2px solid var(--line);border-radius:14px;padding:12px 16px}
+    details.pw summary{font-weight:700;cursor:pointer}
+    .fineprint{text-align:center;color:var(--muted);font-size:14px;margin:26px 0 0}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html"><img src="img/zhiolearns-logo.png" alt="Romy the raccoon" /> ZhioLearns</a>
+    <a class="back" href="index.html">← Back to site</a>
+  </header>
+
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <img class="logo" src="img/zhiolearns-logo.png" alt="Romy the raccoon" />
+      <h1>Parents' area</h1>
+      <p class="sub">One account for the whole family.<br />Accounts are for <strong>parents and guardians only</strong> — we never collect children's information.</p>
+
+      <!-- Logged OUT view -->
+      <div id="view-out">
+        <div class="tabs" role="tablist">
+          <button class="tab active" id="tab-login" type="button">Log in</button>
+          <button class="tab" id="tab-signup" type="button">Sign up</button>
+        </div>
+
+        <form id="form-login" autocomplete="on">
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" required autocomplete="email" placeholder="you@example.com" />
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" required autocomplete="current-password" placeholder="Your password" />
+          <button class="btn primary" type="submit" id="btn-login">Log in</button>
+          <button class="forgot" type="button" id="link-forgot">Forgot your password?</button>
+        </form>
+
+        <form id="form-signup" autocomplete="on" hidden>
+          <label for="signup-name">Your name (parent/guardian)</label>
+          <input id="signup-name" type="text" required autocomplete="name" placeholder="e.g. Sarah" />
+          <label for="signup-email">Email</label>
+          <input id="signup-email" type="email" required autocomplete="email" placeholder="you@example.com" />
+          <label for="signup-password">Choose a password</label>
+          <input id="signup-password" type="password" required autocomplete="new-password" minlength="6" placeholder="At least 6 characters" />
+          <p class="hint">We'll send a confirmation email — click the link inside to activate your account.</p>
+          <button class="btn primary" type="submit" id="btn-signup">Create account</button>
+        </form>
+
+        <form id="form-forgot" hidden>
+          <label for="forgot-email">Email</label>
+          <input id="forgot-email" type="email" required autocomplete="email" placeholder="you@example.com" />
+          <button class="btn primary" type="submit" id="btn-forgot">Send reset link</button>
+          <button class="forgot" type="button" id="link-back-login">← Back to log in</button>
+        </form>
+      </div>
+
+      <!-- Logged IN view -->
+      <div id="view-in" hidden>
+        <p class="hello">You're logged in as<br /><strong id="who"></strong> 🎉</p>
+        <div class="row">
+          <a class="btn primary" id="go-games" href="index.html">▶ Play games</a>
+          <button class="btn secondary" type="button" id="btn-logout">Log out</button>
+        </div>
+        <details class="pw">
+          <summary>Change password</summary>
+          <form id="form-password">
+            <label for="new-password">New password</label>
+            <input id="new-password" type="password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+            <button class="btn primary" type="submit" id="btn-password">Update password</button>
+          </form>
+        </details>
+      </div>
+
+      <div id="msg" class="msg" role="status" aria-live="polite" hidden></div>
+      <p class="fineprint">Protected by secure sign-in. Children never need an account to play free games.</p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    /* ------------------------------------------------------------------
+       ZhioLearns parent auth (DRAFT).
+       Uses ONLY the anon key — all access rules live in the database (RLS).
+       ------------------------------------------------------------------ */
+    'use strict';
+
+    // Where to send parents after login. Production: "/".
+    var HOME_URL = 'index.html';
+
+    // Optional: gating.js links here as auth.html?redirect=<page> to send the
+    // parent back where they came from.
+    var REDIRECT = new URLSearchParams(location.search).get('redirect') || HOME_URL;
+
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    var $ = function (id) { return document.getElementById(id); };
+    var msg = $('msg');
+
+    function showMessage(text, kind) {
+      msg.hidden = false;
+      msg.className = 'msg ' + (kind || 'error');
+      msg.textContent = text;
+    }
+    function clearMessage() { msg.hidden = true; msg.textContent = ''; }
+
+    // Friendly versions of common Supabase auth errors.
+    function friendlyError(err) {
+      var m = (err && err.message) || 'Something went wrong. Please try again.';
+      if (/invalid login credentials/i.test(m)) return 'Email or password is incorrect. Please try again.';
+      if (/user already registered/i.test(m))   return 'This email already has an account — try logging in instead.';
+      if (/email not confirmed/i.test(m))       return 'Please click the confirmation link in your email first, then log in.';
+      if (/password.*at least/i.test(m))        return 'Password must be at least 6 characters.';
+      if (/rate limit/i.test(m))                return 'Too many attempts — please wait a minute and try again.';
+      return m;
+    }
+
+    function setBusy(btn, busy, label) {
+      btn.disabled = busy;
+      if (label) btn.textContent = busy ? 'Please wait…' : label;
+    }
+
+    /* ---- tabs -------------------------------------------------------- */
+    function showTab(which) {
+      var login = which === 'login';
+      $('tab-login').classList.toggle('active', login);
+      $('tab-signup').classList.toggle('active', !login);
+      $('form-login').hidden = !login;
+      $('form-signup').hidden = login;
+      $('form-forgot').hidden = true;
+      clearMessage();
+    }
+    $('tab-login').addEventListener('click', function () { showTab('login'); });
+    $('tab-signup').addEventListener('click', function () { showTab('signup'); });
+    $('link-forgot').addEventListener('click', function () {
+      $('form-login').hidden = true; $('form-signup').hidden = true; $('form-forgot').hidden = false; clearMessage();
+    });
+    $('link-back-login').addEventListener('click', function () { showTab('login'); });
+
+    /* ---- views -------------------------------------------------------- */
+    function showLoggedIn(user) {
+      $('view-out').hidden = true;
+      $('view-in').hidden = false;
+      $('who').textContent = user.email || '';
+      $('go-games').href = REDIRECT;
+      clearMessage();
+    }
+    function showLoggedOut() {
+      $('view-out').hidden = false;
+      $('view-in').hidden = true;
+      showTab('login');
+    }
+
+    /* ---- actions ------------------------------------------------------ */
+    $('form-signup').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearMessage();
+      var btn = $('btn-signup'); setBusy(btn, true, 'Create account');
+      try {
+        var res = await supabase.auth.signUp({
+          email: $('signup-email').value.trim(),
+          password: $('signup-password').value,
+          options: { data: { display_name: $('signup-name').value.trim() } }
+        });
+        if (res.error) throw res.error;
+        // If email confirmation is ON (recommended), there is no session yet.
+        if (res.data.session) { showLoggedIn(res.data.user); }
+        else {
+          showMessage('Account created! Please check your inbox and click the confirmation link, then log in.', 'success');
+          showTab('login');
+        }
+      } catch (err) { showMessage(friendlyError(err), 'error'); }
+      setBusy(btn, false, 'Create account');
+    });
+
+    $('form-login').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearMessage();
+      var btn = $('btn-login'); setBusy(btn, true, 'Log in');
+      try {
+        var res = await supabase.auth.signInWithPassword({
+          email: $('login-email').value.trim(),
+          password: $('login-password').value
+        });
+        if (res.error) throw res.error;
+        // Success: send them on their way.
+        location.href = REDIRECT;
+      } catch (err) { showMessage(friendlyError(err), 'error'); }
+      setBusy(btn, false, 'Log in');
+    });
+
+    $('form-forgot').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearMessage();
+      var btn = $('btn-forgot'); setBusy(btn, true, 'Send reset link');
+      try {
+        // The email link brings the parent back here; once the session is
+        // restored they can set a new password in "Change password".
+        var res = await supabase.auth.resetPasswordForEmail($('forgot-email').value.trim(), {
+          redirectTo: location.href.split('?')[0]
+        });
+        if (res.error) throw res.error;
+        showMessage('Reset link sent! Check your inbox (and spam folder).', 'success');
+      } catch (err) { showMessage(friendlyError(err), 'error'); }
+      setBusy(btn, false, 'Send reset link');
+    });
+
+    $('form-password').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearMessage();
+      var btn = $('btn-password'); setBusy(btn, true, 'Update password');
+      try {
+        var res = await supabase.auth.updateUser({ password: $('new-password').value });
+        if (res.error) throw res.error;
+        $('new-password').value = '';
+        showMessage('Password updated! 🎉', 'success');
+      } catch (err) { showMessage(friendlyError(err), 'error'); }
+      setBusy(btn, false, 'Update password');
+    });
+
+    $('btn-logout').addEventListener('click', async function () {
+      await supabase.auth.signOut();
+      showLoggedOut();
+      showMessage('You have been logged out.', 'success');
+    });
+
+    /* ---- initial state ------------------------------------------------- */
+    (async function init() {
+      if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        showMessage('Setup incomplete: SUPABASE_URL / SUPABASE_ANON_KEY are empty in supabase-config.js.', 'error');
+        return;
+      }
+      var res = await supabase.auth.getSession();
+      if (res.data.session) showLoggedIn(res.data.session.user);
+      else showLoggedOut();
+    })();
+
+    // Keep the view in sync if the session changes in another tab.
+    supabase.auth.onAuthStateChange(function (_event, session) {
+      if (session) showLoggedIn(session.user);
+      else showLoggedOut();
+    });
+  </script>
+</body>
+</html>
