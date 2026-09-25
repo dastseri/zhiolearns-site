@@ -57,6 +57,10 @@
     details.pw{margin-top:26px;border:2px solid var(--line);border-radius:14px;padding:12px 16px}
     details.pw summary{font-weight:700;cursor:pointer}
     .fineprint{text-align:center;color:var(--muted);font-size:14px;margin:26px 0 0}
+    .pw-wrap{position:relative}
+    .pw-wrap input{padding-right:52px}
+    .pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:20px;cursor:pointer;padding:8px;line-height:1;border-radius:10px}
+    .pw-toggle:focus{outline:3px solid var(--teal);outline-offset:1px}
   </style>
 </head>
 <body>
@@ -82,7 +86,7 @@
           <label for="login-email">Email</label>
           <input id="login-email" type="email" required autocomplete="email" placeholder="you@example.com" />
           <label for="login-password">Password</label>
-          <input id="login-password" type="password" required autocomplete="current-password" placeholder="Your password" />
+          <div class="pw-wrap"><input id="login-password" type="password" required autocomplete="current-password" placeholder="Your password" /><button type="button" class="pw-toggle" data-for="login-password" aria-label="Show password">👁️</button></div>
           <button class="btn primary" type="submit" id="btn-login">Log in</button>
           <button class="forgot" type="button" id="link-forgot">Forgot your password?</button>
         </form>
@@ -93,7 +97,7 @@
           <label for="signup-email">Email</label>
           <input id="signup-email" type="email" required autocomplete="email" placeholder="you@example.com" />
           <label for="signup-password">Choose a password</label>
-          <input id="signup-password" type="password" required autocomplete="new-password" minlength="6" placeholder="At least 6 characters" />
+          <div class="pw-wrap"><input id="signup-password" type="password" required autocomplete="new-password" minlength="6" placeholder="At least 6 characters" /><button type="button" class="pw-toggle" data-for="signup-password" aria-label="Show password">👁️</button></div>
           <p class="hint">We'll send a confirmation email — click the link inside to activate your account.</p>
           <button class="btn primary" type="submit" id="btn-signup">Create account</button>
         </form>
@@ -117,7 +121,7 @@
           <summary>Change password</summary>
           <form id="form-password">
             <label for="new-password">New password</label>
-            <input id="new-password" type="password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+            <div class="pw-wrap"><input id="new-password" type="password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" /><button type="button" class="pw-toggle" data-for="new-password" aria-label="Show password">👁️</button></div>
             <button class="btn primary" type="submit" id="btn-password">Update password</button>
           </form>
         </details>
@@ -184,6 +188,17 @@
     }
     $('tab-login').addEventListener('click', function () { showTab('login'); });
     $('tab-signup').addEventListener('click', function () { showTab('signup'); });
+    // Password show/hide toggles (so parents can verify what they typed).
+    Array.prototype.forEach.call(document.querySelectorAll('.pw-toggle'), function (btn) {
+      btn.addEventListener('click', function () {
+        var input = $(btn.getAttribute('data-for'));
+        if (!input) return;
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.textContent = show ? '🙈' : '👁️';
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    });
     $('link-forgot').addEventListener('click', function () {
       $('form-login').hidden = true; $('form-signup').hidden = true; $('form-forgot').hidden = false; clearMessage();
     });
