@@ -315,6 +315,7 @@ footer .fine a{color:var(--teal-dark)}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+  <script src="analytics.js"></script>
   <script>
 /* ==========================================================================
    ZhioLearns membership (FREE phase) — integrated 2026-09-25
@@ -468,7 +469,8 @@ footer .fine a{color:var(--teal-dark)}
             html += '<p class="print-lock-note">Members only</p>' +
               '<a class="order-btn" href="' + AUTH_URL + '">Join free to download</a>';
           } else {
-            html += '<a class="order-btn" href="' + esc(r.asset_url) + '" download target="_blank" rel="noopener">Download PDF</a>';
+            var pSlug = String(r.asset_url || '').split('/').pop().replace(/\.pdf$/i, '').replace(/[^a-z0-9-]/gi, '') || 'printable';
+            html += '<a class="order-btn" href="' + esc(r.asset_url) + '" download target="_blank" rel="noopener" onclick="if(window.zlgTrack)window.zlgTrack(\'printable_download\',null,\'' + pSlug + '\')">Download PDF</a>';
           }
           html += '</article>';
         });
@@ -498,6 +500,8 @@ footer .fine a{color:var(--teal-dark)}
       var s = await ZLG.db.auth.getSession();
       ZLG.user = (s.data && s.data.session) ? s.data.session.user : null;
       ZLG.isMember = !!ZLG.user; /* FREE phase: any logged-in parent counts as a member. */
+      /* Warm the analytics identity cache so events are attributed to this parent right away. */
+      try { if (window.zlgIdentify) window.zlgIdentify(ZLG.user ? ZLG.user.id : null, (s.data && s.data.session) ? s.data.session.access_token : null); } catch (e) {}
       if (ZLG.user) {
         try {
           var p = await ZLG.db.from('profiles').select('is_admin').eq('id', ZLG.user.id).single();
@@ -1170,7 +1174,7 @@ footer .fine a{color:var(--teal-dark)}
       function advPraise(){var p=['Brilliant!','Amazing!','Super!','Wonderful!','Great job!'];return p[Math.floor(Math.random()*p.length)];}
       function advPop(el){if(el&&el.animate)el.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:450});}
       function advShake(el){if(el&&el.animate)el.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:280});}
-      function advNext(){var zlN=ADV.level+1;if(window.ZLG&&!window.ZLG.canPlay('adventure',zlN)){window.ZLG.unlockPrompt('adventure');return;}ADV.level++;advHUD();if(ADV.level>=ADV.levels.length){advFinale();return;}advSay('Level complete! Get ready...');setTimeout(advRender,1100);}
+      function advNext(){var zlN=ADV.level+1;if(window.ZLG&&!window.ZLG.canPlay('adventure',zlN)){window.ZLG.unlockPrompt('adventure');return;}ADV.level++;if(window.zlgTrack)window.zlgTrack('level_complete','adventure',String(ADV.level));advHUD();if(ADV.level>=ADV.levels.length){advFinale();return;}advSay('Level complete! Get ready...');setTimeout(advRender,1100);}
       function advEarn(pts,el){ADV.score+=pts;advHUD();advGood();advPop(el);advSay(advPraise()+' +'+pts+' points!');setTimeout(advNext,950);}
       function advMiss(el){advOops();advShake(el);advSay('Good try \u2014 look again!');}
       function advRender(){
@@ -1254,7 +1258,7 @@ footer .fine a{color:var(--teal-dark)}
       function advStartScreen(){
         advHUD();
         advStage.innerHTML='<div class="adv-screen"><div><img src="img/zhiolearns-logo.png" class="adv-romy-img" alt="Romy the raccoon"></div><p class="game-status" id="adv-status">Ready for an adventure?</p><p class="game-note" style="margin-top:0">8 levels \u00B7 earn points \u00B7 no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="adv-play">\u25B6 Play</button></div></div>';
-        document.getElementById('adv-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('adventure',0)){window.ZLG.unlockPrompt('adventure');return;}ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
+        document.getElementById('adv-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('adventure',0)){window.ZLG.unlockPrompt('adventure');return;}if(window.zlgTrack)window.zlgTrack('game_start','adventure');ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
       }
       function boom(stage){
         var colors=['#ef694f','#f7c62f','#3e9ed2','#69b56b','#b197fc'];
@@ -1271,7 +1275,7 @@ footer .fine a{color:var(--teal-dark)}
         advBar.style.width='100%';advFanfare();
         advStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="adv-status">You did it!</p><p class="game-note" style="margin-top:0">Romy is so proud \u2014 you earned <strong>'+ADV.score+' points</strong>!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="adv-again">Play again</button></div></div>';
         advConfetti();advSay('Amazing \u2014 all 8 levels complete!');
-        document.getElementById('adv-again').addEventListener('click',function(){ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
+        document.getElementById('adv-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','adventure');ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
       }
       if(advStage)advStartScreen();
 
@@ -1289,7 +1293,7 @@ footer .fine a{color:var(--teal-dark)}
         {type:'pattern',seq:['🍎','🍎','🍊','🍎','🍎'],answer:'🍊',opts:['🍎','🍊','🍇','🍋']}
       ]};
       function puzHUD(){puzLevelEl.textContent='Level '+Math.min(PUZ.level+1,5)+' of 5';puzBar.style.width=(PUZ.level/5*100)+'%';puzScoreEl.textContent=PUZ.score;}
-      function puzNext(){var zlN=PUZ.level+1;if(window.ZLG&&!window.ZLG.canPlay('puzzle',zlN)){window.ZLG.unlockPrompt('puzzle');return;}PUZ.level++;puzHUD();if(PUZ.level>=PUZ.levels.length){puzFinale();return;}puzNote.textContent='Level complete! Get ready...';setTimeout(puzRender,1100);}
+      function puzNext(){var zlN=PUZ.level+1;if(window.ZLG&&!window.ZLG.canPlay('puzzle',zlN)){window.ZLG.unlockPrompt('puzzle');return;}PUZ.level++;if(window.zlgTrack)window.zlgTrack('level_complete','puzzle',String(PUZ.level));puzHUD();if(PUZ.level>=PUZ.levels.length){puzFinale();return;}puzNote.textContent='Level complete! Get ready...';setTimeout(puzRender,1100);}
       function puzEarn(el){PUZ.score+=10;puzHUD();advGood();advPop(el);puzNote.textContent=advPraise()+' +10 points!';setTimeout(puzNext,950);}
       function puzRender(){
         if(!puzStage)return;PUZ.lock=false;puzHUD();
@@ -1315,13 +1319,13 @@ footer .fine a{color:var(--teal-dark)}
       function puzStart(){
         puzHUD();
         puzStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🧩</div><p class="game-status" id="puz-status">Ready to solve puzzles?</p><p class="game-note" style="margin-top:0">5 levels \u00B7 earn points \u00B7 no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="puz-play">\u25B6 Play</button></div></div>';
-        document.getElementById('puz-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('puzzle',0)){window.ZLG.unlockPrompt('puzzle');return;}PUZ.level=0;PUZ.score=0;puzNote.textContent='Level 1 \u2014 here we go!';puzRender();});
+        document.getElementById('puz-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('puzzle',0)){window.ZLG.unlockPrompt('puzzle');return;}if(window.zlgTrack)window.zlgTrack('game_start','puzzle');PUZ.level=0;PUZ.score=0;puzNote.textContent='Level 1 \u2014 here we go!';puzRender();});
       }
       function puzFinale(){
         puzBar.style.width='100%';advFanfare();
         puzStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="puz-status">Puzzle master!</p><p class="game-note" style="margin-top:0">Romy is so proud \u2014 you earned <strong>'+PUZ.score+' points</strong>!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="puz-again">Play again</button></div></div>';
         boom(puzStage);puzNote.textContent='Amazing \u2014 all 5 puzzles solved!';
-        document.getElementById('puz-again').addEventListener('click',function(){PUZ.level=0;PUZ.score=0;puzNote.textContent='Level 1 \u2014 here we go!';puzRender();});
+        document.getElementById('puz-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','puzzle');PUZ.level=0;PUZ.score=0;puzNote.textContent='Level 1 \u2014 here we go!';puzRender();});
       }
       if(puzStage)puzStart();
 
@@ -1388,17 +1392,17 @@ footer .fine a{color:var(--teal-dark)}
           setTimeout(mzNext,1400);
         }
       }
-      function mzNext(){var zlN=MZ.level+1;if(window.ZLG&&!window.ZLG.canPlay('maze',zlN)){window.ZLG.unlockPrompt('maze');return;}MZ.level++;mzHUD();if(MZ.level>=MZ.sizes.length){mzFinale();return;}mzNote.textContent='Maze complete! Get ready...';setTimeout(mzRender,1100);}
+      function mzNext(){var zlN=MZ.level+1;if(window.ZLG&&!window.ZLG.canPlay('maze',zlN)){window.ZLG.unlockPrompt('maze');return;}MZ.level++;if(window.zlgTrack)window.zlgTrack('level_complete','maze',String(MZ.level));mzHUD();if(MZ.level>=MZ.sizes.length){mzFinale();return;}mzNote.textContent='Maze complete! Get ready...';setTimeout(mzRender,1100);}
       function mzStart(){
         mzHUD();
         mzStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🌀</div><p class="game-status" id="mz-status">Ready for the maze?</p><p class="game-note" style="margin-top:0">5 mazes \u00B7 guide Romy home \u00B7 tap step by step!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="mz-play">\u25B6 Play</button></div></div>';
-        document.getElementById('mz-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('maze',0)){window.ZLG.unlockPrompt('maze');return;}MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
+        document.getElementById('mz-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('maze',0)){window.ZLG.unlockPrompt('maze');return;}if(window.zlgTrack)window.zlgTrack('game_start','maze');MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
       }
       function mzFinale(){
         mzBar.style.width='100%';advFanfare();
         mzStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="mz-status">Maze champion!</p><p class="game-note" style="margin-top:0">Romy is home safe \u2014 you earned <strong>'+MZ.score+' points</strong>!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="mz-again">Play again</button></div></div>';
         boom(mzStage);mzNote.textContent='Amazing \u2014 all 5 mazes solved!';
-        document.getElementById('mz-again').addEventListener('click',function(){MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
+        document.getElementById('mz-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','maze');MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
       }
       if(mzStage)mzStart();
 

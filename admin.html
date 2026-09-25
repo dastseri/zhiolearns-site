@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light dark" />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/png" href="img/zhiolearns-logo.png" />
-  <title>پنل مدیریت — ZhioLearns</title>
+  <title data-i18n="doc_title">پنل مدیریت — ZhioLearns</title>
   <style>
     /* سبک بصری هماهنگ با سایت اصلی، با فونت فارسی */
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap');
@@ -22,14 +22,17 @@
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--paper);color:var(--ink);font-family:"Vazirmatn","Atkinson Hyperlegible",sans-serif;line-height:1.7}
+    html[lang="en"] body{font-family:"Atkinson Hyperlegible","Vazirmatn",sans-serif}
     button{font:inherit;cursor:pointer}
     .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}
     .brand img{width:44px;height:44px;border-radius:50%}
     .top .who{color:var(--muted);font-size:14px}
-    .top .links{display:flex;gap:10px}
+    .top .links{display:flex;gap:10px;flex-wrap:wrap}
     .tbtn{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 18px;font-weight:700;text-decoration:none;min-height:48px;display:inline-flex;align-items:center}
     .tbtn:hover{background:var(--soft)}
+    .langbtn{border:2px solid var(--teal);background:var(--card);color:var(--teal);border-radius:12px;padding:10px 16px;font-weight:800;min-height:48px;display:inline-flex;align-items:center;gap:6px}
+    .langbtn:hover{background:var(--soft)}
     .wrap{max-width:1060px;margin:0 auto;padding:28px 16px 90px}
     h1{font-size:clamp(26px,4vw,36px);margin:6px 0 4px;font-weight:800}
     .lede{color:var(--muted);margin:0 0 22px}
@@ -56,9 +59,9 @@
     .btn-cancel{background:var(--soft);border:2px solid var(--line);color:var(--ink);box-shadow:none}
     .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
     table{width:100%;border-collapse:collapse;margin-top:6px}
-    th,td{text-align:right;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+    th,td{text-align:start;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
     th{color:var(--muted);font-size:14px;font-weight:700}
-    .badge{display:inline-block;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:800}
+    .badge{display:inline-block;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:800;white-space:nowrap}
     .badge.free{background:#e9f7ef;color:#1e5b2e}
     .badge.members{background:#fff6dd;color:#7a5b12}
     .badge.off{background:#f1ecec;color:#8a7f7f}
@@ -84,113 +87,137 @@
     .stepper button{width:54px;height:54px;border-radius:14px;border:2px solid var(--line);background:var(--soft);color:var(--ink);font-size:26px;font-weight:800;line-height:1}
     .stepper button:hover{background:var(--line)}
     .stepper .sval{font-size:28px;font-weight:800;min-width:46px;text-align:center}
-    @media(max-width:640px){table,thead,tbody,th,td,tr{display:block}thead{display:none}tr{border:2px solid var(--line);border-radius:14px;margin-bottom:12px;padding:8px}td{border:0;padding:8px 10px}}
+    /* ---- آمار ---- */
+    .stat-cards{display:grid;gap:14px;margin-bottom:8px}
+    @media(min-width:720px){.stat-cards{grid-template-columns:repeat(3,1fr)}}
+    .stat-card{background:var(--soft);border:2px solid var(--line);border-radius:18px;padding:20px;text-align:center}
+    .stat-card .n{font-size:42px;font-weight:800;color:var(--teal);line-height:1.2}
+    .stat-card .l{color:var(--muted);font-weight:700;margin-top:6px}
+    .stat-sec{margin-top:30px}
+    .stat-sec h3{margin:0 0 10px;font-size:19px;font-weight:800}
+    .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .bar-label{min-width:104px;color:var(--muted);font-size:13px;font-weight:700}
+    .bar-track{flex:1;background:var(--soft);border:1px solid var(--line);border-radius:8px;height:26px;overflow:hidden}
+    .bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));border-radius:8px;min-width:3px}
+    .bar-num{min-width:48px;text-align:end;font-weight:800}
+    @media(max-width:640px){table,thead,tbody,th,td,tr{display:block}thead{display:none}tr{border:2px solid var(--line);border-radius:14px;margin-bottom:12px;padding:8px}td{border:0;padding:8px 10px}.bar-label{min-width:76px}}
   </style>
 </head>
 <body>
   <div id="app" hidden>
     <header class="top">
-      <div class="brand"><img src="img/zhiolearns-logo.png" alt="Romy" /> پنل مدیریت ZhioLearns</div>
+      <div class="brand"><img src="img/zhiolearns-logo.png" alt="Romy" /> <span data-i18n="brand">پنل مدیریت ZhioLearns</span></div>
       <div class="who" id="who"></div>
       <div class="links">
-        <a class="tbtn" href="index.html">مشاهده سایت</a>
-        <button class="tbtn" id="btn-logout" type="button">خروج</button>
+        <button class="langbtn" id="btn-lang" type="button" aria-label="Language / زبان">🌐 EN</button>
+        <a class="tbtn" href="index.html" data-i18n="view_site">مشاهده سایت</a>
+        <button class="tbtn" id="btn-logout" type="button" data-i18n="logout">خروج</button>
       </div>
     </header>
 
     <main class="wrap">
-      <h1>مدیریت محتوا ✏️</h1>
-      <p class="lede">اینجا می‌توانید بازی‌ها، چاپی‌ها، کتاب‌ها و متن‌های سایت را خودتان اضافه و ویرایش کنید — بدون نیاز به برنامه‌نویس.</p>
+      <h1 data-i18n="page_title">مدیریت محتوا ✏️</h1>
+      <p class="lede" data-i18n="lede">اینجا می‌توانید بازی‌ها، چاپی‌ها، کتاب‌ها و متن‌های سایت را خودتان اضافه و ویرایش کنید — بدون نیاز به برنامه‌نویس.</p>
       <div id="msg" class="msg" role="status" aria-live="polite" hidden></div>
 
       <nav class="tabs" id="tabs"></nav>
 
+      <!-- آمار -->
+      <section class="card" id="panel-stats" hidden>
+        <h2 data-i18n="stats_title">📊 آمار</h2>
+        <p class="hint" data-i18n="stats_hint">آمار بازدید و بازی — فقط تعداد شمرده می‌شود، هیچ اطلاعاتی از کودکان جمع نمی‌شود. ردیف «بدون حساب» یعنی بازدیدکننده‌ای که وارد حساب نشده است.</p>
+        <div id="stats-body"></div>
+        <div class="empty" id="stats-empty" hidden data-i18n="stats_empty">هنوز داده‌ای ثبت نشده 🌱</div>
+      </section>
+
       <!-- محتواها -->
-      <section class="card" id="panel-items">
+      <section class="card" id="panel-items" hidden>
         <h2 id="items-title"></h2>
         <p class="hint" id="items-hint"></p>
         <div class="table-wrap"><table>
-          <thead><tr><th>عنوان</th><th>دسترسی</th><th>فعال</th><th>ترتیب</th><th>عملیات</th></tr></thead>
+          <thead><tr>
+            <th data-i18n="th_title">عنوان</th><th data-i18n="th_access">دسترسی</th><th data-i18n="th_active">فعال</th><th data-i18n="th_order">ترتیب</th><th data-i18n="th_actions">عملیات</th>
+          </tr></thead>
           <tbody id="items-body"></tbody>
         </table></div>
-        <div class="empty" id="items-empty" hidden>هنوز چیزی ثبت نشده — از فرم زیر اضافه کنید. 🌱</div>
+        <div class="empty" id="items-empty" hidden data-i18n="empty_items">هنوز چیزی ثبت نشده — از فرم زیر اضافه کنید. 🌱</div>
 
-        <h2 id="form-title" style="margin-top:28px">افزودن جدید ➕</h2>
+        <h2 id="form-title" style="margin-top:28px"></h2>
         <form id="item-form" class="form-grid">
-          <label class="f"><span class="lbl">عنوان *</span>
-            <input type="text" id="f-title" required list="series-keys" placeholder="مثلاً: بسته الفبا" />
+          <label class="f"><span class="lbl" data-i18n="f_title">عنوان *</span>
+            <input type="text" id="f-title" required list="series-keys" data-i18n-ph="f_title_ph" placeholder="مثلاً: بسته الفبا" />
             <datalist id="series-keys"><option value="adventure"></option><option value="puzzle"></option><option value="maze"></option></datalist>
           </label>
-          <label class="f"><span class="lbl">توضیح (انگلیسی، برای نمایش در سایت)</span>
-            <textarea id="f-desc" placeholder="Short English description shown on the site"></textarea>
+          <label class="f"><span class="lbl" data-i18n="f_desc">توضیح (انگلیسی، برای نمایش در سایت)</span>
+            <textarea id="f-desc" data-i18n-ph="f_desc_ph" placeholder="Short English description shown on the site"></textarea>
           </label>
           <div class="form-grid two">
-            <label class="f"><span class="lbl">لینک فایل (PDF / عکس / صفحه خرید)</span>
+            <label class="f"><span class="lbl" data-i18n="f_url">لینک فایل (PDF / عکس / صفحه خرید)</span>
               <input type="url" id="f-url" class="ltr" placeholder="https://…" />
             </label>
-            <label class="f"><span class="lbl">دسترسی</span>
+            <label class="f"><span class="lbl" data-i18n="f_vis">دسترسی</span>
               <select id="f-vis">
-                <option value="free">رایگان — همه می‌بینند</option>
-                <option value="members">اعضا — فقط والدین عضو</option>
+                <option value="free" data-i18n="vis_free">رایگان — همه می‌بینند</option>
+                <option value="members" data-i18n="vis_members">اعضا — فقط والدین عضو</option>
               </select>
             </label>
           </div>
           <div class="form-grid two">
-            <label class="f"><span class="lbl">ترتیب نمایش (عدد کوچک‌تر = بالاتر)</span>
+            <label class="f"><span class="lbl" data-i18n="f_order">ترتیب نمایش (عدد کوچک‌تر = بالاتر)</span>
               <input type="number" id="f-order" value="0" min="0" />
             </label>
-            <label class="f check"><input type="checkbox" id="f-active" checked /> فعال باشد (در سایت نمایش داده شود)</label>
+            <label class="f check"><input type="checkbox" id="f-active" checked /> <span data-i18n="f_active">فعال باشد (در سایت نمایش داده شود)</span></label>
           </div>
           <div class="btn-row">
-            <button class="btn btn-add" type="submit" id="btn-submit">➕ افزودن</button>
-            <button class="btn btn-cancel" type="button" id="btn-cancel" hidden>انصراف</button>
+            <button class="btn btn-add" type="submit" id="btn-submit"></button>
+            <button class="btn btn-cancel" type="button" id="btn-cancel" hidden data-i18n="btn_cancel">انصراف</button>
           </div>
         </form>
       </section>
 
       <!-- تنظیمات سری‌ها -->
       <section class="card" id="panel-series" hidden>
-        <h2>تنظیمات سری‌ها ⚙️</h2>
-        <p class="hint">تعداد مرحله‌های <strong>رایگان</strong> هر سری بازی — بدون نیاز به عضویت. مرحله‌های بعدی فقط برای والدین عضو باز می‌شود. صفر یعنی همه مرحله‌ها قفل. این تنظیم بلافاصله روی سایت اعمال می‌شود.</p>
+        <h2 data-i18n="series_title">تنظیمات سری‌ها ⚙️</h2>
+        <p class="hint" data-i18n="series_hint">تعداد مرحله‌های <strong>رایگان</strong> هر سری بازی — بدون نیاز به عضویت. مرحله‌های بعدی فقط برای والدین عضو باز می‌شود. صفر یعنی همه مرحله‌ها قفل. این تنظیم بلافاصله روی سایت اعمال می‌شود.</p>
         <div id="series-rows" class="form-grid"></div>
         <div class="btn-row" style="margin-top:18px">
-          <button class="btn btn-save" type="button" id="btn-series-save">💾 ذخیره تنظیمات</button>
+          <button class="btn btn-save" type="button" id="btn-series-save" data-i18n="btn_series_save">💾 ذخیره تنظیمات</button>
         </div>
       </section>
 
       <!-- متن‌های سایت -->
       <section class="card" id="panel-texts" hidden>
-        <h2>متن‌های سایت 📝</h2>
-        <p class="hint">متن‌هایی که بعداً در صفحه اصلی سایت نمایش داده می‌شوند (مثل نوار اطلاع‌رسانی بالای صفحه). کلیدها انگلیسی و بدون فاصله باشند.</p>
+        <h2 data-i18n="texts_title">متن‌های سایت 📝</h2>
+        <p class="hint" data-i18n="texts_hint">متن‌هایی که بعداً در صفحه اصلی سایت نمایش داده می‌شوند (مثل نوار اطلاع‌رسانی بالای صفحه). کلیدها انگلیسی و بدون فاصله باشند.</p>
         <table>
-          <thead><tr><th>کلید</th><th>متن</th><th>عملیات</th></tr></thead>
+          <thead><tr><th data-i18n="th_key">کلید</th><th data-i18n="th_text">متن</th><th data-i18n="th_actions">عملیات</th></tr></thead>
           <tbody id="texts-body"></tbody>
         </table>
-        <div class="empty" id="texts-empty" hidden>هنوز متنی ثبت نشده است.</div>
-        <h2 style="margin-top:28px" id="text-form-title">افزودن متن ➕</h2>
+        <div class="empty" id="texts-empty" hidden data-i18n="empty_texts">هنوز متنی ثبت نشده است.</div>
+        <h2 style="margin-top:28px" id="text-form-title"></h2>
         <form id="text-form" class="form-grid">
-          <label class="f"><span class="lbl">کلید * <span class="hint" style="display:inline">(مثل: announcement_bar)</span></span>
+          <label class="f"><span class="lbl"><span data-i18n="f_key">کلید *</span> <span class="hint" style="display:inline" data-i18n="f_key_hint">(مثل: announcement_bar)</span></span>
             <input type="text" id="t-key" required class="ltr" placeholder="announcement_bar" />
           </label>
-          <label class="f"><span class="lbl">متن (انگلیسی)</span>
-            <textarea id="t-value" placeholder="Text shown on the site"></textarea>
+          <label class="f"><span class="lbl" data-i18n="f_text">متن (انگلیسی)</span>
+            <textarea id="t-value" data-i18n-ph="f_text_ph" placeholder="Text shown on the site"></textarea>
           </label>
           <div class="btn-row">
-            <button class="btn btn-add" type="submit" id="btn-text-submit">➕ افزودن</button>
-            <button class="btn btn-cancel" type="button" id="btn-text-cancel" hidden>انصراف</button>
+            <button class="btn btn-add" type="submit" id="btn-text-submit"></button>
+            <button class="btn btn-cancel" type="button" id="btn-text-cancel" hidden data-i18n="btn_cancel">انصراف</button>
           </div>
         </form>
       </section>
 
       <!-- اعضا -->
       <section class="card" id="panel-members" hidden>
-        <h2>اعضا 👨‍👩‍👧</h2>
-        <p class="hint">فهرست والدین عضو — فقط خواندنی است. برای تغییر نقش مدیر از طریق دیتابیس اقدام کنید (راهنما: SETUP.md).</p>
+        <h2 data-i18n="members_title">اعضا 👨‍👩‍👧</h2>
+        <p class="hint" data-i18n="members_hint">فهرست والدین عضو — فقط خواندنی است. برای تغییر نقش مدیر از طریق دیتابیس اقدام کنید (راهنما: SETUP.md).</p>
         <table>
-          <thead><tr><th>نام</th><th>ایمیل</th><th>مدیر؟</th><th>تاریخ عضویت</th></tr></thead>
+          <thead><tr><th data-i18n="th_name">نام</th><th data-i18n="th_email">ایمیل</th><th data-i18n="th_admin">مدیر؟</th><th data-i18n="th_joined">تاریخ عضویت</th></tr></thead>
           <tbody id="members-body"></tbody>
         </table>
-        <div class="empty" id="members-empty" hidden>هنوز عضوی ثبت‌نام نکرده است.</div>
+        <div class="empty" id="members-empty" hidden data-i18n="empty_members">هنوز عضوی ثبت‌نام نکرده است.</div>
       </section>
     </main>
   </div>
@@ -199,15 +226,313 @@
   <script src="supabase-config.js"></script>
   <script>
     /* ====================================================================
-       پنل مدیریت ZhioLearns (پیش‌نویس)
-       - فقط مدیر (profiles.is_admin) می‌تواند این صفحه را ببیند.
-       - همه دسترسی‌ها در دیتابیس (RLS) کنترل می‌شود، نه فقط با دکمه.
+       ZhioLearns admin panel — bilingual (FA/EN)
+       - Only admins (profiles.is_admin) can see this page (guard below).
+       - All access control is enforced by database RLS, not just buttons.
+       - Language toggle persists in localStorage; default Persian (RTL).
        ==================================================================== */
     'use strict';
 
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     var $ = function (id) { return document.getElementById(id); };
     var msg = $('msg');
+
+    /* ---------------- دوزبانه / Bilingual ---------------- */
+    var I18N = {
+      fa: {
+        doc_title: 'پنل مدیریت — ZhioLearns',
+        brand: 'پنل مدیریت ZhioLearns',
+        view_site: 'مشاهده سایت',
+        logout: 'خروج',
+        who_admin: 'مدیر: ',
+        page_title: 'مدیریت محتوا ✏️',
+        lede: 'اینجا می‌توانید بازی‌ها، چاپی‌ها، کتاب‌ها و متن‌های سایت را خودتان اضافه و ویرایش کنید — بدون نیاز به برنامه‌نویس.',
+        tab_stats: '📊 آمار',
+        tab_printable: '🖨️ چاپی‌ها',
+        tab_game: '🎮 بازی‌ها',
+        tab_book: '📚 کتاب‌ها',
+        tab_video: '🎬 ویدیوها',
+        tab_series: '⚙️ تنظیمات سری‌ها',
+        tab_texts: '📝 متن‌های سایت',
+        tab_members: '👨‍👩‍👧 اعضا',
+        stats_title: '📊 آمار',
+        stats_hint: 'آمار بازدید و بازی — فقط تعداد شمرده می‌شود، هیچ اطلاعاتی از کودکان جمع نمی‌شود. ردیف «بدون حساب» یعنی بازدیدکننده‌ای که وارد حساب نشده است.',
+        stats_empty: 'هنوز داده‌ای ثبت نشده 🌱',
+        stats_err: 'خطا در خواندن آمار: ',
+        card_today: 'بازدید امروز',
+        card_7: 'بازدید ۷ روز گذشته',
+        card_30: 'بازدید ۳۰ روز گذشته',
+        sec_series: 'عملکرد سری‌های بازی 🎮',
+        sec_printables: 'دانلود چاپی‌ها 🖨️',
+        sec_members: 'تعامل اعضا 👨‍👩‍👧',
+        sec_chart: 'بازدید روزانه — ۱۴ روز گذشته 📈',
+        th_series: 'سری',
+        th_starts: 'شروع بازی',
+        th_levels: 'مرحله‌های تکمیل‌شده',
+        th_dl_title: 'عنوان چاپی',
+        th_dl_count: 'تعداد دانلود',
+        th_email: 'ایمیل عضو',
+        th_joined: 'تاریخ عضویت',
+        th_last: 'آخرین فعالیت',
+        anon_row: '👤 بازدیدکننده بدون حساب',
+        csv_btn: '⬇️ خروجی CSV',
+        csv_done: 'فایل CSV دانلود شد ✅',
+        dash: '—',
+        series_adventure: 'ماجراجویی رومی 🎒',
+        series_puzzle: 'وقت پازل 🧩',
+        series_maze: 'دونده ماز 🌀',
+        th_title: 'عنوان',
+        th_access: 'دسترسی',
+        th_active: 'فعال',
+        th_order: 'ترتیب',
+        th_actions: 'عملیات',
+        badge_free: '🌍 رایگان',
+        badge_members: '🔒 اعضا',
+        badge_on: 'فعال',
+        badge_off: 'غیرفعال',
+        empty_items: 'هنوز چیزی ثبت نشده — از فرم زیر اضافه کنید. 🌱',
+        form_add: 'افزودن جدید ➕',
+        form_edit: 'ویرایش ✏️',
+        btn_add: '➕ افزودن',
+        btn_save: '💾 ذخیره تغییرات',
+        btn_cancel: 'انصراف',
+        f_title: 'عنوان *',
+        f_title_ph: 'مثلاً: بسته الفبا',
+        f_desc: 'توضیح (انگلیسی، برای نمایش در سایت)',
+        f_desc_ph: 'Short English description shown on the site',
+        f_url: 'لینک فایل (PDF / عکس / صفحه خرید)',
+        f_vis: 'دسترسی',
+        vis_free: 'رایگان — همه می‌بینند',
+        vis_members: 'اعضا — فقط والدین عضو',
+        f_order: 'ترتیب نمایش (عدد کوچک‌تر = بالاتر)',
+        f_active: 'فعال باشد (در سایت نمایش داده شود)',
+        err_read: 'خطا در خواندن اطلاعات: ',
+        err_save: 'خطا در ذخیره: ',
+        err_delete: 'خطا در حذف: ',
+        added: 'اضافه شد ✅',
+        updated: 'تغییرات ذخیره شد ✅',
+        deleted: 'حذف شد 🗑️',
+        activated: 'فعال شد ✅',
+        deactivated: 'غیرفعال شد (در سایت نمایش داده نمی‌شود)',
+        confirm_delete: 'این مورد حذف شود؟\nاین کار برگشت‌پذیر نیست!',
+        btn_edit: '✏️ ویرایش',
+        btn_del: '🗑️ حذف',
+        hint_printable: 'فایل‌های PDF فعالیت چاپی. «لینک فایل» را وارد کنید؛ اگر «اعضا» را انتخاب کنید فقط والدین واردشده می‌بینند.',
+        hint_game: 'برای بازی‌ها «عنوان» باید دقیقاً کلید سری باشد: adventure یا puzzle یا maze. دسترسی «اعضا» یعنی آن سری قفل می‌شود.',
+        hint_book: 'کتاب‌های آمازون. در «لینک فایل» آدرس صفحه خرید را بگذارید.',
+        hint_video: 'لینک ویدیو (مثلاً یوتیوب).',
+        title_printable: 'چاپی‌ها',
+        title_game: 'بازی‌ها',
+        title_book: 'کتاب‌ها',
+        title_video: 'ویدیوها',
+        series_title: 'تنظیمات سری‌ها ⚙️',
+        series_hint: 'تعداد مرحله‌های رایگان هر سری بازی — بدون نیاز به عضویت. مرحله‌های بعدی فقط برای والدین عضو باز می‌شود. صفر یعنی همه مرحله‌ها قفل. این تنظیم بلافاصله روی سایت اعمال می‌شود.',
+        series_of: 'از {total} مرحله رایگان است — بقیه برای اعضا',
+        series_less: 'یک مرحله کمتر',
+        series_more: 'یک مرحله بیشتر',
+        btn_series_save: '💾 ذخیره تنظیمات',
+        series_saved: 'تنظیمات ذخیره شد ✅ — سایت بلافاصله به‌روز می‌شود',
+        series_err: 'خطا در خواندن تنظیمات: ',
+        texts_title: 'متن‌های سایت 📝',
+        texts_hint: 'متن‌هایی که بعداً در صفحه اصلی سایت نمایش داده می‌شوند (مثل نوار اطلاع‌رسانی بالای صفحه). کلیدها انگلیسی و بدون فاصله باشند.',
+        th_key: 'کلید',
+        th_text: 'متن',
+        empty_texts: 'هنوز متنی ثبت نشده است.',
+        text_form_add: 'افزودن متن ➕',
+        text_form_edit: 'ویرایش متن ✏️',
+        f_key: 'کلید *',
+        f_key_hint: '(مثل: announcement_bar)',
+        f_text: 'متن (انگلیسی)',
+        f_text_ph: 'Text shown on the site',
+        confirm_text_delete: 'این متن حذف شود؟',
+        members_title: 'اعضا 👨‍👩‍👧',
+        members_hint: 'فهرست والدین عضو — فقط خواندنی است. برای تغییر نقش مدیر از طریق دیتابیس اقدام کنید (راهنما: SETUP.md).',
+        th_name: 'نام',
+        th_email: 'ایمیل',
+        th_admin: 'مدیر؟',
+        th_joined: 'تاریخ عضویت',
+        badge_admin: 'مدیر',
+        role_member: 'عضو',
+        empty_members: 'هنوز عضوی ثبت‌نام نکرده است.',
+        members_err: 'خطا در خواندن اعضا: ',
+        denied_title: '🔒 دسترسی ندارید',
+        denied_body: 'این صفحه فقط برای مدیر سایت است.',
+        denied_login: 'رفتن به صفحه ورود',
+        denied_home: 'بازگشت به سایت',
+        cfg_title: '⚙️ تنظیمات ناقص است',
+        cfg_body: 'ابتدا SUPABASE_URL و SUPABASE_ANON_KEY را در فایل supabase-config.js وارد کنید (راهنما: SETUP.md).'
+      },
+      en: {
+        doc_title: 'Admin Panel — ZhioLearns',
+        brand: 'ZhioLearns Admin Panel',
+        view_site: 'View site',
+        logout: 'Log out',
+        who_admin: 'Admin: ',
+        page_title: 'Content management ✏️',
+        lede: 'Add and edit the site\u2019s games, printables, books and texts yourself — no developer needed.',
+        tab_stats: '📊 Analytics',
+        tab_printable: '🖨️ Printables',
+        tab_game: '🎮 Games',
+        tab_book: '📚 Books',
+        tab_video: '🎬 Videos',
+        tab_series: '⚙️ Series settings',
+        tab_texts: '📝 Site texts',
+        tab_members: '👨‍👩‍👧 Members',
+        stats_title: '📊 Analytics',
+        stats_hint: 'Visit and gameplay stats — only counts are recorded, never any information about children. The \u201cno account\u201d row means visitors who were not signed in.',
+        stats_empty: 'No data recorded yet 🌱',
+        stats_err: 'Error loading stats: ',
+        card_today: "Today\u2019s visits",
+        card_7: 'Visits — last 7 days',
+        card_30: 'Visits — last 30 days',
+        sec_series: 'Game series performance 🎮',
+        sec_printables: 'Printable downloads 🖨️',
+        sec_members: 'Member engagement 👨‍👩‍👧',
+        sec_chart: 'Daily visits — last 14 days 📈',
+        th_series: 'Series',
+        th_starts: 'Game starts',
+        th_levels: 'Levels completed',
+        th_dl_title: 'Printable title',
+        th_dl_count: 'Downloads',
+        th_email: 'Member email',
+        th_joined: 'Joined',
+        th_last: 'Last activity',
+        anon_row: '👤 Visitors without an account',
+        csv_btn: '⬇️ Export CSV',
+        csv_done: 'CSV file downloaded ✅',
+        dash: '—',
+        series_adventure: "Romy\u2019s Adventure 🎒",
+        series_puzzle: 'Puzzle Time 🧩',
+        series_maze: 'Maze Runner 🌀',
+        th_title: 'Title',
+        th_access: 'Access',
+        th_active: 'Active',
+        th_order: 'Order',
+        th_actions: 'Actions',
+        badge_free: '🌍 Free',
+        badge_members: '🔒 Members',
+        badge_on: 'Active',
+        badge_off: 'Inactive',
+        empty_items: 'Nothing here yet — add one with the form below. 🌱',
+        form_add: 'Add new ➕',
+        form_edit: 'Edit ✏️',
+        btn_add: '➕ Add',
+        btn_save: '💾 Save changes',
+        btn_cancel: 'Cancel',
+        f_title: 'Title *',
+        f_title_ph: 'e.g. Alphabet pack',
+        f_desc: 'Description (English, shown on the site)',
+        f_desc_ph: 'Short English description shown on the site',
+        f_url: 'File link (PDF / image / shop page)',
+        f_vis: 'Access',
+        vis_free: 'Free — everyone can see it',
+        vis_members: 'Members — signed-in parents only',
+        f_order: 'Display order (smaller number = higher)',
+        f_active: 'Active (shown on the site)',
+        err_read: 'Error reading data: ',
+        err_save: 'Error saving: ',
+        err_delete: 'Error deleting: ',
+        added: 'Added ✅',
+        updated: 'Changes saved ✅',
+        deleted: 'Deleted 🗑️',
+        activated: 'Activated ✅',
+        deactivated: 'Deactivated (hidden from the site)',
+        confirm_delete: 'Delete this item?\nThis cannot be undone!',
+        btn_edit: '✏️ Edit',
+        btn_del: '🗑️ Delete',
+        hint_printable: 'Printable activity PDFs. Enter the \u201cfile link\u201d; choose \u201cmembers\u201d and only signed-in parents will see it.',
+        hint_game: 'For games the \u201ctitle\u201d must be exactly the series key: adventure, puzzle or maze. \u201cMembers\u201d access means that series is locked.',
+        hint_book: 'Amazon books. Put the shop page address in \u201cfile link\u201d.',
+        hint_video: 'Video link (e.g. YouTube).',
+        title_printable: 'Printables',
+        title_game: 'Games',
+        title_book: 'Books',
+        title_video: 'Videos',
+        series_title: 'Series settings ⚙️',
+        series_hint: 'How many levels of each game series are FREE — no membership needed. Later levels open only for member parents. Zero means every level is locked. Applies to the site immediately.',
+        series_of: 'of {total} levels free — the rest for members',
+        series_less: 'One level fewer',
+        series_more: 'One level more',
+        btn_series_save: '💾 Save settings',
+        series_saved: 'Settings saved ✅ — the site updates immediately',
+        series_err: 'Error reading settings: ',
+        texts_title: 'Site texts 📝',
+        texts_hint: 'Texts shown later on the site\u2019s homepage (e.g. the announcement bar at the top). Keys must be English with no spaces.',
+        th_key: 'Key',
+        th_text: 'Text',
+        empty_texts: 'No texts recorded yet.',
+        text_form_add: 'Add text ➕',
+        text_form_edit: 'Edit text ✏️',
+        f_key: 'Key *',
+        f_key_hint: '(e.g. announcement_bar)',
+        f_text: 'Text (English)',
+        f_text_ph: 'Text shown on the site',
+        confirm_text_delete: 'Delete this text?',
+        members_title: 'Members 👨‍👩‍👧',
+        members_hint: 'Parent member list — read-only. To change an admin role, use the database (see SETUP.md).',
+        th_name: 'Name',
+        th_email: 'Email',
+        th_admin: 'Admin?',
+        th_joined: 'Joined',
+        badge_admin: 'Admin',
+        role_member: 'Member',
+        empty_members: 'No members have signed up yet.',
+        members_err: 'Error reading members: ',
+        denied_title: '🔒 Access denied',
+        denied_body: 'This page is for the site admin only.',
+        denied_login: 'Go to the login page',
+        denied_home: 'Back to the site',
+        cfg_title: '⚙️ Configuration missing',
+        cfg_body: 'First enter SUPABASE_URL and SUPABASE_ANON_KEY in supabase-config.js (see SETUP.md).'
+      }
+    };
+
+    var LANG_KEY = 'zlg_admin_lang';
+    var LANG = 'fa';
+    try { LANG = localStorage.getItem(LANG_KEY) || 'fa'; } catch (e) { LANG = 'fa'; }
+    if (LANG !== 'fa' && LANG !== 'en') LANG = 'fa';
+
+    function t(key) {
+      return (I18N[LANG] && I18N[LANG][key] != null) ? I18N[LANG][key] : (I18N.fa[key] || key);
+    }
+    function faNum(n) {
+      try { return Number(n).toLocaleString(LANG === 'fa' ? 'fa-IR' : 'en-US'); }
+      catch (e) { return String(n); }
+    }
+    function faDate(iso) {
+      if (!iso) return t('dash');
+      try {
+        return LANG === 'fa'
+          ? new Date(iso).toLocaleDateString('fa-IR', { dateStyle: 'medium' })
+          : new Date(iso).toLocaleDateString('en-CA', { dateStyle: 'medium' });
+      } catch (e) { return iso; }
+    }
+    function applyStaticText() {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-ph]'), function (el) {
+        el.placeholder = t(el.getAttribute('data-i18n-ph'));
+      });
+      document.title = t('doc_title');
+      $('btn-lang').textContent = LANG === 'fa' ? '🌐 EN' : '🌐 فارسی';
+    }
+    function setLang(l) {
+      LANG = (l === 'en') ? 'en' : 'fa';
+      try { localStorage.setItem(LANG_KEY, LANG); } catch (e) {}
+      document.documentElement.lang = LANG;
+      document.documentElement.dir = LANG === 'fa' ? 'rtl' : 'ltr';
+      applyStaticText();
+      renderTabs();
+      /* Re-render the current panel without wiping in-progress forms. */
+      if (currentTab === 'stats') loadStats();
+      else if (currentTab === 'series') loadSeriesSettings();
+      else if (currentTab === 'texts') loadTexts();
+      else if (currentTab === 'members') loadMembers();
+      else loadItems();
+      if (adminEmail) $('who').textContent = t('who_admin') + adminEmail;
+    }
+    $('btn-lang').addEventListener('click', function () { setLang(LANG === 'fa' ? 'en' : 'fa'); });
 
     function toast(text, ok) {
       msg.hidden = false;
@@ -222,52 +547,53 @@
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
       });
     };
-    var faDate = function (iso) {
-      try { return new Date(iso).toLocaleDateString('fa-IR', { dateStyle: 'medium' }); }
-      catch (e) { return iso; }
-    };
 
     /* ---------- تب‌ها ---------- */
     var TABS = [
-      { id: 'printable', fa: '🖨️ چاپی‌ها',  title: 'چاپی‌ها', hint: 'فایل‌های PDF فعالیت چاپی. «لینک فایل» را وارد کنید؛ اگر «اعضا» را انتخاب کنید فقط والدین واردشده می‌بینند.' },
-      { id: 'game',      fa: '🎮 بازی‌ها',   title: 'بازی‌ها', hint: 'برای بازی‌ها «عنوان» باید دقیقاً کلید سری باشد: adventure یا puzzle یا maze. دسترسی «اعضا» یعنی آن سری قفل می‌شود.' },
-      { id: 'book',      fa: '📚 کتاب‌ها',   title: 'کتاب‌ها', hint: 'کتاب‌های آمازون. در «لینک فایل» آدرس صفحه خرید را بگذارید.' },
-      { id: 'video',     fa: '🎬 ویدیوها',   title: 'ویدیوها', hint: 'لینک ویدیو (مثلاً یوتیوب).' },
-      { id: 'series',    fa: '⚙️ تنظیمات سری‌ها', title: null, hint: null },
-      { id: 'texts',     fa: '📝 متن‌های سایت', title: null, hint: null },
-      { id: 'members',   fa: '👨‍👩‍👧 اعضا',    title: null, hint: null }
+      { id: 'stats',     tab: 'tab_stats',     title: null, hint: null },
+      { id: 'printable', tab: 'tab_printable', title: 'title_printable', hint: 'hint_printable' },
+      { id: 'game',      tab: 'tab_game',      title: 'title_game',      hint: 'hint_game' },
+      { id: 'book',      tab: 'tab_book',      title: 'title_book',      hint: 'hint_book' },
+      { id: 'video',     tab: 'tab_video',     title: 'title_video',     hint: 'hint_video' },
+      { id: 'series',    tab: 'tab_series',    title: null, hint: null },
+      { id: 'texts',     tab: 'tab_texts',     title: null, hint: null },
+      { id: 'members',   tab: 'tab_members',   title: null, hint: null }
     ];
-    var currentTab = 'printable';
+    var currentTab = 'stats';
     var editingItemId = null;
     var editingTextKey = null;
+    var adminEmail = '';
 
     function renderTabs() {
-      $('tabs').innerHTML = TABS.map(function (t) {
-        return '<button type="button" class="tab' + (t.id === currentTab ? ' active' : '') +
-               '" data-tab="' + t.id + '">' + t.fa + '</button>';
+      $('tabs').innerHTML = TABS.map(function (tb) {
+        return '<button type="button" class="tab' + (tb.id === currentTab ? ' active' : '') +
+               '" data-tab="' + tb.id + '">' + t(tb.tab) + '</button>';
       }).join('');
       Array.prototype.forEach.call(document.querySelectorAll('#tabs .tab'), function (b) {
         b.addEventListener('click', function () { switchTab(b.getAttribute('data-tab')); });
       });
     }
 
-    function switchTab(id) {
-      currentTab = id; editingItemId = null; editingTextKey = null;
-      clearToast(); resetItemForm(); resetTextForm(); renderTabs();
+    function switchTab(id, soft) {
+      currentTab = id;
+      if (!soft) { editingItemId = null; editingTextKey = null; clearToast(); resetItemForm(); resetTextForm(); }
+      renderTabs();
+      $('panel-stats').hidden = (id !== 'stats');
       $('panel-items').hidden = !(id === 'printable' || id === 'game' || id === 'book' || id === 'video');
       $('panel-series').hidden = (id !== 'series');
       $('panel-texts').hidden = (id !== 'texts');
       $('panel-members').hidden = (id !== 'members');
-      if ($('panel-items').hidden === false) loadItems();
-      if (id === 'series') loadSeriesSettings();
-      if (id === 'texts') loadTexts();
-      if (id === 'members') loadMembers();
+      if (id === 'stats') loadStats();
+      else if ($('panel-items').hidden === false) loadItems();
+      else if (id === 'series') loadSeriesSettings();
+      else if (id === 'texts') loadTexts();
+      else if (id === 'members') loadMembers();
     }
 
     /* ---------- نگهبان: فقط مدیر ---------- */
     async function guard() {
       if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-        document.body.innerHTML = '<div class="denied"><h1>⚙️ تنظیمات ناقص است</h1><p>ابتدا SUPABASE_URL و SUPABASE_ANON_KEY را در فایل supabase-config.js وارد کنید (راهنما: SETUP.md).</p></div>';
+        document.body.innerHTML = '<div class="denied"><h1>' + t('cfg_title') + '</h1><p>' + t('cfg_body') + '</p></div>';
         return false;
       }
       var s = await supabase.auth.getSession();
@@ -278,41 +604,43 @@
       var p = await supabase.from('profiles').select('is_admin,email,display_name')
         .eq('id', s.data.session.user.id).single();
       if (p.error || !p.data || !p.data.is_admin) {
-        document.body.innerHTML = '<div class="denied"><h1>🔒 دسترسی ندارید</h1>' +
-          '<p>این صفحه فقط برای مدیر سایت است.</p>' +
-          '<p><a class="tbtn" href="auth.html">رفتن به صفحه ورود</a> ' +
-          '<a class="tbtn" href="index.html">بازگشت به سایت</a></p></div>';
+        document.body.innerHTML = '<div class="denied"><h1>' + t('denied_title') + '</h1>' +
+          '<p>' + t('denied_body') + '</p>' +
+          '<p><a class="tbtn" href="auth.html">' + t('denied_login') + '</a> ' +
+          '<a class="tbtn" href="index.html">' + t('denied_home') + '</a></p></div>';
         return false;
       }
-      $('who').textContent = 'مدیر: ' + (p.data.display_name || p.data.email);
+      adminEmail = p.data.display_name || p.data.email;
+      $('who').textContent = t('who_admin') + adminEmail;
       return true;
     }
 
     /* ---------- محتواها: خواندن ---------- */
     async function loadItems() {
-      var tab = TABS.filter(function (t) { return t.id === currentTab; })[0];
-      $('items-title').textContent = tab.title;
-      $('items-hint').textContent = tab.hint;
+      var tab = TABS.filter(function (x) { return x.id === currentTab; })[0];
+      $('items-title').textContent = t(tab.title);
+      $('items-hint').textContent = t(tab.hint);
+      setItemFormTitle();
       var res = await supabase.from('content_items').select('*')
         .eq('kind', currentTab).order('sort_order', { ascending: true }).order('created_at', { ascending: true });
-      if (res.error) { toast('خطا در خواندن اطلاعات: ' + res.error.message, false); return; }
+      if (res.error) { toast(t('err_read') + res.error.message, false); return; }
       var rows = res.data || [];
       $('items-empty').hidden = rows.length > 0;
       $('items-body').innerHTML = rows.map(function (r) {
         var vis = r.visibility === 'members'
-          ? '<span class="badge members">🔒 اعضا</span>'
-          : '<span class="badge free">🌍 رایگان</span>';
+          ? '<span class="badge members">' + t('badge_members') + '</span>'
+          : '<span class="badge free">' + t('badge_free') + '</span>';
         var active = r.is_active
-          ? '<span class="badge free">فعال</span>'
-          : '<span class="badge off">غیرفعال</span>';
+          ? '<span class="badge free">' + t('badge_on') + '</span>'
+          : '<span class="badge off">' + t('badge_off') + '</span>';
         return '<tr>' +
           '<td><strong>' + esc(r.title) + '</strong>' +
           (r.description ? '<br /><small style="color:var(--muted)">' + esc(r.description).slice(0, 90) + '</small>' : '') + '</td>' +
           '<td>' + vis + '</td>' +
           '<td><label class="quick"><input type="checkbox" data-toggle="' + r.id + '"' + (r.is_active ? ' checked' : '') + ' /> ' + active + '</label></td>' +
           '<td class="ltr">' + r.sort_order + '</td>' +
-          '<td><button type="button" class="mini" data-edit="' + r.id + '">✏️ ویرایش</button>' +
-          '<button type="button" class="mini danger" data-del="' + r.id + '">🗑️ حذف</button></td>' +
+          '<td><button type="button" class="mini" data-edit="' + r.id + '">' + t('btn_edit') + '</button>' +
+          '<button type="button" class="mini danger" data-del="' + r.id + '">' + t('btn_del') + '</button></td>' +
           '</tr>';
       }).join('');
       bindItemRowButtons();
@@ -323,8 +651,8 @@
         cb.addEventListener('change', async function () {
           var res = await supabase.from('content_items')
             .update({ is_active: cb.checked }).eq('id', cb.getAttribute('data-toggle'));
-          if (res.error) { toast('خطا در ذخیره: ' + res.error.message, false); cb.checked = !cb.checked; }
-          else { toast(cb.checked ? 'فعال شد ✅' : 'غیرفعال شد (در سایت نمایش داده نمی‌شود)', true); loadItems(); }
+          if (res.error) { toast(t('err_save') + res.error.message, false); cb.checked = !cb.checked; }
+          else { toast(cb.checked ? t('activated') : t('deactivated'), true); loadItems(); }
         });
       });
       Array.prototype.forEach.call(document.querySelectorAll('[data-edit]'), function (b) {
@@ -336,19 +664,23 @@
     }
 
     /* ---------- محتواها: افزودن / ویرایش / حذف ---------- */
+    function setItemFormTitle() {
+      $('form-title').textContent = editingItemId ? t('form_edit') : t('form_add');
+      $('btn-submit').textContent = editingItemId ? t('btn_save') : t('btn_add');
+      $('btn-submit').className = 'btn ' + (editingItemId ? 'btn-save' : 'btn-add');
+      $('btn-cancel').hidden = !editingItemId;
+    }
+
     function resetItemForm() {
       $('item-form').reset();
       $('f-active').checked = true; $('f-order').value = 0; $('f-vis').value = 'free';
       editingItemId = null;
-      $('form-title').textContent = 'افزودن جدید ➕';
-      $('btn-submit').textContent = '➕ افزودن';
-      $('btn-submit').className = 'btn btn-add';
-      $('btn-cancel').hidden = true;
+      setItemFormTitle();
     }
 
     async function startEditItem(id) {
       var res = await supabase.from('content_items').select('*').eq('id', id).single();
-      if (res.error) { toast('خطا: ' + res.error.message, false); return; }
+      if (res.error) { toast(t('err_read') + res.error.message, false); return; }
       var r = res.data;
       editingItemId = id;
       $('f-title').value = r.title || '';
@@ -357,18 +689,15 @@
       $('f-vis').value = r.visibility || 'free';
       $('f-order').value = r.sort_order || 0;
       $('f-active').checked = !!r.is_active;
-      $('form-title').textContent = 'ویرایش ✏️';
-      $('btn-submit').textContent = '💾 ذخیره تغییرات';
-      $('btn-submit').className = 'btn btn-save';
-      $('btn-cancel').hidden = false;
+      setItemFormTitle();
       $('form-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     async function deleteItem(id) {
-      if (!confirm('این مورد حذف شود؟\nاین کار برگشت‌پذیر نیست!')) return;
+      if (!confirm(t('confirm_delete'))) return;
       var res = await supabase.from('content_items').delete().eq('id', id);
-      if (res.error) toast('خطا در حذف: ' + res.error.message, false);
-      else { toast('حذف شد 🗑️', true); loadItems(); }
+      if (res.error) toast(t('err_delete') + res.error.message, false);
+      else { toast(t('deleted'), true); loadItems(); }
     }
 
     $('item-form').addEventListener('submit', async function (e) {
@@ -387,55 +716,58 @@
         ? await supabase.from('content_items').update(payload).eq('id', editingItemId)
         : await supabase.from('content_items').insert(payload);
       btn.disabled = false;
-      if (res.error) toast('خطا در ذخیره: ' + res.error.message, false);
-      else { toast(editingItemId ? 'تغییرات ذخیره شد ✅' : 'اضافه شد ✅', true); resetItemForm(); loadItems(); }
+      if (res.error) toast(t('err_save') + res.error.message, false);
+      else { toast(editingItemId ? t('updated') : t('added'), true); resetItemForm(); loadItems(); }
     });
     $('btn-cancel').addEventListener('click', resetItemForm);
 
     /* ---------- متن‌های سایت ---------- */
     async function loadTexts() {
+      setTextFormTitle();
       var res = await supabase.from('site_texts').select('*').order('key');
-      if (res.error) { toast('خطا در خواندن متن‌ها: ' + res.error.message, false); return; }
+      if (res.error) { toast(t('err_read') + res.error.message, false); return; }
       var rows = res.data || [];
       $('texts-empty').hidden = rows.length > 0;
       $('texts-body').innerHTML = rows.map(function (r) {
         return '<tr><td class="ltr"><strong>' + esc(r.key) + '</strong></td>' +
           '<td>' + esc((r.value || '').slice(0, 120)) + '</td>' +
-          '<td><button type="button" class="mini" data-tedit="' + esc(r.key) + '">✏️ ویرایش</button>' +
-          '<button type="button" class="mini danger" data-tdel="' + esc(r.key) + '">🗑️ حذف</button></td></tr>';
+          '<td><button type="button" class="mini" data-tedit="' + esc(r.key) + '">' + t('btn_edit') + '</button>' +
+          '<button type="button" class="mini danger" data-tdel="' + esc(r.key) + '">' + t('btn_del') + '</button></td></tr>';
       }).join('');
       Array.prototype.forEach.call(document.querySelectorAll('[data-tedit]'), function (b) {
         b.addEventListener('click', function () { startEditText(b.getAttribute('data-tedit')); });
       });
       Array.prototype.forEach.call(document.querySelectorAll('[data-tdel]'), function (b) {
         b.addEventListener('click', async function () {
-          if (!confirm('این متن حذف شود؟')) return;
+          if (!confirm(t('confirm_text_delete'))) return;
           var d = await supabase.from('site_texts').delete().eq('key', b.getAttribute('data-tdel'));
-          if (d.error) toast('خطا در حذف: ' + d.error.message, false);
-          else { toast('حذف شد 🗑️', true); loadTexts(); }
+          if (d.error) toast(t('err_delete') + d.error.message, false);
+          else { toast(t('deleted'), true); loadTexts(); }
         });
       });
     }
 
+    function setTextFormTitle() {
+      $('text-form-title').textContent = editingTextKey ? t('text_form_edit') : t('text_form_add');
+      $('btn-text-submit').textContent = editingTextKey ? t('btn_save') : t('btn_add');
+      $('btn-text-submit').className = 'btn ' + (editingTextKey ? 'btn-save' : 'btn-add');
+      $('btn-text-cancel').hidden = !editingTextKey;
+    }
+
     function resetTextForm() {
       $('text-form').reset(); editingTextKey = null;
-      $('text-form-title').textContent = 'افزودن متن ➕';
-      $('btn-text-submit').textContent = '➕ افزودن';
-      $('btn-text-submit').className = 'btn btn-add';
-      $('btn-text-cancel').hidden = true;
+      $('t-key').disabled = false;
+      setTextFormTitle();
     }
 
     async function startEditText(key) {
       var res = await supabase.from('site_texts').select('*').eq('key', key).single();
-      if (res.error) { toast('خطا: ' + res.error.message, false); return; }
+      if (res.error) { toast(t('err_read') + res.error.message, false); return; }
       editingTextKey = key;
       $('t-key').value = res.data.key;
-      $('t-key').disabled = true; // کلید اصلی است و نباید عوض شود
+      $('t-key').disabled = true; // کلید اصلی است و نباید عوض شود / primary key: must not change
       $('t-value').value = res.data.value || '';
-      $('text-form-title').textContent = 'ویرایش متن ✏️';
-      $('btn-text-submit').textContent = '💾 ذخیره تغییرات';
-      $('btn-text-submit').className = 'btn btn-save';
-      $('btn-text-cancel').hidden = false;
+      setTextFormTitle();
     }
 
     $('text-form').addEventListener('submit', async function (e) {
@@ -447,23 +779,23 @@
         ? await supabase.from('site_texts').update({ value: value }).eq('key', editingTextKey)
         : await supabase.from('site_texts').upsert({ key: key, value: value }, { onConflict: 'key' });
       btn.disabled = false;
-      if (res.error) toast('خطا در ذخیره: ' + res.error.message, false);
-      else { toast('ذخیره شد ✅', true); $('t-key').disabled = false; resetTextForm(); loadTexts(); }
+      if (res.error) toast(t('err_save') + res.error.message, false);
+      else { toast(editingTextKey ? t('updated') : t('added'), true); resetTextForm(); loadTexts(); }
     });
-    $('btn-text-cancel').addEventListener('click', function () { $('t-key').disabled = false; resetTextForm(); });
+    $('btn-text-cancel').addEventListener('click', resetTextForm);
 
     /* ---------- تنظیمات سری‌ها: چند مرحله رایگان؟ ---------- */
     var SERIES_SETTINGS = [
-      { key: 'free_levels_adventure', fa: 'ماجراجویی رومی 🎒', total: 8, def: 3 },
-      { key: 'free_levels_puzzle',    fa: 'وقت پازل 🧩',        total: 5, def: 2 },
-      { key: 'free_levels_maze',      fa: 'دونده ماز 🌀',        total: 5, def: 2 }
+      { key: 'free_levels_adventure', name: 'series_adventure', total: 8, def: 3 },
+      { key: 'free_levels_puzzle',    name: 'series_puzzle',    total: 5, def: 2 },
+      { key: 'free_levels_maze',      name: 'series_maze',      total: 5, def: 2 }
     ];
     var seriesVals = {};
 
     async function loadSeriesSettings() {
       var keys = SERIES_SETTINGS.map(function (s) { return s.key; });
       var res = await supabase.from('site_texts').select('key,value').in('key', keys);
-      if (res.error) { toast('خطا در خواندن تنظیمات: ' + res.error.message, false); return; }
+      if (res.error) { toast(t('series_err') + res.error.message, false); return; }
       var found = {};
       (res.data || []).forEach(function (r) { found[r.key] = parseInt(r.value, 10); });
       SERIES_SETTINGS.forEach(function (s) {
@@ -478,11 +810,11 @@
     function renderSeriesRows() {
       $('series-rows').innerHTML = SERIES_SETTINGS.map(function (s) {
         return '<div class="stepper-row">' +
-          '<div class="sname">' + s.fa + '<small>از ' + s.total + ' مرحله رایگان است — بقیه برای اعضا</small></div>' +
+          '<div class="sname">' + t(s.name) + '<small>' + t('series_of').replace('{total}', faNum(s.total)) + '</small></div>' +
           '<div class="stepper">' +
-            '<button type="button" data-sminus="' + s.key + '" aria-label="یک مرحله کمتر">−</button>' +
-            '<span class="sval" id="sval-' + s.key + '">' + seriesVals[s.key] + '</span>' +
-            '<button type="button" data-splus="' + s.key + '" aria-label="یک مرحله بیشتر">+</button>' +
+            '<button type="button" data-sminus="' + s.key + '" aria-label="' + t('series_less') + '">−</button>' +
+            '<span class="sval" id="sval-' + s.key + '">' + faNum(seriesVals[s.key]) + '</span>' +
+            '<button type="button" data-splus="' + s.key + '" aria-label="' + t('series_more') + '">+</button>' +
           '</div></div>';
       }).join('');
       SERIES_SETTINGS.forEach(function (s) {
@@ -493,7 +825,7 @@
 
     function stepSeries(s, d) {
       seriesVals[s.key] = Math.max(0, Math.min(s.total, seriesVals[s.key] + d));
-      document.getElementById('sval-' + s.key).textContent = seriesVals[s.key];
+      document.getElementById('sval-' + s.key).textContent = faNum(seriesVals[s.key]);
     }
 
     $('btn-series-save').addEventListener('click', async function () {
@@ -501,23 +833,175 @@
       var rows = SERIES_SETTINGS.map(function (s) { return { key: s.key, value: String(seriesVals[s.key]) }; });
       var res = await supabase.from('site_texts').upsert(rows, { onConflict: 'key' });
       btn.disabled = false;
-      if (res.error) toast('خطا در ذخیره: ' + res.error.message, false);
-      else toast('تنظیمات ذخیره شد ✅ — سایت بلافاصله به‌روز می‌شود', true);
+      if (res.error) toast(t('err_save') + res.error.message, false);
+      else toast(t('series_saved'), true);
     });
 
     /* ---------- اعضا (فقط خواندنی) ---------- */
     async function loadMembers() {
       var res = await supabase.from('profiles').select('display_name,email,is_admin,created_at')
         .order('created_at', { ascending: false }).limit(500);
-      if (res.error) { toast('خطا در خواندن اعضا: ' + res.error.message, false); return; }
+      if (res.error) { toast(t('members_err') + res.error.message, false); return; }
       var rows = res.data || [];
       $('members-empty').hidden = rows.length > 0;
       $('members-body').innerHTML = rows.map(function (r) {
-        return '<tr><td>' + esc(r.display_name || '—') + '</td>' +
+        return '<tr><td>' + esc(r.display_name || t('dash')) + '</td>' +
           '<td class="ltr">' + esc(r.email || '') + '</td>' +
-          '<td>' + (r.is_admin ? '<span class="badge admin">مدیر</span>' : 'عضو') + '</td>' +
+          '<td>' + (r.is_admin ? '<span class="badge admin">' + t('badge_admin') + '</span>' : t('role_member')) + '</td>' +
           '<td>' + faDate(r.created_at) + '</td></tr>';
       }).join('');
+    }
+
+    /* ================= آمار / Analytics ================= */
+    var SERIES_ORDER = ['adventure', 'puzzle', 'maze'];
+    var SERIES_NAME_KEY = { adventure: 'series_adventure', puzzle: 'series_puzzle', maze: 'series_maze' };
+
+    function slugOf(assetUrl) {
+      return String(assetUrl || '').split('/').pop().replace(/\.pdf$/i, '').replace(/[^a-z0-9-]/gi, '') || 'printable';
+    }
+
+    async function loadStats() {
+      var body = $('stats-body');
+      body.innerHTML = '';
+      $('stats-empty').hidden = true;
+      var since = new Date(Date.now() - 60 * 24 * 3600 * 1000).toISOString();
+      var res = await supabase.from('events')
+        .select('event_name,series,detail,member_id,created_at')
+        .gte('created_at', since)
+        .order('created_at', { ascending: true })
+        .limit(10000);
+      if (res.error) { toast(t('stats_err') + res.error.message, false); return; }
+      var evs = res.data || [];
+      if (!evs.length) { $('stats-empty').hidden = false; return; }
+
+      var nowMs = Date.now();
+      var isPv = function (e) { return e.event_name === 'pageview'; };
+      var pvToday = evs.filter(function (e) { return isPv(e) && nowMs - new Date(e.created_at).getTime() < 24 * 3600 * 1000; }).length;
+      var pv7 = evs.filter(function (e) { return isPv(e) && nowMs - new Date(e.created_at).getTime() < 7 * 24 * 3600 * 1000; }).length;
+      var pv30 = evs.filter(isPv).length;
+
+      var html = '<div class="stat-cards">' +
+        statCard(pvToday, t('card_today')) +
+        statCard(pv7, t('card_7')) +
+        statCard(pv30, t('card_30')) +
+        '</div>';
+
+      /* --- عملکرد سری‌ها --- */
+      html += '<div class="stat-sec"><h3>' + t('sec_series') + '</h3><table>' +
+        '<thead><tr><th>' + t('th_series') + '</th><th>' + t('th_starts') + '</th><th>' + t('th_levels') + '</th></tr></thead><tbody>' +
+        SERIES_ORDER.map(function (sk) {
+          var starts = evs.filter(function (e) { return e.event_name === 'game_start' && e.series === sk; }).length;
+          var levels = evs.filter(function (e) { return e.event_name === 'level_complete' && e.series === sk; }).length;
+          return '<tr><td><strong>' + t(SERIES_NAME_KEY[sk]) + '</strong></td><td>' + faNum(starts) + '</td><td>' + faNum(levels) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+
+      /* --- دانلود چاپی‌ها --- */
+      var dlCounts = {};
+      evs.forEach(function (e) {
+        if (e.event_name === 'printable_download' && e.detail) dlCounts[e.detail] = (dlCounts[e.detail] || 0) + 1;
+      });
+      var dlSlugs = Object.keys(dlCounts).sort(function (a, b) { return dlCounts[b] - dlCounts[a]; });
+      if (dlSlugs.length) {
+        var titles = {};
+        try {
+          var ci = await supabase.from('content_items').select('title,asset_url').eq('kind', 'printable');
+          (ci.data || []).forEach(function (r) { titles[slugOf(r.asset_url)] = r.title; });
+        } catch (e) { /* titles stay as slugs */ }
+        html += '<div class="stat-sec"><h3>' + t('sec_printables') + '</h3><table>' +
+          '<thead><tr><th>' + t('th_dl_title') + '</th><th>' + t('th_dl_count') + '</th></tr></thead><tbody>' +
+          dlSlugs.map(function (sg) {
+            return '<tr><td>' + esc(titles[sg] || sg) + '</td><td>' + faNum(dlCounts[sg]) + '</td></tr>';
+          }).join('') + '</tbody></table></div>';
+      }
+
+      /* --- نمودار روزانه --- */
+      var days = [];
+      for (var d = 13; d >= 0; d--) {
+        var dt = new Date(nowMs - d * 24 * 3600 * 1000);
+        days.push({ key: dt.toISOString().slice(0, 10), date: dt, count: 0 });
+      }
+      var dayIdx = {};
+      days.forEach(function (dd, i) { dayIdx[dd.key] = i; });
+      evs.forEach(function (e) {
+        if (!isPv(e)) return;
+        var k = new Date(e.created_at).toISOString().slice(0, 10);
+        if (dayIdx[k] != null) days[dayIdx[k]].count++;
+      });
+      var maxC = Math.max.apply(null, days.map(function (dd) { return dd.count; }).concat([1]));
+      html += '<div class="stat-sec"><h3>' + t('sec_chart') + '</h3>' +
+        days.map(function (dd) {
+          var label = dd.date.toLocaleDateString(LANG === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric' });
+          var w = Math.round(dd.count / maxC * 100);
+          return '<div class="bar-row"><span class="bar-label">' + esc(label) + '</span>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:' + w + '%"></div></div>' +
+            '<span class="bar-num">' + faNum(dd.count) + '</span></div>';
+        }).join('') + '</div>';
+
+      /* --- تعامل اعضا --- */
+      var profs = [];
+      try {
+        var pr = await supabase.from('profiles').select('id,email,created_at').order('created_at', { ascending: true }).limit(2000);
+        profs = pr.data || [];
+      } catch (e) { profs = []; }
+      var byMember = {};
+      evs.forEach(function (e) {
+        var mid = e.member_id || '__anon__';
+        if (!byMember[mid]) byMember[mid] = { starts: 0, levels: 0, dls: 0, last: null };
+        if (e.event_name === 'game_start') byMember[mid].starts++;
+        else if (e.event_name === 'level_complete') byMember[mid].levels++;
+        else if (e.event_name === 'printable_download') byMember[mid].dls++;
+        var tm = new Date(e.created_at).getTime();
+        if (!byMember[mid].last || tm > byMember[mid].last) byMember[mid].last = tm;
+      });
+      var memberRows = profs.map(function (p) {
+        var m = byMember[p.id] || { starts: 0, levels: 0, dls: 0, last: null };
+        return { email: p.email || t('dash'), joined: p.created_at, anon: false,
+                 starts: m.starts, levels: m.levels, dls: m.dls, last: m.last,
+                 total: m.starts + m.levels + m.dls };
+      });
+      if (byMember.__anon__) {
+        var a = byMember.__anon__;
+        memberRows.push({ email: null, joined: null, anon: true,
+          starts: a.starts, levels: a.levels, dls: a.dls, last: a.last,
+          total: a.starts + a.levels + a.dls });
+      }
+      memberRows.sort(function (x, y) { return y.total - x.total || (y.last || 0) - (x.last || 0); });
+
+      html += '<div class="stat-sec"><h3>' + t('sec_members') + '</h3>' +
+        '<div class="btn-row" style="margin-bottom:12px"><button class="btn btn-save" type="button" id="btn-csv" style="min-height:48px;padding:10px 22px;font-size:16px">' + t('csv_btn') + '</button></div>' +
+        '<div class="table-wrap"><table><thead><tr><th>' + t('th_email') + '</th><th>' + t('th_joined') + '</th><th>' + t('th_starts') + '</th><th>' + t('th_levels') + '</th><th>' + t('th_dl_count') + '</th><th>' + t('th_last') + '</th></tr></thead><tbody>' +
+        memberRows.map(function (r) {
+          return '<tr><td class="ltr">' + (r.anon ? t('anon_row') : esc(r.email)) + '</td>' +
+            '<td>' + (r.joined ? faDate(r.joined) : t('dash')) + '</td>' +
+            '<td>' + faNum(r.starts) + '</td><td>' + faNum(r.levels) + '</td><td>' + faNum(r.dls) + '</td>' +
+            '<td>' + (r.last ? faDate(new Date(r.last).toISOString()) : t('dash')) + '</td></tr>';
+        }).join('') + '</tbody></table></div></div>';
+
+      body.innerHTML = html;
+      $('btn-csv').addEventListener('click', function () { exportMembersCSV(memberRows); });
+    }
+
+    function statCard(n, label) {
+      return '<div class="stat-card"><div class="n">' + faNum(n) + '</div><div class="l">' + label + '</div></div>';
+    }
+
+    /* خروجی CSV برای هدیه به اعضای فعال / CSV export for gift outreach */
+    function exportMembersCSV(rows) {
+      var data = rows.filter(function (r) { return !r.anon && r.email; });
+      var head = ['email', 'joined', 'game_starts', 'levels_completed', 'printable_downloads', 'last_activity'];
+      var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+      var iso = function (v) { if (!v) return ''; try { return new Date(v).toISOString().slice(0, 10); } catch (e) { return ''; } };
+      var lines = [head.join(',')].concat(data.map(function (r) {
+        return [q(r.email), q(iso(r.joined)), r.starts, r.levels, r.dls, q(iso(r.last))].join(',');
+      }));
+      var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'zhiolearns-member-engagement.csv';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { try { URL.revokeObjectURL(a.href); } catch (e) {} a.remove(); }, 800);
+      toast(t('csv_done'), true);
     }
 
     /* ---------- شروع ---------- */
@@ -527,10 +1011,13 @@
     });
 
     (async function init() {
+      document.documentElement.lang = LANG;
+      document.documentElement.dir = LANG === 'fa' ? 'rtl' : 'ltr';
+      applyStaticText();
       if (!(await guard())) return;
       $('app').hidden = false;
       renderTabs();
-      switchTab('printable');
+      switchTab('stats', true);
     })();
   </script>
 </body>
