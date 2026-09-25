@@ -290,7 +290,243 @@ footer .fine a{color:var(--teal-dark)}
   #print-sheet{position:absolute;top:0;left:0;width:100%;max-width:100%;margin:0;border-radius:0;box-shadow:none;display:block !important}
   #mk-print-btn{display:none !important}
 }
+
+/* ---- Membership: badges, unlock prompt, account area, printables ---- */
+.lock-badge{display:inline-block;margin-top:10px;background:#fff6dd;color:#7a5b12;border:2px solid #e8c84a;border-radius:999px;padding:4px 14px;font-weight:800;font-size:14px}
+#zlg-prompt{position:fixed;inset:0;z-index:60;background:rgba(24,51,58,.5);display:grid;place-items:center;padding:20px;animation:zlg-in .25s ease}
+.zlg-box{background:var(--card,#fff);border-radius:28px;max-width:440px;width:100%;padding:36px 32px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.zlg-box h2{font-family:"Baloo 2",sans-serif;margin:8px 0;font-size:26px}
+.zlg-box p{color:var(--muted,#566c70);line-height:1.6}
+.zlg-romy{font-size:54px}
+.zlg-actions{display:grid;gap:12px;margin-top:20px}
+.zlg-actions .btn{display:block;width:100%;box-sizing:border-box}
+.account-area{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.acct-name{font-weight:800;color:var(--ink)}
+.print-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;margin-top:26px}
+.print-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;text-align:center}
+.print-card h3{margin:6px 0 0;font:700 20px "Baloo 2",sans-serif}
+.print-card p{margin:0;color:var(--muted);font-weight:600;font-size:15px}
+.print-card .order-btn{margin-top:auto}
+.print-icon{font-size:44px}
+.print-lock-note{font-weight:800;color:#7a5b12}
+.print-promo{background:#fffdf4;border-style:dashed}
+@media(prefers-reduced-motion:reduce){#zlg-prompt{animation:none}}
+
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+/* ==========================================================================
+   ZhioLearns membership (FREE phase) — integrated 2026-09-25
+   --------------------------------------------------------------------------
+   WHAT THIS DOES
+   - Reads per-series free-level counts from Supabase `site_texts`
+     (free_levels_adventure / _puzzle / _maze; defaults 3 / 2 / 2).
+   - Game level locks below are a UX gate only: the games live in this HTML,
+     so the lock cannot be a security boundary. The REAL enforcement is
+     Supabase Row Level Security on `content_items` (printable downloads).
+     Do not claim otherwise.
+   - If Supabase is unreachable (CDN blocked, offline, project paused), the
+     whole page keeps working: games fall back to the default free-level
+     counts and the printables section shows a friendly note.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var SERIES = {
+    adventure: { section: 'adventure', total: 8, fallbackFree: 3, name: "Romy's Adventure" },
+    puzzle:    { section: 'puzzle',    total: 5, fallbackFree: 2, name: 'Puzzle Time' },
+    maze:      { section: 'maze',      total: 5, fallbackFree: 2, name: 'Maze Runner' }
+  };
+  var AUTH_URL = 'auth.html';
+
+  /* Public handle used by the game code further down this page. */
+  var ZLG = window.ZLG = {
+    user: null, isMember: false, isAdmin: false, ready: false,
+    free: { adventure: 3, puzzle: 2, maze: 2 },
+    db: null
+  };
+
+  /* Can this visitor play 0-based levelIndex of `series`? */
+  ZLG.canPlay = function (series, levelIndex) {
+    if (ZLG.isMember) return true;
+    var n = ZLG.free[series];
+    if (n == null || isNaN(n)) n = SERIES[series].fallbackFree;
+    return levelIndex < n;
+  };
+
+  /* Friendly "join free" overlay when a locked level is reached. */
+  ZLG.unlockPrompt = function (series) {
+    var old = document.getElementById('zlg-prompt');
+    if (old) old.remove();
+    var meta = SERIES[series];
+    var freeN = ZLG.free[series];
+    if (freeN == null || isNaN(freeN)) freeN = meta.fallbackFree;
+    var remaining = Math.max(0, meta.total - freeN);
+    var overlay = document.createElement('div');
+    overlay.id = 'zlg-prompt';
+    overlay.innerHTML =
+      '<div class="zlg-box" role="dialog" aria-modal="true" aria-labelledby="zlg-title">' +
+        '<div class="zlg-romy">🎉</div>' +
+        '<h2 id="zlg-title">You finished the free levels!</h2>' +
+        '<p><strong>' + meta.name + '</strong> has ' + remaining + ' more level' + (remaining === 1 ? '' : 's') +
+        ' waiting. A grown-up can make a <strong>free</strong> account in under a minute to unlock them — ' +
+        'no child information needed, ever.</p>' +
+        '<div class="zlg-actions">' +
+          '<a class="btn primary" href="' + AUTH_URL + '">Join free / Log in</a>' +
+          '<button type="button" class="btn secondary" id="zlg-close">Maybe later</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    document.getElementById('zlg-close').addEventListener('click', function () { overlay.remove(); });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+  };
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* Series-card badges: "🔒 3 of 8 levels free" (visitors only). */
+  function paintBadges() {
+    Object.keys(SERIES).forEach(function (key) {
+      var meta = SERIES[key];
+      var card = document.querySelector('a.series-card[href="#' + meta.section + '"]');
+      if (!card) return;
+      var old = card.querySelector('.lock-badge');
+      if (old) old.remove();
+      if (ZLG.isMember) return; /* members see everything — no badges needed */
+      var n = ZLG.free[key];
+      if (n == null || isNaN(n)) n = meta.fallbackFree;
+      if (n >= meta.total) return; /* everything free — no badge needed */
+      var badge = document.createElement('span');
+      badge.className = 'lock-badge';
+      badge.textContent = n > 0
+        ? '🔒 ' + n + ' of ' + meta.total + ' levels free'
+        : '🔒 Members only';
+      card.appendChild(badge);
+    });
+  }
+
+  /* Header account area: "Join free" link, or name + logout (+ admin link). */
+  function paintAccount() {
+    var area = document.getElementById('account-area');
+    if (!area) return;
+    if (!ZLG.user) {
+      area.innerHTML = '<a class="parent-link" href="' + AUTH_URL + '">Join free</a>';
+      return;
+    }
+    var md = ZLG.user.user_metadata || {};
+    var name = esc(md.display_name || ZLG.user.email || 'Parent');
+    var html = '<span class="acct-name">Hi, ' + name + '</span>' +
+      ' <a class="parent-link" href="#" id="zlg-logout">Log out</a>';
+    if (ZLG.isAdmin) html += ' <a class="parent-link" href="admin.html">Admin</a>';
+    area.innerHTML = html;
+    document.getElementById('zlg-logout').addEventListener('click', function (e) {
+      e.preventDefault();
+      if (ZLG.db) { ZLG.db.auth.signOut().then(function () { location.reload(); }); }
+      else { location.reload(); }
+    });
+  }
+
+  /* Printables section: cards from content_items (kind='printable'). */
+  function loadPrintables() {
+    var grid = document.getElementById('print-grid');
+    if (!grid) return;
+    function status(msg) { grid.innerHTML = '<p class="game-note">' + msg + '</p>'; }
+    if (!ZLG.db) {
+      status('Our printable shelf is taking a little nap 💤 Please check back soon!');
+      return;
+    }
+    ZLG.db.from('content_items')
+      .select('title,description,asset_url,visibility,sort_order')
+      .eq('kind', 'printable').eq('is_active', true)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: true })
+      .then(function (res) {
+        if (res.error) {
+          status('Our printable shelf is taking a little nap 💤 Please check back soon!');
+          return;
+        }
+        var rows = res.data || [];
+        if (!rows.length) {
+          status('New printable packs are on the way — check back soon! 🖨️');
+          return;
+        }
+        var html = '';
+        rows.forEach(function (r) {
+          /* NOTE: under the live RLS, visitors (anon) only ever receive
+             visibility='free' rows, so the locked branch below only renders
+             for rows the current session is actually allowed to see. */
+          var locked = (r.visibility === 'members' && !ZLG.isMember);
+          html += '<article class="print-card">' +
+            '<span class="print-icon" aria-hidden="true">' + (locked ? '🔒' : '🖨️') + '</span>' +
+            '<h3>' + esc(r.title) + '</h3>' +
+            '<p>' + esc(r.description) + '</p>';
+          if (locked) {
+            html += '<p class="print-lock-note">Members only</p>' +
+              '<a class="order-btn" href="' + AUTH_URL + '">Join free to download</a>';
+          } else {
+            html += '<a class="order-btn" href="' + esc(r.asset_url) + '" download target="_blank" rel="noopener">Download PDF</a>';
+          }
+          html += '</article>';
+        });
+        if (!ZLG.isMember) {
+          html += '<article class="print-card print-promo">' +
+            '<span class="print-icon" aria-hidden="true">🎁</span>' +
+            '<h3>Want them all?</h3>' +
+            '<p>A free membership unlocks every printable pack on this shelf.</p>' +
+            '<a class="order-btn" href="' + AUTH_URL + '">Join free</a></article>';
+        }
+        grid.innerHTML = html;
+      });
+  }
+
+  function cfgOk() {
+    try {
+      return typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined' &&
+        !!SUPABASE_URL && !!SUPABASE_ANON_KEY && !!window.supabase;
+    } catch (e) { return false; }
+  }
+
+  async function init() {
+    try {
+      if (!cfgOk()) throw new Error('supabase unavailable');
+      /* eslint-disable-next-line no-undef */
+      ZLG.db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      var s = await ZLG.db.auth.getSession();
+      ZLG.user = (s.data && s.data.session) ? s.data.session.user : null;
+      ZLG.isMember = !!ZLG.user; /* FREE phase: any logged-in parent counts as a member. */
+      if (ZLG.user) {
+        try {
+          var p = await ZLG.db.from('profiles').select('is_admin').eq('id', ZLG.user.id).single();
+          ZLG.isAdmin = !!(p.data && p.data.is_admin);
+        } catch (e) { ZLG.isAdmin = false; }
+      }
+      try {
+        var keys = ['free_levels_adventure', 'free_levels_puzzle', 'free_levels_maze'];
+        var r = await ZLG.db.from('site_texts').select('key,value').in('key', keys);
+        (r.data || []).forEach(function (row) {
+          var k = String(row.key).replace('free_levels_', '');
+          var n = parseInt(row.value, 10);
+          if (SERIES[k] && !isNaN(n)) ZLG.free[k] = Math.max(0, Math.min(n, SERIES[k].total));
+        });
+      } catch (e) { /* keep defaults */ }
+    } catch (e) {
+      ZLG.db = null; /* DB unreachable: games keep working with default free levels. */
+    }
+    ZLG.ready = true;
+    paintBadges();
+    paintAccount();
+    loadPrintables();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+  </script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -299,8 +535,10 @@ footer .fine a{color:var(--teal-dark)}
     <a href="#play">Play</a>
     <a href="#watch">Watch</a>
     <a href="#maker">Printables</a>
+    <a href="#printables">Print packs</a>
     <a href="#shop">Books</a>
     <a class="parent-link" href="#parents">For parents</a>
+    <span class="account-area" id="account-area"><a class="parent-link" href="auth.html">Join free</a></span>
   </nav>
   <main id="main">
     <section class="hero">
@@ -583,6 +821,18 @@ footer .fine a{color:var(--teal-dark)}
         <button class="clear-btn" id="mk-print-btn" style="display:none" type="button">Print this page</button>
       </div>
     </section>
+
+    <section id="printables">
+      <div class="intro reveal" style="text-align:center;max-width:720px;margin:auto">
+        <p class="eyebrow">Printable packs</p>
+        <h2 class="section-title">Print, play, repeat.</h2>
+        <p>Downloadable activity packs starring Romy &mdash; tracing, counting, mazes and coloring pages. Some are free for everyone; a free membership unlocks them all.</p>
+      </div>
+      <div class="print-grid reveal" id="print-grid" aria-live="polite">
+        <p class="game-note">Loading printable packs&hellip;</p>
+      </div>
+    </section>
+
 
     <section id="freepack">
       <div class="intro reveal" style="text-align:center;max-width:720px;margin:auto">
@@ -920,7 +1170,7 @@ footer .fine a{color:var(--teal-dark)}
       function advPraise(){var p=['Brilliant!','Amazing!','Super!','Wonderful!','Great job!'];return p[Math.floor(Math.random()*p.length)];}
       function advPop(el){if(el&&el.animate)el.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:450});}
       function advShake(el){if(el&&el.animate)el.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:280});}
-      function advNext(){ADV.level++;advHUD();if(ADV.level>=ADV.levels.length){advFinale();return;}advSay('Level complete! Get ready...');setTimeout(advRender,1100);}
+      function advNext(){var zlN=ADV.level+1;if(window.ZLG&&!window.ZLG.canPlay('adventure',zlN)){window.ZLG.unlockPrompt('adventure');return;}ADV.level++;advHUD();if(ADV.level>=ADV.levels.length){advFinale();return;}advSay('Level complete! Get ready...');setTimeout(advRender,1100);}
       function advEarn(pts,el){ADV.score+=pts;advHUD();advGood();advPop(el);advSay(advPraise()+' +'+pts+' points!');setTimeout(advNext,950);}
       function advMiss(el){advOops();advShake(el);advSay('Good try \u2014 look again!');}
       function advRender(){
@@ -1004,7 +1254,7 @@ footer .fine a{color:var(--teal-dark)}
       function advStartScreen(){
         advHUD();
         advStage.innerHTML='<div class="adv-screen"><div><img src="img/zhiolearns-logo.png" class="adv-romy-img" alt="Romy the raccoon"></div><p class="game-status" id="adv-status">Ready for an adventure?</p><p class="game-note" style="margin-top:0">8 levels \u00B7 earn points \u00B7 no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="adv-play">\u25B6 Play</button></div></div>';
-        document.getElementById('adv-play').addEventListener('click',function(){ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
+        document.getElementById('adv-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('adventure',0)){window.ZLG.unlockPrompt('adventure');return;}ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
       }
       function boom(stage){
         var colors=['#ef694f','#f7c62f','#3e9ed2','#69b56b','#b197fc'];
@@ -1039,7 +1289,7 @@ footer .fine a{color:var(--teal-dark)}
         {type:'pattern',seq:['🍎','🍎','🍊','🍎','🍎'],answer:'🍊',opts:['🍎','🍊','🍇','🍋']}
       ]};
       function puzHUD(){puzLevelEl.textContent='Level '+Math.min(PUZ.level+1,5)+' of 5';puzBar.style.width=(PUZ.level/5*100)+'%';puzScoreEl.textContent=PUZ.score;}
-      function puzNext(){PUZ.level++;puzHUD();if(PUZ.level>=PUZ.levels.length){puzFinale();return;}puzNote.textContent='Level complete! Get ready...';setTimeout(puzRender,1100);}
+      function puzNext(){var zlN=PUZ.level+1;if(window.ZLG&&!window.ZLG.canPlay('puzzle',zlN)){window.ZLG.unlockPrompt('puzzle');return;}PUZ.level++;puzHUD();if(PUZ.level>=PUZ.levels.length){puzFinale();return;}puzNote.textContent='Level complete! Get ready...';setTimeout(puzRender,1100);}
       function puzEarn(el){PUZ.score+=10;puzHUD();advGood();advPop(el);puzNote.textContent=advPraise()+' +10 points!';setTimeout(puzNext,950);}
       function puzRender(){
         if(!puzStage)return;PUZ.lock=false;puzHUD();
@@ -1065,7 +1315,7 @@ footer .fine a{color:var(--teal-dark)}
       function puzStart(){
         puzHUD();
         puzStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🧩</div><p class="game-status" id="puz-status">Ready to solve puzzles?</p><p class="game-note" style="margin-top:0">5 levels \u00B7 earn points \u00B7 no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="puz-play">\u25B6 Play</button></div></div>';
-        document.getElementById('puz-play').addEventListener('click',function(){PUZ.level=0;PUZ.score=0;puzNote.textContent='Level 1 \u2014 here we go!';puzRender();});
+        document.getElementById('puz-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('puzzle',0)){window.ZLG.unlockPrompt('puzzle');return;}PUZ.level=0;PUZ.score=0;puzNote.textContent='Level 1 \u2014 here we go!';puzRender();});
       }
       function puzFinale(){
         puzBar.style.width='100%';advFanfare();
@@ -1138,11 +1388,11 @@ footer .fine a{color:var(--teal-dark)}
           setTimeout(mzNext,1400);
         }
       }
-      function mzNext(){MZ.level++;mzHUD();if(MZ.level>=MZ.sizes.length){mzFinale();return;}mzNote.textContent='Maze complete! Get ready...';setTimeout(mzRender,1100);}
+      function mzNext(){var zlN=MZ.level+1;if(window.ZLG&&!window.ZLG.canPlay('maze',zlN)){window.ZLG.unlockPrompt('maze');return;}MZ.level++;mzHUD();if(MZ.level>=MZ.sizes.length){mzFinale();return;}mzNote.textContent='Maze complete! Get ready...';setTimeout(mzRender,1100);}
       function mzStart(){
         mzHUD();
         mzStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🌀</div><p class="game-status" id="mz-status">Ready for the maze?</p><p class="game-note" style="margin-top:0">5 mazes \u00B7 guide Romy home \u00B7 tap step by step!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="mz-play">\u25B6 Play</button></div></div>';
-        document.getElementById('mz-play').addEventListener('click',function(){MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
+        document.getElementById('mz-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('maze',0)){window.ZLG.unlockPrompt('maze');return;}MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
       }
       function mzFinale(){
         mzBar.style.width='100%';advFanfare();
