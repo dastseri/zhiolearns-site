@@ -227,6 +227,16 @@ a.order-btn{display:inline-block;text-decoration:none;text-align:center}
 .mz-moves{text-align:center;color:var(--muted);font-weight:700;margin:12px 0 0}
 @media(max-width:850px){.series-grid{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
 @media(prefers-reduced-motion:reduce){.series-card{transition:none}}
+/* ---- Romy artwork in games + visible maze goal ---- */
+.adv-romy-img{width:112px;height:112px;border-radius:50%;box-shadow:0 8px 20px rgba(19,67,66,.2);animation:bob 2.6s ease-in-out infinite}
+.mz-romy{width:88%;height:88%;object-fit:contain;pointer-events:none}
+.mem-romy{width:74%;height:74%;object-fit:contain;pointer-events:none}
+.mcell.goal{font-size:clamp(24px,6vw,38px);animation:goal-pulse 1.7s ease-in-out infinite}
+@keyframes goal-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+.mz-legend{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-weight:700;margin:14px 0 0;font-size:16px}
+.mz-legend img{width:30px;height:30px;border-radius:50%}
+.series-emoji-img{width:64px;height:64px;border-radius:50%;box-shadow:0 4px 12px rgba(19,67,66,.15)}
+@media(prefers-reduced-motion:reduce){.mcell.goal{animation:none}.adv-romy-img{animation:none}}
 .letter-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
 .letter-btn{border:1px solid var(--line);border-radius:24px;background:var(--soft);color:var(--sun);font-family:"Baloo 2",sans-serif;font-size:clamp(52px,11vw,88px);line-height:1;padding:20px 0;cursor:pointer;transition:transform .15s ease}
 .letter-btn:hover{transform:scale(1.05)}
@@ -397,7 +407,7 @@ footer .fine a{color:var(--teal-dark)}
       </div>
       <div class="series-grid reveal">
         <a class="series-card" href="#adventure">
-          <span class="series-emoji">🦝</span>
+          <img src="img/zhiolearns-logo.png" class="series-emoji-img" alt="Romy the raccoon">
           <h3>Romy's Adventure</h3>
           <p>8 levels &middot; colors, letters, shapes, counting &amp; memory</p>
           <span class="series-go">Play &rarr;</span>
@@ -974,7 +984,7 @@ footer .fine a{color:var(--teal-dark)}
         L.emojis.forEach(function(e){deck.push(e);deck.push(e);});
         deck.sort(function(){return Math.random()-.5;});
         var matched=0,first=null,lock=false;
-        advStage.innerHTML='<p class="game-status" id="adv-status">Match Romy\u2019s pairs!</p><div class="mem-grid">'+deck.map(function(e,i){return '<button type="button" class="mcard" data-e="'+e+'" aria-label="Memory card '+(i+1)+'"><span class="mcard-inner"><span class="mface mback">🐾</span><span class="mface mfront">'+e+'</span></span></button>';}).join('')+'</div>';
+        advStage.innerHTML='<p class="game-status" id="adv-status">Match Romy\u2019s pairs!</p><div class="mem-grid">'+deck.map(function(e,i){var face=e==='🦝'?'<img src="img/zhiolearns-logo.png" class="mem-romy" alt="Romy">':e;return '<button type="button" class="mcard" data-e="'+e+'" aria-label="Memory card '+(i+1)+'"><span class="mcard-inner"><span class="mface mback">🐾</span><span class="mface mfront">'+face+'</span></span></button>';}).join('')+'</div>';
         advStage.querySelectorAll('.mcard').forEach(function(card){
           card.addEventListener('click',function(){
             if(lock||ADV.lock||card.classList.contains('flipped')||card.classList.contains('matched'))return;
@@ -993,7 +1003,7 @@ footer .fine a{color:var(--teal-dark)}
       }
       function advStartScreen(){
         advHUD();
-        advStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🦝</div><p class="game-status" id="adv-status">Ready for an adventure?</p><p class="game-note" style="margin-top:0">8 levels \u00B7 earn points \u00B7 no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="adv-play">\u25B6 Play</button></div></div>';
+        advStage.innerHTML='<div class="adv-screen"><div><img src="img/zhiolearns-logo.png" class="adv-romy-img" alt="Romy the raccoon"></div><p class="game-status" id="adv-status">Ready for an adventure?</p><p class="game-note" style="margin-top:0">8 levels \u00B7 earn points \u00B7 no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="adv-play">\u25B6 Play</button></div></div>';
         document.getElementById('adv-play').addEventListener('click',function(){ADV.level=0;ADV.score=0;advSay('Level 1 \u2014 here we go!');advRender();});
       }
       function boom(stage){
@@ -1022,7 +1032,7 @@ footer .fine a{color:var(--teal-dark)}
       var puzBar=document.getElementById('puz-bar');
       var puzScoreEl=document.getElementById('puz-score');
       var PUZ={level:0,score:0,lock:false,levels:[
-        {type:'missing',scene:['🦝','🍎','⭐'],miss:1,opts:['🍎','🎈','🐝']},
+        {type:'missing',scene:['🐝','🍎','⭐'],miss:1,opts:['🍎','🎈','🐝']},
         {type:'missing',scene:['🎈','🌈','🐝'],miss:0,opts:['🎈','⭐','🍎','🐝']},
         {type:'pattern',seq:['🔴','🔵','🔴'],answer:'🔵',opts:['🔴','🔵','🟡']},
         {type:'pattern',seq:['⭐','🌙','⭐','🌙'],answer:'⭐',opts:['⭐','🌙','☀️']},
@@ -1072,6 +1082,7 @@ footer .fine a{color:var(--teal-dark)}
       var mzBar=document.getElementById('mz-bar');
       var mzScoreEl=document.getElementById('mz-score');
       var MZ={level:0,score:0,sizes:[5,7,7,9,9],size:5,grid:[],px:1,py:1,moves:0,lock:false};
+      var ROMY_IMG='<img src="img/zhiolearns-logo.png" class="mz-romy" alt="Romy">';
       function genMaze(size){
         var g=[],y,x;
         for(y=0;y<size;y++){g.push([]);for(x=0;x<size;x++)g[y].push(1);}
@@ -1101,10 +1112,10 @@ footer .fine a{color:var(--teal-dark)}
         for(var y=0;y<s;y++)for(var x=0;x<s;x++){
           var wall=MZ.grid[y][x]===1;
           var cls=wall?'wall':((x===s-2&&y===s-2)?'goal':'path');
-          var emoji=(!wall&&x===1&&y===1)?'🦝':((x===s-2&&y===s-2)?'🏠':'');
+          var emoji=(!wall&&x===1&&y===1)?ROMY_IMG:((x===s-2&&y===s-2)?'🏠':'');
           cells+='<button type="button" class="mcell '+cls+'" data-x="'+x+'" data-y="'+y+'" aria-label="'+(wall?'wall':'step')+'">'+emoji+'</button>';
         }
-        mzStage.innerHTML='<p class="game-status" id="mz-status">Bring Romy home! 🏠</p><div class="maze-grid" style="grid-template-columns:repeat('+s+',1fr)">'+cells+'</div><p class="mz-moves">Moves: <span id="mz-moves">0</span></p>';
+        mzStage.innerHTML='<p class="game-status" id="mz-status">Bring Romy home! 🏠</p><div class="maze-grid" style="grid-template-columns:repeat('+s+',1fr)">'+cells+'</div><p class="mz-legend"><img src="img/zhiolearns-logo.png" alt=""> is Romy &middot; 🏠 is home</p><p class="mz-moves">Moves: <span id="mz-moves">0</span></p>';
         mzNote.textContent='Tap a square next to Romy to hop there.';
         mzStage.querySelectorAll('.mcell.path,.mcell.goal').forEach(function(cell){
           cell.addEventListener('click',function(){mzStep(cell);});
@@ -1120,7 +1131,7 @@ footer .fine a{color:var(--teal-dark)}
         document.getElementById('mz-moves').textContent=MZ.moves;
         advTone(440+Math.min(MZ.moves,12)*20,0,.07);
         var s=MZ.size;
-        cell.textContent='🦝';
+        cell.innerHTML=ROMY_IMG;
         if(x===s-2&&y===s-2){
           MZ.lock=true;MZ.score+=20;mzHUD();advFanfare();
           mzNote.textContent=advPraise()+' Romy is home! +20 points!';
