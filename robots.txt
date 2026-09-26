@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zhiolearns.onrender.com/sitemap.xml
+Sitemap: https://zhiolearns.com/sitemap.xml
