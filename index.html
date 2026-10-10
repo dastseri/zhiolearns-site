@@ -495,6 +495,30 @@ footer .fine a{color:var(--teal-dark)}
     } catch (e) { return false; }
   }
 
+  async function renderShopBooks() {
+    try {
+      if (!ZLG.db) return;
+      var r = await ZLG.db.from('content_items')
+        .select('title,description,asset_url,cover_url')
+        .eq('kind', 'book').eq('is_active', true)
+        .order('sort_order', { ascending: true });
+      var books = (r.data || []).filter(function (b) { return b && b.title; });
+      if (r.error || !books.length) return;
+      var grid = document.getElementById('book-grid');
+      if (!grid) return;
+      grid.innerHTML = books.map(function (b) {
+        var img = b.cover_url || 'img/books/book-alphabet-abc.jpg';
+        var link = b.asset_url || 'https://www.amazon.com/author/zhio';
+        return '<article class="product reveal">' +
+          '<img src="' + esc(img) + '" alt="' + esc(b.title) + ' book cover" loading="lazy">' +
+          '<h3>' + esc(b.title) + '</h3><p>' + esc(b.description || '') + '</p>' +
+          '<div class="price-row"><a class="order-btn" href="' + esc(link) + '" target="_blank" rel="noopener">Buy on Amazon</a></div>' +
+          '</article>';
+      }).join('');
+      var cnt = document.getElementById('book-count');
+      if (cnt) cnt.innerHTML = 'All ' + books.length + ' books are live on Amazon &mdash; paperbacks made for little hands.';
+    } catch (e) { /* keep the built-in cards */ }
+  }
   async function init() {
     try {
       if (!cfgOk()) throw new Error('supabase unavailable');
@@ -527,6 +551,7 @@ footer .fine a{color:var(--teal-dark)}
     paintBadges();
     paintAccount();
     loadPrintables();
+    renderShopBooks();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
@@ -905,9 +930,9 @@ footer .fine a{color:var(--teal-dark)}
       <div class="intro reveal">
         <p class="eyebrow">The Romy shop</p>
         <h2 class="section-title">Romy&rsquo;s books on Amazon.</h2>
-        <p>11 picture books &amp; workbooks for ages 3&ndash;6 &mdash; illustrated stories and playful learning with Romy the raccoon.</p>
+        <p>10 picture books &amp; workbooks for ages 3&ndash;6 &mdash; illustrated stories and playful learning with Romy the raccoon.</p>
       </div>
-      <div class="shop-grid">
+      <div class="shop-grid" id="book-grid">
         <article class="product reveal">
           <img src="img/books/book-forest-of-feelings.jpg" alt="Romy and the Forest of Feelings book cover" loading="lazy">
           <h3>Romy and the Forest of Feelings</h3><p>A gentle picture book about feelings, friendship, and understanding big emotions.</p>
@@ -960,7 +985,7 @@ footer .fine a{color:var(--teal-dark)}
         </article>
       </div>
       <div class="reveal" style="text-align:center;margin-top:30px">
-        <p style="color:var(--muted)">All 10 books are live on Amazon &mdash; paperbacks made for little hands.</p>
+        <p style="color:var(--muted)" id="book-count">All 10 books are live on Amazon &mdash; paperbacks made for little hands.</p>
         <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener" style="padding:15px 34px;font-size:18px">Visit Zhio&rsquo;s Amazon author page</a>
       </div>
     </section>

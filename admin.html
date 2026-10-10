@@ -162,6 +162,14 @@
               </select>
             </label>
           </div>
+          <div class="form-grid" id="cover-row" hidden>
+            <label class="f"><span class="lbl" data-i18n="f_cover">🖼️ جلد کتاب</span>
+              <input type="file" id="f-cover-file" accept="image/*" />
+              <img id="f-cover-preview" hidden alt="" style="max-width:150px;border-radius:10px;margin-top:8px;border:1px solid #e5e0d5" />
+              <input type="hidden" id="f-cover-url" />
+              <small class="hint" data-i18n="f_cover_hint">فقط برای کتاب‌ها</small>
+            </label>
+          </div>
           <div class="form-grid two">
             <label class="f"><span class="lbl" data-i18n="f_order">ترتیب نمایش (عدد کوچک‌تر = بالاتر)</span>
               <input type="number" id="f-order" value="0" min="0" />
@@ -306,6 +314,10 @@
         vis_members: 'اعضا — فقط والدین عضو',
         f_order: 'ترتیب نمایش (عدد کوچک‌تر = بالاتر)',
         f_active: 'فعال باشد (در سایت نمایش داده شود)',
+        f_cover: '🖼️ جلد کتاب',
+        f_cover_hint: 'فقط برای کتاب‌ها — عکس جلد را انتخاب کنید؛ هنگام ذخیره آپلود می‌شود.',
+        uploading_cover: 'در حال آپلود جلد…',
+        hint_run_sql: 'اول فایل SQL راه‌اندازی کتاب‌ها را در Supabase اجرا کنید.',
         err_read: 'خطا در خواندن اطلاعات: ',
         err_save: 'خطا در ذخیره: ',
         err_delete: 'خطا در حذف: ',
@@ -429,6 +441,10 @@
         vis_members: 'Members — signed-in parents only',
         f_order: 'Display order (smaller number = higher)',
         f_active: 'Active (shown on the site)',
+        f_cover: '🖼️ Book cover',
+        f_cover_hint: 'Books only — pick a cover image; it uploads on save.',
+        uploading_cover: 'Uploading cover…',
+        hint_run_sql: 'Run the books setup SQL in Supabase first.',
         err_read: 'Error reading data: ',
         err_save: 'Error saving: ',
         err_delete: 'Error deleting: ',
@@ -561,6 +577,7 @@
     ];
     var currentTab = 'stats';
     var editingItemId = null;
+    var coverFile = null;
     var editingTextKey = null;
     var adminEmail = '';
 
@@ -583,6 +600,7 @@
       $('panel-series').hidden = (id !== 'series');
       $('panel-texts').hidden = (id !== 'texts');
       $('panel-members').hidden = (id !== 'members');
+      $('cover-row').hidden = (id !== 'book');
       if (id === 'stats') loadStats();
       else if ($('panel-items').hidden === false) loadItems();
       else if (id === 'series') loadSeriesSettings();
@@ -634,7 +652,7 @@
           ? '<span class="badge free">' + t('badge_on') + '</span>'
           : '<span class="badge off">' + t('badge_off') + '</span>';
         return '<tr>' +
-          '<td><strong>' + esc(r.title) + '</strong>' +
+          '<td>' + (r.cover_url ? '<img src="' + esc(r.cover_url) + '" alt="" style="width:44px;height:56px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-left:8px" />' : '') + '<strong>' + esc(r.title) + '</strong>' +
           (r.description ? '<br /><small style="color:var(--muted)">' + esc(r.description).slice(0, 90) + '</small>' : '') + '</td>' +
           '<td>' + vis + '</td>' +
           '<td><label class="quick"><input type="checkbox" data-toggle="' + r.id + '"' + (r.is_active ? ' checked' : '') + ' /> ' + active + '</label></td>' +
@@ -675,6 +693,11 @@
       $('item-form').reset();
       $('f-active').checked = true; $('f-order').value = 0; $('f-vis').value = 'free';
       editingItemId = null;
+      coverFile = null;
+      $('f-cover-file').value = '';
+      $('f-cover-url').value = '';
+      $('f-cover-preview').hidden = true;
+      $('f-cover-preview').src = '';
       setItemFormTitle();
     }
 
@@ -689,6 +712,11 @@
       $('f-vis').value = r.visibility || 'free';
       $('f-order').value = r.sort_order || 0;
       $('f-active').checked = !!r.is_active;
+      coverFile = null;
+      $('f-cover-file').value = '';
+      $('f-cover-url').value = r.cover_url || '';
+      if (r.cover_url) { $('f-cover-preview').src = r.cover_url; $('f-cover-preview').hidden = false; }
+      else { $('f-cover-preview').hidden = true; $('f-cover-preview').src = ''; }
       setItemFormTitle();
       $('form-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -700,9 +728,26 @@
       else { toast(t('deleted'), true); loadItems(); }
     }
 
+    $('f-cover-file').addEventListener('change', function () {
+      coverFile = this.files && this.files[0] ? this.files[0] : null;
+      if (coverFile) { $('f-cover-preview').src = URL.createObjectURL(coverFile); $('f-cover-preview').hidden = false; }
+    });
     $('item-form').addEventListener('submit', async function (e) {
       e.preventDefault(); clearToast();
       var btn = $('btn-submit'); btn.disabled = true;
+      var coverUrl = $('f-cover-url').value.trim() || null;
+      if (currentTab === 'book' && coverFile) {
+        toast(t('uploading_cover'), true);
+        var fname = 'cover-' + Date.now() + '-' + String(coverFile.name || 'cover.jpg').replace(/[^a-zA-Z0-9.\-_]/g, '_');
+        var up = await supabase.storage.from('book-covers').upload(fname, coverFile, { upsert: false });
+        if (up.error) {
+          btn.disabled = false;
+          toast(t('err_save') + up.error.message + ' ' + t('hint_run_sql'), false);
+          return;
+        }
+        coverUrl = supabase.storage.from('book-covers').getPublicUrl(fname).data.publicUrl;
+        $('f-cover-url').value = coverUrl;
+      }
       var payload = {
         kind: currentTab,
         title: $('f-title').value.trim(),
@@ -712,11 +757,15 @@
         sort_order: parseInt($('f-order').value, 10) || 0,
         is_active: $('f-active').checked
       };
+      if (currentTab === 'book') payload.cover_url = coverUrl;
       var res = editingItemId
         ? await supabase.from('content_items').update(payload).eq('id', editingItemId)
         : await supabase.from('content_items').insert(payload);
       btn.disabled = false;
-      if (res.error) toast(t('err_save') + res.error.message, false);
+      if (res.error) {
+        var em = res.error.message || '';
+        toast(t('err_save') + em + (em.indexOf('cover_url') !== -1 ? ' ' + t('hint_run_sql') : ''), false);
+      }
       else { toast(editingItemId ? t('updated') : t('added'), true); resetItemForm(); loadItems(); }
     });
     $('btn-cancel').addEventListener('click', resetItemForm);
