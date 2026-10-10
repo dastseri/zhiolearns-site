@@ -332,6 +332,9 @@
         hint_printable: 'فایل‌های PDF فعالیت چاپی. «لینک فایل» را وارد کنید؛ اگر «اعضا» را انتخاب کنید فقط والدین واردشده می‌بینند.',
         hint_game: 'برای بازی‌ها «عنوان» باید دقیقاً کلید سری باشد: adventure یا puzzle یا maze. دسترسی «اعضا» یعنی آن سری قفل می‌شود.',
         hint_book: 'کتاب‌های آمازون. در «لینک فایل» آدرس صفحه خرید را بگذارید.',
+        tab_story: '📖 قصه‌ها',
+        title_story: 'قصه‌های رامی',
+        hint_story: 'متن کامل قصه را در «توضیح» بنویسید — هر پاراگراف جدا. در «لینک فایل» آدرس کتاب مرتبط در آمازون.',
         hint_video: 'لینک ویدیو (مثلاً یوتیوب).',
         title_printable: 'چاپی‌ها',
         title_game: 'بازی‌ها',
@@ -459,6 +462,9 @@
         hint_printable: 'Printable activity PDFs. Enter the \u201cfile link\u201d; choose \u201cmembers\u201d and only signed-in parents will see it.',
         hint_game: 'For games the \u201ctitle\u201d must be exactly the series key: adventure, puzzle or maze. \u201cMembers\u201d access means that series is locked.',
         hint_book: 'Amazon books. Put the shop page address in \u201cfile link\u201d.',
+        tab_story: '📖 Stories',
+        title_story: "Romy's stories",
+        hint_story: 'Write the full story in \u201cDescription\u201d \u2014 one paragraph per block. Put the related book link in \u201cFile link\u201d.',
         hint_video: 'Video link (e.g. YouTube).',
         title_printable: 'Printables',
         title_game: 'Games',
@@ -570,6 +576,7 @@
       { id: 'printable', tab: 'tab_printable', title: 'title_printable', hint: 'hint_printable' },
       { id: 'game',      tab: 'tab_game',      title: 'title_game',      hint: 'hint_game' },
       { id: 'book',      tab: 'tab_book',      title: 'title_book',      hint: 'hint_book' },
+      { id: 'story',     tab: 'tab_story',     title: 'title_story',     hint: 'hint_story' },
       { id: 'video',     tab: 'tab_video',     title: 'title_video',     hint: 'hint_video' },
       { id: 'series',    tab: 'tab_series',    title: null, hint: null },
       { id: 'texts',     tab: 'tab_texts',     title: null, hint: null },
@@ -596,11 +603,11 @@
       if (!soft) { editingItemId = null; editingTextKey = null; clearToast(); resetItemForm(); resetTextForm(); }
       renderTabs();
       $('panel-stats').hidden = (id !== 'stats');
-      $('panel-items').hidden = !(id === 'printable' || id === 'game' || id === 'book' || id === 'video');
+      $('panel-items').hidden = !(id === 'printable' || id === 'game' || id === 'book' || id === 'video' || id === 'story');
       $('panel-series').hidden = (id !== 'series');
       $('panel-texts').hidden = (id !== 'texts');
       $('panel-members').hidden = (id !== 'members');
-      $('cover-row').hidden = (id !== 'book');
+      $('cover-row').hidden = !(id === 'book' || id === 'story');
       if (id === 'stats') loadStats();
       else if ($('panel-items').hidden === false) loadItems();
       else if (id === 'series') loadSeriesSettings();
@@ -736,7 +743,7 @@
       e.preventDefault(); clearToast();
       var btn = $('btn-submit'); btn.disabled = true;
       var coverUrl = $('f-cover-url').value.trim() || null;
-      if (currentTab === 'book' && coverFile) {
+      if ((currentTab === 'book' || currentTab === 'story') && coverFile) {
         toast(t('uploading_cover'), true);
         var fname = 'cover-' + Date.now() + '-' + String(coverFile.name || 'cover.jpg').replace(/[^a-zA-Z0-9.\-_]/g, '_');
         var up = await supabase.storage.from('book-covers').upload(fname, coverFile, { upsert: false });
@@ -757,7 +764,7 @@
         sort_order: parseInt($('f-order').value, 10) || 0,
         is_active: $('f-active').checked
       };
-      if (currentTab === 'book') payload.cover_url = coverUrl;
+      if (currentTab === 'book' || currentTab === 'story') payload.cover_url = coverUrl;
       var res = editingItemId
         ? await supabase.from('content_items').update(payload).eq('id', editingItemId)
         : await supabase.from('content_items').insert(payload);

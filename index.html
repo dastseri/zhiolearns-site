@@ -119,6 +119,19 @@
     .together .section-title{max-width:12ch}.together p{font-size:20px;max-width:44ch;color:#dbfffa}.together .btn{justify-self:end;background:var(--sun);color:#46380c;box-shadow:0 8px 0 #9a7414;z-index:1}
     footer{padding:34px 24px 50px;text-align:center;color:var(--muted)}
     .reveal{opacity:1;transform:none}
+    .story-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;margin-top:34px}
+    .story-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 24px rgba(60,40,20,.08);border:1px solid #f0e9dc}
+    .story-card>img{width:100%;height:210px;object-fit:cover}
+    .story-body{padding:20px 22px 24px}
+    .story-body h3{margin:0 0 6px;font-size:21px}
+    .story-key{color:var(--muted);font-size:14px;margin:0 0 10px}
+    .story-excerpt{color:#4a4438;margin:0 0 8px}
+    .read-btn{background:#7C5CBF;color:#fff;border:0;border-radius:999px;padding:10px 24px;font-size:15px;cursor:pointer;margin-top:4px}
+    .read-btn:hover{background:#6a4da8}
+    .story-full{margin-top:14px;border-top:1px dashed #e5dccb;padding-top:14px}
+    .story-full p{margin:0 0 12px;line-height:1.75}
+    .story-moral{background:#FFF6EC;border-radius:12px;padding:12px 14px}
+    .story-full .order-btn{margin-top:6px;display:inline-block}
     @keyframes romy-float{0%,100%{transform:translate3d(var(--px,0),var(--py,0),0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(-.35deg)}50%{transform:translate3d(var(--px,0),calc(var(--py,0px) - 12px),0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(.65deg)}}
     @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(8deg)}}
     @keyframes orbit{to{transform:rotate(360deg)}}
@@ -495,6 +508,43 @@ footer .fine a{color:var(--teal-dark)}
     } catch (e) { return false; }
   }
 
+  function storyCardHTML(st) {
+    var paras = String(st.description || '').split(/\n\s*\n/).filter(function (x) { return x.trim(); });
+    var excerpt = (paras[0] || '').slice(0, 150).trim() + '\u2026';
+    var body = paras.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+    return '<article class="story-card reveal">' +
+      '<img src="' + esc(st.cover_url || 'img/books/book-bedtime-stories.jpg') + '" alt="' + esc(st.title) + ' story illustration" loading="lazy">' +
+      '<div class="story-body"><h3>' + esc(st.title) + '</h3>' +
+      '<p class="story-excerpt">' + esc(excerpt) + '</p>' +
+      '<button class="read-btn" type="button">Read the story</button>' +
+      '<div class="story-full" hidden>' + body +
+      '<p class="story-moral">\U0001F49B ' + esc('Sweet dreams from Romy the raccoon.') + '</p>' +
+      '<a class="order-btn" href="' + esc(st.asset_url || 'https://www.amazon.com/author/zhio') + '" target="_blank" rel="noopener">Find the book on Amazon</a>' +
+      '</div></div></article>';
+  }
+  async function renderStories() {
+    try {
+      if (!ZLG.db) return;
+      var r = await ZLG.db.from('content_items')
+        .select('title,description,asset_url,cover_url')
+        .eq('kind', 'story').eq('is_active', true)
+        .order('sort_order', { ascending: true });
+      var stories = (r.data || []).filter(function (x) { return x && x.title && x.description; });
+      if (r.error || !stories.length) return;
+      var grid = document.getElementById('story-grid');
+      if (!grid) return;
+      grid.innerHTML = stories.map(storyCardHTML).join('');
+    } catch (e) { /* keep the built-in stories */ }
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('.read-btn') : null;
+    if (!b) return;
+    var full = b.parentElement.querySelector('.story-full');
+    if (!full) return;
+    var willOpen = full.hidden;
+    full.hidden = !willOpen;
+    b.textContent = willOpen ? 'Show less' : 'Read the story';
+  });
   async function renderShopBooks() {
     try {
       if (!ZLG.db) return;
@@ -552,6 +602,7 @@ footer .fine a{color:var(--teal-dark)}
     paintAccount();
     loadPrintables();
     renderShopBooks();
+    renderStories();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
@@ -987,6 +1038,111 @@ footer .fine a{color:var(--teal-dark)}
       <div class="reveal" style="text-align:center;margin-top:30px">
         <p style="color:var(--muted)" id="book-count">All 10 books are live on Amazon &mdash; paperbacks made for little hands.</p>
         <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener" style="padding:15px 34px;font-size:18px">Visit Zhio&rsquo;s Amazon author page</a>
+      </div>
+    </section>
+
+    <section id="stories">
+      <div class="intro reveal">
+        <p class="eyebrow">Romy's Storytime</p>
+        <h2 class="section-title">Short bedtime stories with Romy.</h2>
+        <p>Cozy 5-minute read-aloud stories for ages 3&ndash;6 &mdash; kindness, curiosity, numbers, letters &amp; colors. New stories added regularly.</p>
+      </div>
+      <div class="story-grid" id="story-grid">
+        <article class="story-card reveal">
+          <img src="img/books/book-bedtime-stories.jpg" alt="Romy and the Lost Firefly story illustration" loading="lazy">
+          <div class="story-body">
+            <h3>Romy and the Lost Firefly</h3>
+            <p class="story-key">A gentle bedtime story about kindness · 5-minute read</p>
+            <p class="story-excerpt">One warm evening, Romy the little raccoon laced up his tiny explorer boots and tiptoed into the whispering forest. The sun had gone to sleep, and the…</p>
+            <button class="read-btn" type="button">Read the story</button>
+            <div class="story-full" hidden>
+              <p>One warm evening, Romy the little raccoon laced up his tiny explorer boots and tiptoed into the whispering forest. The sun had gone to sleep, and the stars were just waking up, one by one.</p>
+          <p>“Shh,” whispered a soft voice. “Someone needs our help.” It was Romy’s friend, the old owl, sitting quietly on a low branch.</p>
+          <p>High in the ferns glowed a tiny firefly, flickering on and off. “My light feels shy,” sniffled the firefly. “I lost my sparkle on the way home, and now I can’t find my way.”</p>
+          <p>Romy had an idea. “Let’s do what we do at home!” He clapped softly — one, two, three — and hummed a brave little tune. The old owl hooted along, low and warm.</p>
+          <p>The firefly giggled… and glowed a little brighter. “Again!” she cheered. So they sang together, louder and happier, until the whole forest path twinkled like the night sky.</p>
+          <p>“Thank you!” sang the firefly, dancing all the way home. And Romy walked back under a sky full of winking stars, holding the owl’s wing. “Goodnight, forest,” he yawned. “Goodnight, kind little firefly.” The end.</p>
+              <p class="story-moral">💛 Sometimes a little kindness is all it takes to help someone shine again.</p>
+              <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find the book on Amazon</a>
+            </div>
+          </div>
+        </article>
+        <article class="story-card reveal">
+          <img src="img/books/book-number-adventure.jpg" alt="Romy Counts Ten Red Apples story illustration" loading="lazy">
+          <div class="story-body">
+            <h3>Romy Counts Ten Red Apples</h3>
+            <p class="story-key">A playful counting story for preschoolers · 5-minute read</p>
+            <p class="story-excerpt">It was apple-picking day! Romy the little raccoon carried a big empty basket into the sunny orchard. “Today,” he said, “I will count every apple I pic…</p>
+            <button class="read-btn" type="button">Read the story</button>
+            <div class="story-full" hidden>
+              <p>It was apple-picking day! Romy the little raccoon carried a big empty basket into the sunny orchard. “Today,” he said, “I will count every apple I pick. One by one!”</p>
+          <p>He reached up high and picked ONE shiny red apple. Plip! Into the basket it went. “One!” said Romy.</p>
+          <p>Then he found TWO apples hiding behind the leaves. “One… two!” he counted, feeling very proud.</p>
+          <p>Under the tree he found THREE more, round and red. “One, two, three!” And by the fence, FOUR apples were waiting. “One, two, three, four!”</p>
+          <p>Romy kept going — FIVE apples near the gate, SIX by the little pond, SEVEN under the big branch, EIGHT beside the flowers, NINE near his boots, and TEN — the biggest, reddest apple of all — right on top of the pile!</p>
+          <p>“One, two, three, four, five, six, seven, eight, nine, TEN!” cheered Romy, doing a happy dance. That night he shared his ten red apples with all his forest friends. And do you know what? Sharing made them taste even sweeter. The end.</p>
+              <p class="story-moral">🍎 Counting is more fun when you share what you count!</p>
+              <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find the book on Amazon</a>
+            </div>
+          </div>
+        </article>
+        <article class="story-card reveal">
+          <img src="img/books/book-forest-of-feelings.jpg" alt="Romy’s Big Stormy Feeling story illustration" loading="lazy">
+          <div class="story-body">
+            <h3>Romy’s Big Stormy Feeling</h3>
+            <p class="story-key">A social-emotional story about big feelings · 5-minute read</p>
+            <p class="story-excerpt">One gray morning, Romy the little raccoon woke up with a stormy feeling inside. His block tower had fallen down the night before, and the grumpy feeli…</p>
+            <button class="read-btn" type="button">Read the story</button>
+            <div class="story-full" hidden>
+              <p>One gray morning, Romy the little raccoon woke up with a stormy feeling inside. His block tower had fallen down the night before, and the grumpy feeling was still there, rumbling like thunder.</p>
+          <p>“I feel MAD!” Romy huffed, crossing his arms. His tail swished. His ears felt hot. The mad feeling was SO big, it felt like it might burst out.</p>
+          <p>Then his friend the turtle came by, slow and calm as always. “That’s a big feeling,” said the turtle kindly. “Would you like to name it? Naming a feeling makes it a little smaller.”</p>
+          <p>Romy took a deep breath — in through his nose, out through his mouth. “I feel… frustrated,” he said quietly. “My tower fell, and I worked so hard on it.”</p>
+          <p>Saying it out loud helped. The storm inside got a little quieter. “It’s okay to feel frustrated,” said the turtle. “Feelings are like weather — they always pass.”</p>
+          <p>So Romy breathed, and waited, and the mad feeling floated away like a dark cloud. Then he smiled — and built his tower again, even taller than before. The end.</p>
+              <p class="story-moral">💛 All feelings are okay. Naming them and breathing helps the storm pass.</p>
+              <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find the book on Amazon</a>
+            </div>
+          </div>
+        </article>
+        <article class="story-card reveal">
+          <img src="img/books/book-alphabet-abc.jpg" alt="Romy’s Alphabet Picnic story illustration" loading="lazy">
+          <div class="story-body">
+            <h3>Romy’s Alphabet Picnic</h3>
+            <p class="story-key">A letter-learning story for preschoolers · 5-minute read</p>
+            <p class="story-excerpt">On a sunny Saturday, Romy the little raccoon packed a picnic basket. “Today,” he announced, “we are having an ALPHABET picnic! Everything we eat will…</p>
+            <button class="read-btn" type="button">Read the story</button>
+            <div class="story-full" hidden>
+              <p>On a sunny Saturday, Romy the little raccoon packed a picnic basket. “Today,” he announced, “we are having an ALPHABET picnic! Everything we eat will start with a letter!”</p>
+          <p>First he packed A — a big red APPLE. “A is for apple!” he sang, taking a crunchy bite.</p>
+          <p>Then B — a bunch of tiny blueberries. “B is for blueberry!” His tongue turned a little bit blue, and he giggled.</p>
+          <p>Next came C — a crunchy CARROT. “C is for carrot!” Crunch, crunch, crunch.</p>
+          <p>Then D — delicious DONUTS with strawberry sprinkles. “D is for donut!” (Just one each — picnic rules!)</p>
+          <p>And E — a dozen EGGS to share with his friends. “E is for egg — and for EVERYONE!” Because the best letter of all is the one you share. The end.</p>
+              <p class="story-moral">🔥 Letters are everywhere — even in your lunch!</p>
+              <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find the book on Amazon</a>
+            </div>
+          </div>
+        </article>
+        <article class="story-card reveal">
+          <img src="img/books/book-shape-color-adventure.jpg" alt="Romy Paints the Rainbow Garden story illustration" loading="lazy">
+          <div class="story-body">
+            <h3>Romy Paints the Rainbow Garden</h3>
+            <p class="story-key">A gentle story about colors for toddlers · 5-minute read</p>
+            <p class="story-excerpt">Spring had come, but Romy’s garden was still all gray. “A garden should be full of COLORS!” said Romy the little raccoon, picking up his paintbrush.…</p>
+            <button class="read-btn" type="button">Read the story</button>
+            <div class="story-full" hidden>
+              <p>Spring had come, but Romy’s garden was still all gray. “A garden should be full of COLORS!” said Romy the little raccoon, picking up his paintbrush.</p>
+          <p>First he painted the fence posts RED, like juicy strawberries. “Red!” he cheered.</p>
+          <p>Then he painted the flowerpots ORANGE, like a warm sunset. “Orange!”</p>
+          <p>Next the watering can turned YELLOW, bright like the morning sun. “Yellow!” The sunflowers nodded happily.</p>
+          <p>He painted the leaves GREEN, the birdhouse BLUE, and the little stones PURPLE — every color of the rainbow!</p>
+          <p>When he finished, the whole garden glowed. A butterfly landed on the purple stones and whispered, “It’s beautiful, Romy.” And Romy smiled the biggest smile of all. The end.</p>
+              <p class="story-moral">🌈 Colors make the world — and our feelings — brighter.</p>
+              <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find the book on Amazon</a>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
