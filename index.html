@@ -228,6 +228,24 @@ a.order-btn{display:inline-block;text-decoration:none;text-align:center}
 .series-card h3{margin:0;font:700 26px "Baloo 2",sans-serif}
 .series-card p{margin:0;color:var(--muted);font-weight:600}
 .series-go{margin-top:8px;font-weight:800;color:var(--coral)}
+/* ---- Cycle 01: Feelings Friends game + parent article + printable spotlight ---- */
+#feel-stage{position:relative;overflow:hidden;border-radius:18px}
+.feel-scene{font-size:clamp(52px,12vw,84px);text-align:center;margin:6px 0 4px;line-height:1.15}
+.feel-scenario{font-size:clamp(19px,3vw,24px);text-align:center;color:var(--muted);font-weight:600;max-width:34em;margin:0 auto 8px}
+.feel-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+.feel-btn{border:1px solid var(--line);border-radius:24px;background:var(--soft);padding:16px 6px 12px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;align-items:center;gap:4px}
+.feel-btn:hover{transform:scale(1.05)}
+.feel-btn .f-emoji{font-size:clamp(38px,8vw,56px);line-height:1}
+.feel-btn .f-word{font:700 clamp(16px,2.6vw,21px) "Baloo 2",sans-serif;color:var(--ink)}
+.parent-article-card{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:24px 26px}
+.parent-article-card h3{margin:0 0 8px;font:700 24px "Baloo 2",sans-serif}
+.parent-article-card p{margin:0 0 14px;color:var(--muted)}
+.spotlight-card{grid-column:1/-1;display:flex;gap:20px;align-items:center;background:var(--card);border:2px solid var(--teal);border-radius:22px;box-shadow:var(--shadow);padding:20px 24px;text-align:left}
+.spotlight-card img{width:150px;max-width:38vw;border:1px solid var(--line);border-radius:12px}
+.spotlight-card h3{margin:0 0 6px;font:700 23px "Baloo 2",sans-serif}
+.spotlight-card p{margin:0 0 12px;color:var(--muted)}
+.new-badge{display:inline-block;background:var(--sun);color:#46380c;font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 12px;margin-bottom:8px}
+@media(max-width:640px){.spotlight-card{flex-direction:column;text-align:center}.feel-choices{gap:9px}}
 /* ---- Series 2+3: puzzle + maze ---- */
 .puz-scene{display:flex;gap:12px;justify-content:center;font-size:clamp(46px,10vw,72px);margin:8px 0 20px}
 .puz-missing{background:var(--soft);border:3px dashed var(--line);border-radius:22px;min-width:1.7em;display:grid;place-items:center}
@@ -353,14 +371,15 @@ footer .fine a{color:var(--teal-dark)}
   var SERIES = {
     adventure: { section: 'adventure', total: 8, fallbackFree: 3, name: "Romy's Adventure" },
     puzzle:    { section: 'puzzle',    total: 5, fallbackFree: 2, name: 'Puzzle Time' },
-    maze:      { section: 'maze',      total: 5, fallbackFree: 2, name: 'Maze Runner' }
+    maze:      { section: 'maze',      total: 5, fallbackFree: 2, name: 'Maze Runner' },
+    feelings:  { section: 'feelings',  total: 5, fallbackFree: 2, name: "Romy's Feelings Friends" }
   };
   var AUTH_URL = 'auth.html';
 
   /* Public handle used by the game code further down this page. */
   var ZLG = window.ZLG = {
     user: null, isMember: false, isAdmin: false, ready: false,
-    free: { adventure: 3, puzzle: 2, maze: 2 },
+    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2 },
     db: null
   };
 
@@ -586,7 +605,7 @@ footer .fine a{color:var(--teal-dark)}
         } catch (e) { ZLG.isAdmin = false; }
       }
       try {
-        var keys = ['free_levels_adventure', 'free_levels_puzzle', 'free_levels_maze'];
+        var keys = ['free_levels_adventure', 'free_levels_puzzle', 'free_levels_maze', 'free_levels_feelings'];
         var r = await ZLG.db.from('site_texts').select('key,value').in('key', keys);
         (r.data || []).forEach(function (row) {
           var k = String(row.key).replace('free_levels_', '');
@@ -620,6 +639,7 @@ footer .fine a{color:var(--teal-dark)}
     <a href="#maker">Printables</a>
     <a href="#printables">Print packs</a>
     <a href="#shop">Books</a>
+    <a href="for-parents-naming-big-feelings.html">Articles</a>
     <a class="parent-link" href="#parents">For parents</a>
     <span class="account-area" id="account-area"><a class="parent-link" href="auth.html">Join free</a></span>
   </nav>
@@ -713,6 +733,7 @@ footer .fine a{color:var(--teal-dark)}
           <a href="#adventure">Adventure</a>
           <a href="#puzzle">Puzzles</a>
           <a href="#maze">Maze</a>
+          <a href="#feelings">Feelings</a>
           <a href="#letters">ABC game</a>
           <a href="#color">Coloring</a>
         </div>
@@ -724,7 +745,7 @@ footer .fine a{color:var(--teal-dark)}
       <div class="play-copy reveal">
         <p class="eyebrow">Game series</p>
         <h2 class="section-title">Pick a game, play the levels!</h2>
-        <p>Three series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
+        <p>Four series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
       </div>
       <div class="series-grid reveal">
         <a class="series-card" href="#adventure">
@@ -743,6 +764,12 @@ footer .fine a{color:var(--teal-dark)}
           <span class="series-emoji">🌀</span>
           <h3>Maze Runner</h3>
           <p>5 levels &middot; guide Romy home, tap step by step</p>
+          <span class="series-go">Play &rarr;</span>
+        </a>
+        <a class="series-card" href="#feelings">
+          <span class="series-emoji">💛</span>
+          <h3>Romy's Feelings Friends</h3>
+          <p>5 levels &middot; match faces to feelings, help Romy's friends</p>
           <span class="series-go">Play &rarr;</span>
         </a>
       </div>
@@ -803,6 +830,24 @@ footer .fine a{color:var(--teal-dark)}
     </section>
 
 
+    <section id="feelings">
+      <div class="play-copy reveal">
+        <p class="eyebrow">Series 4 &middot; Romy's Feelings Friends &middot; New!</p>
+        <h2 class="section-title">How is Romy feeling?</h2>
+        <p>Five kind levels &mdash; match faces to feelings and help Romy&rsquo;s friends through little everyday moments.</p>
+      </div>
+      <div class="game reveal" aria-labelledby="feel-status">
+        <div class="adv-hud">
+          <span class="adv-pill" id="feel-level">Level 1 of 5</span>
+          <div class="adv-progress" aria-hidden="true"><span id="feel-bar"></span></div>
+          <span class="adv-pill adv-score">⭐ <span id="feel-score">0</span></span>
+        </div>
+        <div id="feel-stage"></div>
+        <p class="game-note" id="feel-note" aria-live="polite">Romy is cheering for you.</p>
+      </div>
+    </section>
+
+
     <section id="letters">
       <div class="play-copy reveal">
         <p class="eyebrow">Letters with Romy</p>
@@ -857,6 +902,13 @@ footer .fine a{color:var(--teal-dark)}
         <p class="eyebrow">The parent corner</p>
         <h2 class="section-title">Purpose behind every playful moment.</h2>
         <p>ZhioLearns is designed around the way young children learn best: short bursts, friendly repetition, clear cues, and curiosity without pressure.</p>
+        <div class="parent-article-card">
+          <span class="new-badge">New article</span>
+          <h3>When the Cup Is the Wrong Colour</h3>
+          <p>The meltdown is rarely about the cup. How five minutes of reading aloud helps little kids name big feelings &mdash; with a free printable and a new game to play together.</p>
+          <a class="btn secondary" href="for-parents-naming-big-feelings.html">Read the article &rarr;</a>
+          <p style="margin-top:14px"><a href="printables/feelings-match-with-romy.pdf" download>🖨️ Get the free printable: Romy&rsquo;s Feelings Match (PDF)</a></p>
+        </div>
       </div>
       <div class="benefits">
         <article class="benefit reveal"><div class="num">01</div><div><h3>Made for ages 3–6</h3><p>Big visuals, simple language, and activities that respect developing attention spans.</p></div></article>
@@ -910,6 +962,17 @@ footer .fine a{color:var(--teal-dark)}
         <p class="eyebrow">Printable packs</p>
         <h2 class="section-title">Print, play, repeat.</h2>
         <p>Downloadable activity packs starring Romy &mdash; tracing, counting, mazes and coloring pages. Some are free for everyone; a free membership unlocks them all.</p>
+      </div>
+      <div class="print-grid reveal" style="margin-bottom:18px">
+        <div class="spotlight-card">
+          <img src="img/printables/feelings-match-preview.png" alt="Preview of Romy's Feelings Match printable" loading="lazy">
+          <div>
+            <span class="new-badge">New this week &middot; Free</span>
+            <h3>Romy's Feelings Match</h3>
+            <p>Match faces to feeling words, circle the feeling that fits each little moment, and draw your own feeling face. Two pages, ages 3&ndash;6.</p>
+            <a class="order-btn" href="printables/feelings-match-with-romy.pdf" download>Download PDF</a>
+          </div>
+        </div>
       </div>
       <div class="print-grid reveal" id="print-grid" aria-live="polite">
         <p class="game-note">Loading printable packs&hellip;</p>
@@ -1589,6 +1652,50 @@ footer .fine a{color:var(--teal-dark)}
         document.getElementById('mz-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','maze');MZ.level=0;MZ.score=0;mzNote.textContent='Level 1 \u2014 here we go!';mzRender();});
       }
       if(mzStage)mzStart();
+
+      /* ---- Series 4: Romy's Feelings Friends (5 levels + score) — Cycle 01 ---- */
+      var feelStage=document.getElementById('feel-stage');
+      var feelNote=document.getElementById('feel-note');
+      var feelLevelEl=document.getElementById('feel-level');
+      var feelBar=document.getElementById('feel-bar');
+      var feelScoreEl=document.getElementById('feel-score');
+      var FEEL={level:0,score:0,lock:false,levels:[
+        {type:'face',face:'😊',answer:'Happy',opts:[['😊','Happy'],['😢','Sad'],['😴','Sleepy']]},
+        {type:'face',face:'😢',answer:'Sad',opts:[['😄','Happy'],['😢','Sad'],['😲','Surprised']]},
+        {type:'story',icon:'🧱',text:'Romy built a tall tower — and it fell down. Crash! How does Romy feel?',answer:'Frustrated',opts:[['😤','Frustrated'],['😊','Happy'],['😴','Sleepy']]},
+        {type:'story',icon:'🎁',text:'A surprise party just for Romy! Pop go the balloons! How does Romy feel?',answer:'Surprised',opts:[['😲','Surprised'],['😢','Sad'],['😠','Angry']]},
+        {type:'story',icon:'🧸',text:'Romy’s friend Mia can’t find her teddy. Can you help her name the feeling?',answer:'Sad',opts:[['😢','Sad'],['😊','Happy'],['😲','Surprised']]}
+      ]};
+      function feelHUD(){feelLevelEl.textContent='Level '+Math.min(FEEL.level+1,5)+' of 5';feelBar.style.width=(FEEL.level/5*100)+'%';feelScoreEl.textContent=FEEL.score;}
+      function feelNext(){var zlN=FEEL.level+1;if(window.ZLG&&!window.ZLG.canPlay('feelings',zlN)){window.ZLG.unlockPrompt('feelings');return;}FEEL.level++;if(window.zlgTrack)window.zlgTrack('level_complete','feelings',String(FEEL.level));feelHUD();if(FEEL.level>=FEEL.levels.length){feelFinale();return;}feelNote.textContent='Level complete! Get ready...';setTimeout(feelRender,1100);}
+      function feelEarn(el){FEEL.score+=10;feelHUD();advGood();advPop(el);feelNote.textContent=advPraise()+' +10 points!';setTimeout(feelNext,950);}
+      function feelRender(){
+        if(!feelStage)return;FEEL.lock=false;feelHUD();
+        var L=FEEL.levels[FEEL.level];if(!L)return;
+        var head,sub;
+        if(L.type==='face'){head='How is Romy feeling?';sub='<div class="feel-scene" aria-hidden="true">'+L.face+'</div>';}
+        else{head='Listen to Romy’s little story…';sub='<div class="feel-scene" aria-hidden="true">'+L.icon+'</div><p class="feel-scenario">'+L.text+'</p>';}
+        feelStage.innerHTML='<p class="game-status" id="feel-status">'+head+'</p>'+sub+'<div class="feel-choices">'+L.opts.map(function(o){return '<button type="button" class="feel-btn" data-word="'+o[1]+'" aria-label="'+o[1]+'"><span class="f-emoji">'+o[0]+'</span><span class="f-word">'+o[1]+'</span></button>';}).join('')+'</div>';
+        feelStage.querySelectorAll('.feel-btn').forEach(function(btn){
+          btn.addEventListener('click',function(){
+            if(FEEL.lock)return;
+            if(btn.getAttribute('data-word')===L.answer){FEEL.lock=true;feelEarn(btn);}
+            else{advOops();advShake(btn);feelNote.textContent='Good try — look at the face again!';}
+          });
+        });
+      }
+      function feelStart(){
+        feelHUD();
+        feelStage.innerHTML='<div class="adv-screen"><div class="adv-romy">💛</div><p class="game-status" id="feel-status">Ready to meet Romy’s feelings?</p><p class="game-note" style="margin-top:0">5 levels &middot; earn points &middot; no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="feel-play">\u25B6 Play</button></div></div>';
+        document.getElementById('feel-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('feelings',0)){window.ZLG.unlockPrompt('feelings');return;}if(window.zlgTrack)window.zlgTrack('game_start','feelings');FEEL.level=0;FEEL.score=0;feelNote.textContent='Level 1 — here we go!';feelRender();});
+      }
+      function feelFinale(){
+        feelBar.style.width='100%';advFanfare();
+        feelStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="feel-status">Feelings friend!</p><p class="game-note" style="margin-top:0">Romy is so proud — you earned <strong>'+FEEL.score+' points</strong> and named every feeling!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="feel-again">Play again</button></div></div>';
+        boom(feelStage);feelNote.textContent='Amazing — all 5 feelings named!';
+        document.getElementById('feel-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','feelings');FEEL.level=0;FEEL.score=0;feelNote.textContent='Level 1 — here we go!';feelRender();});
+      }
+      if(feelStage)feelStart();
 
       /* ---- Coloring ---- */
       var paletteColors=['#ff6b6b','#ffa94d','#ffd43b','#69b56b','#4dabf7','#b197fc'];
