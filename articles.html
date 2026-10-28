@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Practical, play-based learning articles for parents of children ages 3–6, from the ZhioLearns team." />
+  <link rel="icon" type="image/png" href="img/zhiolearns-logo.png" />
+  <title>Articles for Parents — ZhioLearns</title>
+  <style>
+    :root{
+      --paper:#ffffff; --ink:#18333a; --muted:#5a6f73; --line:#e3ece7;
+      --teal:#087f79; --teal-dark:#075e5c; --coral:#ef694f; --sun:#ffc93c;
+      --soft:#f2f8f4; --card:#ffffff;
+      --shadow:0 14px 38px rgba(19,67,66,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);
+      font-family:"Atkinson Hyperlegible",-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      line-height:1.7;-webkit-font-smoothing:antialiased}
+    html[lang="fa"] body{font-family:"Vazirmatn","Atkinson Hyperlegible",Tahoma,sans-serif}
+    a{color:var(--teal)}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);
+      position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);z-index:10}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:22px}
+    .brand img{width:42px;height:42px;border-radius:50%}
+    .topnav{display:flex;align-items:center;gap:8px}
+    .tbtn{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;
+      padding:9px 16px;font-weight:700;text-decoration:none;font-size:15px;cursor:pointer;font-family:inherit}
+    .tbtn:hover{background:var(--soft)}
+    .wrap{max-width:860px;margin:0 auto;padding:40px 20px 90px}
+    .hero{text-align:center;margin:10px 0 34px}
+    .hero .eyebrow{display:inline-block;background:var(--soft);border:1px solid var(--line);
+      color:var(--teal);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+      padding:6px 16px;border-radius:999px;margin-bottom:14px}
+    .hero h1{font-size:clamp(30px,5vw,44px);margin:0 0 10px;line-height:1.25}
+    .hero p{color:var(--muted);font-size:18px;margin:0 auto;max-width:600px}
+    .cards{display:grid;gap:20px}
+    @media(min-width:640px){.cards{grid-template-columns:1fr 1fr}}
+    .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
+      border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;text-decoration:none;color:var(--ink);
+      transition:transform .15s ease, box-shadow .15s ease}
+    .card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(19,67,66,.14)}
+    .card h2{font-size:21px;margin:0 0 8px;line-height:1.4}
+    .card .excerpt{color:var(--muted);font-size:15.5px;margin:0 0 16px;flex:1}
+    .card .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-top:1px solid var(--line);padding-top:14px;font-size:14px}
+    .card .date{color:var(--muted)}
+    .card .read{font-weight:800;color:var(--coral);white-space:nowrap}
+    .loading,.empty{text-align:center;color:var(--muted);padding:50px 16px;font-size:17px}
+    .foot{border-top:1px solid var(--line);padding:26px 20px;text-align:center;color:var(--muted);font-size:14px}
+    .foot a{color:var(--teal);text-decoration:none;font-weight:700}
+    .err{background:#fdecea;color:#8f2b1d;border:2px solid #f3b3a6;border-radius:14px;
+      padding:14px 18px;margin-bottom:20px;font-weight:700}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html" aria-label="ZhioLearns home">
+      <img src="img/zhiolearns-logo.png" alt="Romy the raccoon" /><span><span style="color:var(--coral)">Zhio</span><span style="color:var(--teal)">Learns</span></span>
+    </a>
+    <nav class="topnav">
+      <button class="tbtn" id="btn-lang" type="button" aria-label="Language / زبان">🌐 فارسی</button>
+      <a class="tbtn" href="index.html" data-i18n="nav_home">Home</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <span class="eyebrow" data-i18n="eyebrow">For parents</span>
+      <h1 data-i18n="title">Articles for Parents</h1>
+      <p data-i18n="lede">Practical, play-based ideas for learning with your 3–6-year-old — written by the ZhioLearns team, no lectures.</p>
+    </div>
+    <div class="err" id="err" hidden></div>
+    <div class="loading" id="loading" data-i18n="loading">Loading articles…</div>
+    <div class="cards" id="cards"></div>
+    <div class="empty" id="empty" hidden data-i18n="empty">No articles yet — check back soon. 🌱</div>
+  </main>
+
+  <footer class="foot">
+    <span data-i18n="foot">© ZhioLearns — playful early learning for ages 3–6.</span>
+    <a href="index.html" data-i18n="nav_home2">Back to the site</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    'use strict';
+    /* Public articles listing — reads only published articles (RLS enforces it). */
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    var STRINGS = {
+      en: {
+        dir: 'ltr', lang: 'en', langBtn: '🌐 فارسی',
+        docTitle: 'Articles for Parents — ZhioLearns',
+        nav_home: 'Home', eyebrow: 'For parents', title: 'Articles for Parents',
+        lede: 'Practical, play-based ideas for learning with your 3–6-year-old — written by the ZhioLearns team, no lectures.',
+        loading: 'Loading articles…', empty: 'No articles yet — check back soon. 🌱',
+        read: 'Read →', err: 'Could not load articles. Please try again later.',
+        foot: '© ZhioLearns — playful early learning for ages 3–6. ', nav_home2: 'Back to the site'
+      },
+      fa: {
+        dir: 'rtl', lang: 'fa', langBtn: '🌐 EN',
+        docTitle: 'مقالات والدین — ZhioLearns',
+        nav_home: 'خانه', eyebrow: 'برای والدین', title: 'مقالات والدین',
+        lede: 'ایده‌های کاربردی و بازی‌محور برای یادگیری با کودک ۳ تا ۶ ساله — نوشته تیم ژیولرنز، بدون سخنرانی.',
+        loading: 'در حال بارگذاری مقاله‌ها…', empty: 'هنوز مقاله‌ای نیست — بعداً سر بزنید. 🌱',
+        read: '← بخوانید', err: 'بارگذاری مقاله‌ها ممکن نشد. لطفاً بعداً تلاش کنید.',
+        foot: '© ژیولرنز — یادگیری شاد برای ۳ تا ۶ ساله‌ها. ', nav_home2: 'بازگشت به سایت'
+      }
+    };
+    var LANG_KEY = 'zlg_articles_lang';
+    var LANG = 'en';
+    try { LANG = localStorage.getItem(LANG_KEY) || 'en'; } catch (e) {}
+    if (LANG !== 'fa' && LANG !== 'en') LANG = 'en';
+
+    function t(k) { return STRINGS[LANG][k] != null ? STRINGS[LANG][k] : (STRINGS.en[k] || k); }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function fmtDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString(LANG === 'fa' ? 'fa-IR' : 'en-CA', { dateStyle: 'medium' });
+      } catch (e) { return ''; }
+    }
+    function applyLang() {
+      document.documentElement.lang = STRINGS[LANG].lang;
+      document.documentElement.dir = STRINGS[LANG].dir;
+      document.title = t('docTitle');
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      document.getElementById('btn-lang').textContent = t('langBtn');
+    }
+    function setLang(l) {
+      LANG = (l === 'fa') ? 'fa' : 'en';
+      try { localStorage.setItem(LANG_KEY, LANG); } catch (e) {}
+      applyLang();
+      load();
+    }
+    document.getElementById('btn-lang').addEventListener('click', function () {
+      setLang(LANG === 'fa' ? 'en' : 'fa');
+    });
+
+    async function load() {
+      var cards = document.getElementById('cards');
+      var loading = document.getElementById('loading');
+      var empty = document.getElementById('empty');
+      var err = document.getElementById('err');
+      err.hidden = true; cards.innerHTML = ''; empty.hidden = true; loading.hidden = false;
+      loading.textContent = t('loading');
+      try {
+        var res = await supabase.from('articles')
+          .select('slug,title,excerpt,created_at')
+          .eq('published', true)
+          .order('created_at', { ascending: false });
+        if (res.error) throw new Error(res.error.message);
+        var rows = res.data || [];
+        loading.hidden = true;
+        if (!rows.length) { empty.hidden = false; empty.textContent = t('empty'); return; }
+        cards.innerHTML = rows.map(function (r) {
+          return '<a class="card" href="article.html?slug=' + encodeURIComponent(r.slug) + '">' +
+            '<h2>' + esc(r.title) + '</h2>' +
+            (r.excerpt ? '<p class="excerpt">' + esc(r.excerpt) + '</p>' : '<p class="excerpt"></p>') +
+            '<div class="meta"><span class="date">' + esc(fmtDate(r.created_at)) + '</span>' +
+            '<span class="read">' + esc(t('read')) + '</span></div>' +
+            '</a>';
+        }).join('');
+      } catch (e) {
+        loading.hidden = true;
+        err.hidden = false;
+        err.textContent = t('err');
+      }
+    }
+
+    applyLang();
+    load();
+  </script>
+</body>
+</html>

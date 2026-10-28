@@ -227,6 +227,50 @@
         </table>
         <div class="empty" id="members-empty" hidden data-i18n="empty_members">هنوز عضوی ثبت‌نام نکرده است.</div>
       </section>
+      <!-- مقالات -->
+      <section class="card" id="panel-articles" hidden>
+        <h2 data-i18n="articles_title">مقالات 📝</h2>
+        <p class="hint" data-i18n="articles_hint">مقاله‌های آموزشی برای والدین — در صفحه «مقالات» سایت نمایش داده می‌شوند. فقط مقاله‌های «منتشرشده» برای بازدیدکنندگان قابل دیدن‌اند.</p>
+        <div class="table-wrap"><table>
+          <thead><tr>
+            <th data-i18n="th_title">عنوان</th><th data-i18n="th_slug">نامک</th><th data-i18n="th_lang">زبان</th><th data-i18n="th_pub">وضعیت</th><th data-i18n="th_joined">تاریخ</th><th data-i18n="th_actions">عملیات</th>
+          </tr></thead>
+          <tbody id="articles-body"></tbody>
+        </table></div>
+        <div class="empty" id="articles-empty" hidden data-i18n="empty_articles">هنوز مقاله‌ای ثبت نشده — از فرم زیر اضافه کنید. 🌱</div>
+        <div class="btn-row" style="margin-top:14px">
+          <a class="tbtn" href="articles.html" target="_blank" rel="noopener" data-i18n="art_view">👁️ مشاهده صفحه مقالات</a>
+        </div>
+
+        <h2 style="margin-top:28px" id="article-form-title"></h2>
+        <form id="article-form" class="form-grid">
+          <label class="f"><span class="lbl" data-i18n="f_art_title">عنوان *</span>
+            <input type="text" id="a-title" required data-i18n-ph="f_art_title_ph" placeholder="مثلاً: بچه‌های ۴ ساله چطور حروف را یاد می‌گیرند" />
+          </label>
+          <label class="f"><span class="lbl"><span data-i18n="f_slug">نامک (slug) *</span> <span class="hint" style="display:inline" data-i18n="f_slug_hint">(انگلیسی، بدون فاصله)</span></span>
+            <input type="text" id="a-slug" required class="ltr" data-i18n-ph="f_slug_ph" placeholder="how-4-year-olds-learn-letters" />
+          </label>
+          <label class="f"><span class="lbl" data-i18n="f_excerpt">خلاصه (حدود ۱۵۰ کاراکتر)</span>
+            <textarea id="a-excerpt" data-i18n-ph="f_excerpt_ph" placeholder="Short summary shown on the articles list"></textarea>
+          </label>
+          <label class="f"><span class="lbl" data-i18n="f_body">متن مقاله (HTML ساده) *</span>
+            <textarea id="a-body" required class="ltr" style="min-height:220px" data-i18n-ph="f_body_ph" placeholder="<p>…</p>"></textarea>
+          </label>
+          <div class="form-grid two">
+            <label class="f"><span class="lbl" data-i18n="f_lang">زبان مقاله</span>
+              <select id="a-lang">
+                <option value="en" data-i18n="lang_en">انگلیسی</option>
+                <option value="fa" data-i18n="lang_fa">فارسی</option>
+              </select>
+            </label>
+            <label class="f check"><input type="checkbox" id="a-published" checked /> <span data-i18n="f_published">منتشر شود (در سایت نمایش داده شود)</span></label>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-add" type="submit" id="btn-article-submit"></button>
+            <button class="btn btn-cancel" type="button" id="btn-article-cancel" hidden data-i18n="btn_cancel">انصراف</button>
+          </div>
+        </form>
+      </section>
     </main>
   </div>
 
@@ -263,6 +307,38 @@
         tab_series: '⚙️ تنظیمات سری‌ها',
         tab_texts: '📝 متن‌های سایت',
         tab_members: '👨‍👩‍👧 اعضا',
+        tab_articles: '📝 مقالات',
+        articles_title: 'مقالات 📝',
+        articles_hint: 'مقاله‌های آموزشی برای والدین — در صفحه «مقالات» سایت نمایش داده می‌شوند. فقط مقاله‌های «منتشرشده» برای بازدیدکنندگان قابل دیدن‌اند.',
+        th_slug: 'نامک',
+        th_lang: 'زبان',
+        th_pub: 'وضعیت',
+        badge_pub: '✅ منتشرشده',
+        badge_draft: '📝 پیش‌نویس',
+        empty_articles: 'هنوز مقاله‌ای ثبت نشده — از فرم زیر اضافه کنید. 🌱',
+        art_view: '👁️ مشاهده صفحه مقالات',
+        art_form_add: 'افزودن مقاله ➕',
+        art_form_edit: 'ویرایش مقاله ✏️',
+        f_art_title: 'عنوان *',
+        f_art_title_ph: 'مثلاً: بچه‌های ۴ ساله چطور حروف را یاد می‌گیرند',
+        f_slug: 'نامک (slug) *',
+        f_slug_hint: '(انگلیسی، بدون فاصله — مثل: how-4-year-olds-learn-letters)',
+        f_slug_ph: 'how-4-year-olds-learn-letters',
+        f_excerpt: 'خلاصه (حدود ۱۵۰ کاراکتر)',
+        f_excerpt_ph: 'Short summary shown on the articles list',
+        f_body: 'متن مقاله (HTML ساده) *',
+        f_body_ph: '<p>…</p> — می‌توانید از p، h2، h3، ul، li، strong و em استفاده کنید',
+        f_lang: 'زبان مقاله',
+        lang_en: 'انگلیسی',
+        lang_fa: 'فارسی',
+        f_published: 'منتشر شود (در سایت نمایش داده شود)',
+        art_added: 'مقاله اضافه شد ✅',
+        art_updated: 'تغییرات ذخیره شد ✅',
+        art_deleted: 'مقاله حذف شد 🗑️',
+        art_err_read: 'خطا در خواندن مقاله‌ها: ',
+        art_err_save: 'خطا در ذخیره مقاله: ',
+        art_err_delete: 'خطا در حذف مقاله: ',
+        confirm_art_delete: 'این مقاله حذف شود؟\nاین کار برگشت‌پذیر نیست!',
         stats_title: '📊 آمار',
         stats_hint: 'آمار بازدید و بازی — فقط تعداد شمرده می‌شود، هیچ اطلاعاتی از کودکان جمع نمی‌شود. ردیف «بدون حساب» یعنی بازدیدکننده‌ای که وارد حساب نشده است.',
         stats_empty: 'هنوز داده‌ای ثبت نشده 🌱',
@@ -393,6 +469,38 @@
         tab_series: '⚙️ Series settings',
         tab_texts: '📝 Site texts',
         tab_members: '👨‍👩‍👧 Members',
+        tab_articles: '📝 Articles',
+        articles_title: 'Articles 📝',
+        articles_hint: 'Educational articles for parents — shown on the site\u2019s Articles page. Only \u201cpublished\u201d articles are visible to visitors.',
+        th_slug: 'Slug',
+        th_lang: 'Language',
+        th_pub: 'Status',
+        badge_pub: '✅ Published',
+        badge_draft: '📝 Draft',
+        empty_articles: 'No articles yet — add one with the form below. 🌱',
+        art_view: '👁️ View the Articles page',
+        art_form_add: 'Add article ➕',
+        art_form_edit: 'Edit article ✏️',
+        f_art_title: 'Title *',
+        f_art_title_ph: 'e.g. How 4-year-olds really learn letters',
+        f_slug: 'Slug *',
+        f_slug_hint: '(English, no spaces — e.g. how-4-year-olds-learn-letters)',
+        f_slug_ph: 'how-4-year-olds-learn-letters',
+        f_excerpt: 'Excerpt (about 150 characters)',
+        f_excerpt_ph: 'Short summary shown on the articles list',
+        f_body: 'Article body (simple HTML) *',
+        f_body_ph: '<p>\u2026</p> — you can use p, h2, h3, ul, li, strong and em',
+        f_lang: 'Article language',
+        lang_en: 'English',
+        lang_fa: 'Persian',
+        f_published: 'Published (shown on the site)',
+        art_added: 'Article added ✅',
+        art_updated: 'Changes saved ✅',
+        art_deleted: 'Article deleted 🗑️',
+        art_err_read: 'Error reading articles: ',
+        art_err_save: 'Error saving article: ',
+        art_err_delete: 'Error deleting article: ',
+        confirm_art_delete: 'Delete this article?\nThis cannot be undone!',
         stats_title: '📊 Analytics',
         stats_hint: 'Visit and gameplay stats — only counts are recorded, never any information about children. The \u201cno account\u201d row means visitors who were not signed in.',
         stats_empty: 'No data recorded yet 🌱',
@@ -551,6 +659,7 @@
       else if (currentTab === 'series') loadSeriesSettings();
       else if (currentTab === 'texts') loadTexts();
       else if (currentTab === 'members') loadMembers();
+      else if (currentTab === 'articles') loadArticles();
       else loadItems();
       if (adminEmail) $('who').textContent = t('who_admin') + adminEmail;
     }
@@ -580,12 +689,14 @@
       { id: 'video',     tab: 'tab_video',     title: 'title_video',     hint: 'hint_video' },
       { id: 'series',    tab: 'tab_series',    title: null, hint: null },
       { id: 'texts',     tab: 'tab_texts',     title: null, hint: null },
-      { id: 'members',   tab: 'tab_members',   title: null, hint: null }
+      { id: 'members',   tab: 'tab_members',   title: null, hint: null },
+      { id: 'articles',  tab: 'tab_articles',  title: null, hint: null }
     ];
     var currentTab = 'stats';
     var editingItemId = null;
     var coverFile = null;
     var editingTextKey = null;
+    var editingArticleId = null;
     var adminEmail = '';
 
     function renderTabs() {
@@ -600,19 +711,21 @@
 
     function switchTab(id, soft) {
       currentTab = id;
-      if (!soft) { editingItemId = null; editingTextKey = null; clearToast(); resetItemForm(); resetTextForm(); }
+      if (!soft) { editingItemId = null; editingTextKey = null; editingArticleId = null; clearToast(); resetItemForm(); resetTextForm(); resetArticleForm(); }
       renderTabs();
       $('panel-stats').hidden = (id !== 'stats');
       $('panel-items').hidden = !(id === 'printable' || id === 'game' || id === 'book' || id === 'video' || id === 'story');
       $('panel-series').hidden = (id !== 'series');
       $('panel-texts').hidden = (id !== 'texts');
       $('panel-members').hidden = (id !== 'members');
+      $('panel-articles').hidden = (id !== 'articles');
       $('cover-row').hidden = !(id === 'book' || id === 'story');
       if (id === 'stats') loadStats();
       else if ($('panel-items').hidden === false) loadItems();
       else if (id === 'series') loadSeriesSettings();
       else if (id === 'texts') loadTexts();
       else if (id === 'members') loadMembers();
+      else if (id === 'articles') loadArticles();
     }
 
     /* ---------- نگهبان: فقط مدیر ---------- */
@@ -1059,6 +1172,115 @@
       setTimeout(function () { try { URL.revokeObjectURL(a.href); } catch (e) {} a.remove(); }, 800);
       toast(t('csv_done'), true);
     }
+
+    /* ---------- مقالات: خواندن ---------- */
+    var slugTouched = false;
+
+    function slugify(s) {
+      return String(s || '').toLowerCase()
+        .replace(/['\u2019]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80);
+    }
+
+    $('a-title').addEventListener('input', function () {
+      if (!editingArticleId && !slugTouched) {
+        $('a-slug').value = slugify($('a-title').value);
+      }
+    });
+    $('a-slug').addEventListener('input', function () { slugTouched = true; });
+
+    async function loadArticles() {
+      var res = await supabase.from('articles').select('*')
+        .order('created_at', { ascending: false });
+      if (res.error) { toast(t('art_err_read') + res.error.message, false); return; }
+      var rows = res.data || [];
+      $('articles-empty').hidden = rows.length > 0;
+      $('articles-body').innerHTML = rows.map(function (r) {
+        var st = r.published
+          ? '<span class="badge free">' + t('badge_pub') + '</span>'
+          : '<span class="badge off">' + t('badge_draft') + '</span>';
+        return '<tr>' +
+          '<td><strong>' + esc(r.title) + '</strong>' +
+          (r.excerpt ? '<br /><small style="color:var(--muted)">' + esc(r.excerpt).slice(0, 90) + '</small>' : '') + '</td>' +
+          '<td class="ltr"><small>' + esc(r.slug) + '</small></td>' +
+          '<td>' + esc(r.lang || 'en') + '</td>' +
+          '<td>' + st + '</td>' +
+          '<td>' + faDate(r.created_at) + '</td>' +
+          '<td><button type="button" class="mini" data-aedit="' + r.id + '">' + t('btn_edit') + '</button>' +
+          '<button type="button" class="mini danger" data-adel="' + r.id + '">' + t('btn_del') + '</button></td>' +
+          '</tr>';
+      }).join('');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-aedit]'), function (b) {
+        b.addEventListener('click', function () { startEditArticle(b.getAttribute('data-aedit')); });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-adel]'), function (b) {
+        b.addEventListener('click', function () { deleteArticle(b.getAttribute('data-adel')); });
+      });
+    }
+
+    /* ---------- مقالات: افزودن / ویرایش / حذف ---------- */
+    function resetArticleForm() {
+      var f = $('article-form');
+      if (f) f.reset();
+      editingArticleId = null;
+      slugTouched = false;
+      $('a-lang').value = 'en';
+      $('a-published').checked = true;
+      $('article-form-title').textContent = t('art_form_add');
+      $('btn-article-submit').textContent = t('btn_add');
+      $('btn-article-submit').className = 'btn btn-add';
+      $('btn-article-cancel').hidden = true;
+    }
+
+    async function startEditArticle(id) {
+      var res = await supabase.from('articles').select('*').eq('id', id).single();
+      if (res.error) { toast(t('art_err_read') + res.error.message, false); return; }
+      var r = res.data;
+      editingArticleId = id;
+      slugTouched = true;
+      $('a-title').value = r.title || '';
+      $('a-slug').value = r.slug || '';
+      $('a-excerpt').value = r.excerpt || '';
+      $('a-body').value = r.body_html || '';
+      $('a-lang').value = r.lang || 'en';
+      $('a-published').checked = !!r.published;
+      $('article-form-title').textContent = t('art_form_edit');
+      $('btn-article-submit').textContent = t('btn_save');
+      $('btn-article-submit').className = 'btn btn-save';
+      $('btn-article-cancel').hidden = false;
+      $('article-form-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    async function deleteArticle(id) {
+      if (!confirm(t('confirm_art_delete'))) return;
+      var res = await supabase.from('articles').delete().eq('id', id);
+      if (res.error) toast(t('art_err_delete') + res.error.message, false);
+      else { toast(t('art_deleted'), true); loadArticles(); }
+    }
+
+    $('article-form').addEventListener('submit', async function (e) {
+      e.preventDefault(); clearToast();
+      var btn = $('btn-article-submit'); btn.disabled = true;
+      var slug = slugify($('a-slug').value.trim());
+      if (!slug) { toast(t('art_err_save') + 'slug', false); btn.disabled = false; return; }
+      var payload = {
+        slug: slug,
+        title: $('a-title').value.trim(),
+        excerpt: $('a-excerpt').value.trim() || null,
+        body_html: $('a-body').value.trim(),
+        lang: $('a-lang').value,
+        published: $('a-published').checked
+      };
+      var res = editingArticleId
+        ? await supabase.from('articles').update(payload).eq('id', editingArticleId)
+        : await supabase.from('articles').insert(payload);
+      btn.disabled = false;
+      if (res.error) toast(t('art_err_save') + res.error.message, false);
+      else { toast(editingArticleId ? t('art_updated') : t('art_added'), true); resetArticleForm(); loadArticles(); }
+    });
+    $('btn-article-cancel').addEventListener('click', resetArticleForm);
 
     /* ---------- شروع ---------- */
     $('btn-logout').addEventListener('click', async function () {
