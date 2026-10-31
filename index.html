@@ -382,14 +382,15 @@ footer .fine a{color:var(--teal-dark)}
     maze:      { section: 'maze',      total: 5, fallbackFree: 2, name: 'Maze Runner' },
     feelings:  { section: 'feelings',  total: 5, fallbackFree: 2, name: "Romy's Feelings Friends" },
     patterns:  { section: 'patterns',  total: 5, fallbackFree: 2, name: "Romy's Mandala Patterns" },
-    writing:   { section: 'writing',   total: 5, fallbackFree: 2, name: "Romy's Writing Trail" }
+    writing:   { section: 'writing',   total: 5, fallbackFree: 2, name: "Romy's Writing Trail" },
+    sounds:    { section: 'sounds',    total: 5, fallbackFree: 2, name: "Romy's First Sounds" }
   };
   var AUTH_URL = 'auth.html';
 
   /* Public handle used by the game code further down this page. */
   var ZLG = window.ZLG = {
     user: null, isMember: false, isAdmin: false, ready: false,
-    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2, patterns: 2, writing: 2 },
+    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2, patterns: 2, writing: 2, sounds: 2 },
     db: null
   };
 
@@ -755,7 +756,7 @@ footer .fine a{color:var(--teal-dark)}
       <div class="play-copy reveal">
         <p class="eyebrow">Game series</p>
         <h2 class="section-title">Pick a game, play the levels!</h2>
-        <p>Six series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
+        <p>Seven series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
       </div>
       <div class="series-grid reveal">
         <a class="series-card" href="#adventure">
@@ -792,6 +793,12 @@ footer .fine a{color:var(--teal-dark)}
           <span class="series-emoji">✏️</span>
           <h3>Romy's Writing Trail</h3>
           <p>5 levels &middot; finish Romy's letters, write a first word</p>
+          <span class="series-go">Play &rarr;</span>
+        </a>
+        <a class="series-card" href="#sounds">
+          <span class="series-emoji">🔤</span>
+          <h3>Romy's First Sounds</h3>
+          <p>5 levels &middot; listen for the first sound of a word</p>
           <span class="series-go">Play &rarr;</span>
         </a>
       </div>
@@ -902,6 +909,24 @@ footer .fine a{color:var(--teal-dark)}
         </div>
         <div id="wri-stage"></div>
         <p class="game-note" id="wri-note" aria-live="polite">Romy is cheering for you.</p>
+      </div>
+    </section>
+
+
+    <section id="sounds">
+      <div class="play-copy reveal">
+        <p class="eyebrow">Series 7 &middot; Romy's First Sounds &middot; New!</p>
+        <h2 class="section-title">What sound does it start with?</h2>
+        <p>Five listening levels &mdash; Romy says a letter sound, you pick the picture whose word starts with that sound. Made to go with <em>Romy&rsquo;s Alphabet: A Fun and Colorful ABC</em>.</p>
+      </div>
+      <div class="game reveal" aria-labelledby="snd-status">
+        <div class="adv-hud">
+          <span class="adv-pill" id="snd-level">Level 1 of 5</span>
+          <div class="adv-progress" aria-hidden="true"><span id="snd-bar"></span></div>
+          <span class="adv-pill adv-score">⭐ <span id="snd-score">0</span></span>
+        </div>
+        <div id="snd-stage"></div>
+        <p class="game-note" id="snd-note" aria-live="polite">Romy is cheering for you.</p>
       </div>
     </section>
 
@@ -1107,11 +1132,11 @@ footer .fine a{color:var(--teal-dark)}
       </div>
       <div class="print-grid reveal" style="margin-bottom:18px">
         <div class="spotlight-card">
-          <img src="img/books/book-bedtime-stories.jpg" alt="Romy's Bedtime Stories book cover" loading="lazy">
+          <img src="img/books/book-alphabet-abc.jpg" alt="Romy's Alphabet: A Fun and Colorful ABC book cover" loading="lazy">
           <div>
             <span class="new-badge">Book Spotlight &middot; Today</span>
-            <h3>Romy&rsquo;s Bedtime Stories &mdash; 10 Magical Stories for Little Dreamers</h3>
-            <p>Ten short, gentle stories &mdash; a little window star, a patient snail, a tiny leaf boat, the moon in the pond &mdash; each one finished before the yawns win. No cliffhangers, no villains: just cosy endings that slow the whole evening down. For ages 3&ndash;6.</p>
+            <h3>Romy&rsquo;s Alphabet: A Fun and Colorful ABC</h3>
+            <p>One bright, friendly letter per page &mdash; each paired with a picture your little one already knows from their own world. No drills, no pressure: just point, name it, and say the sound together. The gentle first step into letters for ages 3&ndash;6 &mdash; and today Romy&rsquo;s new free game, <strong>Romy&rsquo;s First Sounds</strong>, is live above to play along.</p>
             <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find it on Amazon</a>
           </div>
         </div>
@@ -1904,6 +1929,49 @@ footer .fine a{color:var(--teal-dark)}
         document.getElementById('wri-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','writing');WRI.level=0;WRI.score=0;wriNote.textContent='Level 1 \u2014 here we go!';wriRender();});
       }
       if(wriStage)wriStart();
+
+
+      /* ---- Series 7: Romy's First Sounds (5 levels + score) — Daily 2026-10-31, spotlight: Romy's Alphabet ABC ---- */
+      var sndStage=document.getElementById('snd-stage');
+      var sndNote=document.getElementById('snd-note');
+      var sndLevelEl=document.getElementById('snd-level');
+      var sndBar=document.getElementById('snd-bar');
+      var sndScoreEl=document.getElementById('snd-score');
+      var SND={level:0,score:0,lock:false,levels:[
+        {head:'Romy says: A — aaa. Which one starts with A?',letter:'A',answer:'Apple',opts:[['🍌','Banana'],['🍎','Apple'],['🐱','Cat']]},
+        {head:'Romy says: B — buh. Which one starts with B?',letter:'B',answer:'Bee',opts:[['🐝','Bee'],['🐶','Dog'],['🐟','Fish']]},
+        {head:'Romy says: C — kuh. Which one starts with C?',letter:'C',answer:'Cat',opts:[['🐷','Pig'],['☀️','Sun'],['🐱','Cat']]},
+        {head:'Romy says: D — duh. Which one starts with D?',letter:'D',answer:'Dog',opts:[['🍎','Apple'],['🐶','Dog'],['🍌','Banana']]},
+        {head:'Last one! Romy says: R — rrr, like Romy! Which one starts with R?',letter:'R',answer:'Rainbow',opts:[['🌈','Rainbow'],['🐝','Bee'],['🐟','Fish']]}
+      ]};
+      function sndHUD(){sndLevelEl.textContent='Level '+Math.min(SND.level+1,5)+' of 5';sndBar.style.width=(SND.level/5*100)+'%';sndScoreEl.textContent=SND.score;}
+      function sndNext(){var zlN=SND.level+1;if(window.ZLG&&!window.ZLG.canPlay('sounds',zlN)){window.ZLG.unlockPrompt('sounds');return;}SND.level++;if(window.zlgTrack)window.zlgTrack('level_complete','sounds',String(SND.level));sndHUD();if(SND.level>=SND.levels.length){sndFinale();return;}sndNote.textContent='Level complete! Get ready...';setTimeout(sndRender,1100);}
+      function sndEarn(el){SND.score+=10;sndHUD();advGood();advPop(el);sndNote.textContent=advPraise()+' +10 points! Say the word out loud!';setTimeout(sndNext,950);}
+      function sndRender(){
+        if(!sndStage)return;SND.lock=false;sndHUD();
+        var L=SND.levels[SND.level];if(!L)return;
+        var row='<span class="pat-cell">'+L.letter+'</span><span class="pat-cell pat-missing">?</span>';
+        sndStage.innerHTML='<p class="game-status" id="snd-status">'+L.head+'</p><div class="pat-row" aria-hidden="true">'+row+'</div><div class="feel-choices">'+L.opts.map(function(o){return '<button type="button" class="feel-btn" data-pick="'+o[1]+'" aria-label="'+o[1]+'"><span class="f-emoji">'+o[0]+'</span><span class="f-word">'+o[1]+'</span></button>';}).join('')+'</div>';
+        sndStage.querySelectorAll('.feel-btn').forEach(function(btn){
+          btn.addEventListener('click',function(){
+            if(SND.lock)return;
+            if(btn.getAttribute('data-pick')===L.answer){SND.lock=true;sndEarn(btn);}
+            else{advOops();advShake(btn);sndNote.textContent='Good try — say the letter sound slowly and listen to the first sound of each word!';}
+          });
+        });
+      }
+      function sndStart(){
+        sndHUD();
+        sndStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🔤</div><p class="game-status" id="snd-status">Ready to listen with Romy?</p><p class="game-note" style="margin-top:0">5 levels &middot; earn points &middot; no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="snd-play">▶ Play</button></div></div>';
+        document.getElementById('snd-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('sounds',0)){window.ZLG.unlockPrompt('sounds');return;}if(window.zlgTrack)window.zlgTrack('game_start','sounds');SND.level=0;SND.score=0;sndNote.textContent='Level 1 — here we go!';sndRender();});
+      }
+      function sndFinale(){
+        sndBar.style.width='100%';advFanfare();
+        sndStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="snd-status">Super listener!</p><p class="game-note" style="margin-top:0">Romy is so proud — you earned <strong>'+SND.score+' points</strong> and heard every first sound, all the way to R for Romy!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="snd-again">Play again</button></div></div>';
+        boom(sndStage);sndNote.textContent='Amazing — all 5 sound levels complete!';
+        document.getElementById('snd-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','sounds');SND.level=0;SND.score=0;sndNote.textContent='Level 1 — here we go!';sndRender();});
+      }
+      if(sndStage)sndStart();
 
       /* ---- Coloring ---- */
       var paletteColors=['#ff6b6b','#ffa94d','#ffd43b','#69b56b','#4dabf7','#b197fc'];
