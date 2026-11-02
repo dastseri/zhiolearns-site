@@ -271,6 +271,14 @@
           </div>
         </form>
       </section>
+
+      <!-- لاگ فعالیت -->
+      <section class="card" id="panel-activity" hidden>
+        <h2 data-i18n="activity_title">🕘 لاگ فعالیت — کی، چه کاری، چه وقتی</h2>
+        <p class="hint" data-i18n="activity_hint">هر تغییری در سایت اینجا ثبت می‌شود تا همیشه معلوم باشد چه کسی، چه کاری را، در چه زمانی انجام داده است: کارهای شما در همین پنل، و کارهای Muse و برنامهٔ روزانهٔ سایت. تازه‌ترین‌ها اول نمایش داده می‌شوند.</p>
+        <div id="activity-body"></div>
+        <div class="empty" id="activity-empty" hidden data-i18n="activity_empty">هنوز فعالیتی ثبت نشده است.</div>
+      </section>
     </main>
   </div>
 
@@ -308,6 +316,11 @@
         tab_texts: '📝 متن‌های سایت',
         tab_members: '👨‍👩‍👧 اعضا',
         tab_articles: '📝 مقالات',
+        tab_activity: '🕘 لاگ فعالیت',
+        activity_title: '🕘 لاگ فعالیت — کی، چه کاری، چه وقتی',
+        activity_hint: 'هر تغییری در سایت اینجا ثبت می‌شود تا همیشه معلوم باشد چه کسی، چه کاری را، در چه زمانی انجام داده است: کارهای شما در همین پنل، و کارهای Muse و برنامهٔ روزانهٔ سایت. تازه‌ترین‌ها اول نمایش داده می‌شوند.',
+        activity_empty: 'هنوز فعالیتی ثبت نشده است.',
+        activity_local_note: 'ثبت‌شده در این دستگاه',
         articles_title: 'مقالات 📝',
         articles_hint: 'مقاله‌های آموزشی برای والدین — در صفحه «مقالات» سایت نمایش داده می‌شوند. فقط مقاله‌های «منتشرشده» برای بازدیدکنندگان قابل دیدن‌اند.',
         th_slug: 'نامک',
@@ -470,6 +483,11 @@
         tab_texts: '📝 Site texts',
         tab_members: '👨‍👩‍👧 Members',
         tab_articles: '📝 Articles',
+        tab_activity: '🕘 Activity Log',
+        activity_title: '🕘 Activity Log — who did what, and when',
+        activity_hint: 'Every change to the site is recorded here, so it is always clear who did what, and when: your own actions in this panel, plus work by Muse and the daily site program. Newest first.',
+        activity_empty: 'No activity recorded yet.',
+        activity_local_note: 'recorded on this device',
         articles_title: 'Articles 📝',
         articles_hint: 'Educational articles for parents — shown on the site\u2019s Articles page. Only \u201cpublished\u201d articles are visible to visitors.',
         th_slug: 'Slug',
@@ -690,7 +708,8 @@
       { id: 'series',    tab: 'tab_series',    title: null, hint: null },
       { id: 'texts',     tab: 'tab_texts',     title: null, hint: null },
       { id: 'members',   tab: 'tab_members',   title: null, hint: null },
-      { id: 'articles',  tab: 'tab_articles',  title: null, hint: null }
+      { id: 'articles',  tab: 'tab_articles',  title: null, hint: null },
+      { id: 'activity',  tab: 'tab_activity',  title: null, hint: null }
     ];
     var currentTab = 'stats';
     var editingItemId = null;
@@ -719,6 +738,7 @@
       $('panel-texts').hidden = (id !== 'texts');
       $('panel-members').hidden = (id !== 'members');
       $('panel-articles').hidden = (id !== 'articles');
+      $('panel-activity').hidden = (id !== 'activity');
       $('cover-row').hidden = !(id === 'book' || id === 'story');
       if (id === 'stats') loadStats();
       else if ($('panel-items').hidden === false) loadItems();
@@ -726,6 +746,7 @@
       else if (id === 'texts') loadTexts();
       else if (id === 'members') loadMembers();
       else if (id === 'articles') loadArticles();
+      else if (id === 'activity') loadActivity();
     }
 
     /* ---------- نگهبان: فقط مدیر ---------- */
@@ -790,7 +811,7 @@
           var res = await supabase.from('content_items')
             .update({ is_active: cb.checked }).eq('id', cb.getAttribute('data-toggle'));
           if (res.error) { toast(t('err_save') + res.error.message, false); cb.checked = !cb.checked; }
-          else { toast(cb.checked ? t('activated') : t('deactivated'), true); loadItems(); }
+          else { logActivity(cb.checked ? 'فعال‌کردن محتوا' : 'غیرفعال‌کردن محتوا', 'content_items · ' + cb.getAttribute('data-toggle'), ''); toast(cb.checked ? t('activated') : t('deactivated'), true); loadItems(); }
         });
       });
       Array.prototype.forEach.call(document.querySelectorAll('[data-edit]'), function (b) {
@@ -845,7 +866,7 @@
       if (!confirm(t('confirm_delete'))) return;
       var res = await supabase.from('content_items').delete().eq('id', id);
       if (res.error) toast(t('err_delete') + res.error.message, false);
-      else { toast(t('deleted'), true); loadItems(); }
+      else { logActivity('حذف محتوا', 'content_items · ' + currentTab + ' / ' + id, ''); toast(t('deleted'), true); loadItems(); }
     }
 
     $('f-cover-file').addEventListener('change', function () {
@@ -886,7 +907,7 @@
         var em = res.error.message || '';
         toast(t('err_save') + em + (em.indexOf('cover_url') !== -1 ? ' ' + t('hint_run_sql') : ''), false);
       }
-      else { toast(editingItemId ? t('updated') : t('added'), true); resetItemForm(); loadItems(); }
+      else { logActivity(editingItemId ? 'ویرایش محتوا' : 'افزودن محتوا', 'content_items · ' + currentTab, ''); toast(editingItemId ? t('updated') : t('added'), true); resetItemForm(); loadItems(); }
     });
     $('btn-cancel').addEventListener('click', resetItemForm);
 
@@ -949,7 +970,7 @@
         : await supabase.from('site_texts').upsert({ key: key, value: value }, { onConflict: 'key' });
       btn.disabled = false;
       if (res.error) toast(t('err_save') + res.error.message, false);
-      else { toast(editingTextKey ? t('updated') : t('added'), true); resetTextForm(); loadTexts(); }
+      else { logActivity(editingTextKey ? 'ویرایش متن سایت' : 'افزودن متن سایت', 'site_texts · ' + (editingTextKey || key), ''); toast(editingTextKey ? t('updated') : t('added'), true); resetTextForm(); loadTexts(); }
     });
     $('btn-text-cancel').addEventListener('click', resetTextForm);
 
@@ -1003,7 +1024,7 @@
       var res = await supabase.from('site_texts').upsert(rows, { onConflict: 'key' });
       btn.disabled = false;
       if (res.error) toast(t('err_save') + res.error.message, false);
-      else toast(t('series_saved'), true);
+      else { logActivity('ویرایش تنظیمات سری‌ها', 'site_texts · series', ''); toast(t('series_saved'), true); }
     });
 
     /* ---------- اعضا (فقط خواندنی) ---------- */
@@ -1257,7 +1278,7 @@
       if (!confirm(t('confirm_art_delete'))) return;
       var res = await supabase.from('articles').delete().eq('id', id);
       if (res.error) toast(t('art_err_delete') + res.error.message, false);
-      else { toast(t('art_deleted'), true); loadArticles(); }
+      else { logActivity('حذف مقاله', 'articles / ' + id, ''); toast(t('art_deleted'), true); loadArticles(); }
     }
 
     $('article-form').addEventListener('submit', async function (e) {
@@ -1278,9 +1299,54 @@
         : await supabase.from('articles').insert(payload);
       btn.disabled = false;
       if (res.error) toast(t('art_err_save') + res.error.message, false);
-      else { toast(editingArticleId ? t('art_updated') : t('art_added'), true); resetArticleForm(); loadArticles(); }
+      else { logActivity(editingArticleId ? 'ویرایش مقاله' : 'افزودن مقاله', 'articles · ' + slug, ''); toast(editingArticleId ? t('art_updated') : t('art_added'), true); resetArticleForm(); loadArticles(); }
     });
     $('btn-article-cancel').addEventListener('click', resetArticleForm);
+
+    /* ---------- لاگ فعالیت: کی، چه کاری، چه وقتی ---------- */
+    var ACTIVITY_LOCAL_KEY = 'zl_activity_local';
+    function activityLocalList() {
+      try { return JSON.parse(localStorage.getItem(ACTIVITY_LOCAL_KEY) || '[]'); } catch (e) { return []; }
+    }
+    function logActivity(action, target, detail) {
+      var entry = { created_at: new Date().toISOString(), actor: adminEmail || 'مدیر سایت', action: action, target: target || '', detail: detail || '', source: 'admin-panel' };
+      try {
+        var list = activityLocalList();
+        list.unshift(entry);
+        localStorage.setItem(ACTIVITY_LOCAL_KEY, JSON.stringify(list.slice(0, 200)));
+      } catch (e) {}
+      try {
+        supabase.from('activity_log').insert({ actor: entry.actor, action: entry.action, target: entry.target, detail: entry.detail })
+          .then(function () {}, function () {});
+      } catch (e) {}
+    }
+    async function loadActivity() {
+      var entries = [];
+      try {
+        var r = await fetch('activity-log.json?ts=' + Date.now());
+        if (r.ok) { var j = await r.json(); if (j && j.entries) entries = entries.concat(j.entries); }
+      } catch (e) {}
+      try {
+        var rs = await supabase.from('activity_log').select('*').order('created_at', { ascending: false }).limit(200);
+        if (!rs.error && rs.data) entries = entries.concat(rs.data);
+      } catch (e) {}
+      entries = entries.concat(activityLocalList());
+      entries.sort(function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); });
+      $('activity-empty').hidden = entries.length > 0;
+      $('activity-body').innerHTML = entries.slice(0, 200).map(function (e) {
+        var when = e.created_at || '';
+        try {
+          when = new Date(e.created_at).toLocaleString(LANG === 'fa' ? 'fa-IR' : 'en-CA',
+            { timeZone: 'America/Toronto', dateStyle: 'medium', timeStyle: 'short' });
+        } catch (err) {}
+        var local = e.source === 'admin-panel' ? ' <span class="hint">(' + t('activity_local_note') + ')</span>' : '';
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--line)">' +
+          '<div><strong>' + esc(e.actor || '') + '</strong> — ' + esc(e.action || '') +
+          (e.target ? ' · <span class="ltr" style="display:inline-block">' + esc(e.target) + '</span>' : '') + local + '</div>' +
+          (e.detail ? '<div class="hint">' + esc(e.detail) + '</div>' : '') +
+          '<div class="hint">🕘 ' + esc(when) + ' (Toronto)</div></div>';
+      }).join('');
+    }
 
     /* ---------- شروع ---------- */
     $('btn-logout').addEventListener('click', async function () {
@@ -1294,6 +1360,7 @@
       applyStaticText();
       if (!(await guard())) return;
       $('app').hidden = false;
+      logActivity('ورود به پنل مدیریت', 'admin.html', '');
       renderTabs();
       switchTab('stats', true);
     })();
