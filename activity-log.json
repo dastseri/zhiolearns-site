@@ -1,1 +1,41 @@
-{"about":"ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).","entries":[{"action":"راه‌اندازی لاگ فعالیت","actor":"Muse","created_at":"2026-11-02T09:20:47-05:00","detail":"به دستور ژاله (۲ نوامبر ۲۰۲۶): از این به بعد همهٔ تغییرات سایت اینجا ثبت می‌شود تا معلوم باشد کی چه کاری کرده است.","target":"admin.html · activity-log.json"},{"action":"ویرایش — رفع برش خوردن تصویر اصلی صفحهٔ خانه","actor":"Muse","created_at":"2026-11-02T09:19:27-05:00","detail":"قاب تصویر رومی مربع شد (width: min(100%,74svh) و حذف max-height) تا گوش‌ها و سرش دیگر زیر قاب بیضی بریده نشوند؛ خود فایل تصویر کامل بود و دست نخورد. commit 62f695d · ثبت در لاگ: ۲ نوامبر ۲۰۲۶","target":"index.html · .hero-art img"},{"action":"افزودن مقاله و چاپی + انتشار (Track 3)","actor":"Muse — برنامه روزانه","created_at":"2026-11-02T09:03:32-05:00","detail":"مقالهٔ والدین «Start at the Top» و چاپی رایگان «Trace & Write K–O» به سایت اضافه و منتشر شد؛ اسپات‌لایت فروشگاه روی Wonder ماند. commit dc8a8ce · ثبت در لاگ: ۲ نوامبر ۲۰۲۶ (ثبت پسینی)","target":"for-parents-start-at-the-top.html · printables/trace-write-ko-with-romy.pdf"},{"action":"افزودن کتاب جدید به سایت","actor":"Muse","created_at":"2026-11-01T13:36:38-05:00","detail":"کتاب Romy's Wonder Encyclopedia به صفحهٔ خانه (Book Spotlight) و ردیف اول فروشگاه اضافه شد؛ لینک آمازون dp/B0HQZJGBHM. commit e4b04e1 · ثبت در لاگ: ۲ نوامبر ۲۰۲۶ (ثبت پسینی)","target":"index.html · Book Spotlight + کارت فروشگاه"}],"version":1}
+{
+  "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
+  "entries": [
+    {
+      "created_at": "2026-11-03T09:02:13-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن چاپی + انتشار (Track 3)",
+      "target": "printables/trace-write-pt-with-romy.pdf · index.html",
+      "detail": "چاپی رایگان «Trace & Write P–T — Everyday Words» (Park, Quilt, Rain, Sun, Table) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #4 Romy's Alphabet – Everyday Edition چرخید و فایل کاور آن (که از گیت حذف شده بود ولی زنده سرو می‌شد) به مخزن برگشت. · commit 8e3b926"
+    },
+    {
+      "action": "راه‌اندازی لاگ فعالیت",
+      "actor": "Muse",
+      "created_at": "2026-11-02T09:20:47-05:00",
+      "detail": "به دستور ژاله (۲ نوامبر ۲۰۲۶): از این به بعد همهٔ تغییرات سایت اینجا ثبت می‌شود تا معلوم باشد کی چه کاری کرده است.",
+      "target": "admin.html · activity-log.json"
+    },
+    {
+      "action": "ویرایش — رفع برش خوردن تصویر اصلی صفحهٔ خانه",
+      "actor": "Muse",
+      "created_at": "2026-11-02T09:19:27-05:00",
+      "detail": "قاب تصویر رومی مربع شد (width: min(100%,74svh) و حذف max-height) تا گوش‌ها و سرش دیگر زیر قاب بیضی بریده نشوند؛ خود فایل تصویر کامل بود و دست نخورد. commit 62f695d · ثبت در لاگ: ۲ نوامبر ۲۰۲۶",
+      "target": "index.html · .hero-art img"
+    },
+    {
+      "action": "افزودن مقاله و چاپی + انتشار (Track 3)",
+      "actor": "Muse — برنامه روزانه",
+      "created_at": "2026-11-02T09:03:32-05:00",
+      "detail": "مقالهٔ والدین «Start at the Top» و چاپی رایگان «Trace & Write K–O» به سایت اضافه و منتشر شد؛ اسپات‌لایت فروشگاه روی Wonder ماند. commit dc8a8ce · ثبت در لاگ: ۲ نوامبر ۲۰۲۶ (ثبت پسینی)",
+      "target": "for-parents-start-at-the-top.html · printables/trace-write-ko-with-romy.pdf"
+    },
+    {
+      "action": "افزودن کتاب جدید به سایت",
+      "actor": "Muse",
+      "created_at": "2026-11-01T13:36:38-05:00",
+      "detail": "کتاب Romy's Wonder Encyclopedia به صفحهٔ خانه (Book Spotlight) و ردیف اول فروشگاه اضافه شد؛ لینک آمازون dp/B0HQZJGBHM. commit e4b04e1 · ثبت در لاگ: ۲ نوامبر ۲۰۲۶ (ثبت پسینی)",
+      "target": "index.html · Book Spotlight + کارت فروشگاه"
+    }
+  ],
+  "version": 1
+}
