@@ -576,28 +576,96 @@ footer .fine a{color:var(--teal-dark)}
     full.hidden = !willOpen;
     b.textContent = willOpen ? 'Show less' : 'Read the story';
   });
+  function normTitle(t) {
+    return String(t || '').toLowerCase()
+      .replace(/[\u2018\u2019\u02BC]/g, "'")
+      .replace(/&rsquo;|&#0?39;|&apos;/g, "'")
+      .replace(/['']/g, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+  }
+  function canonicalBookLink(t) {
+    var n = normTitle(t);
+    if (n.indexOf('wonder encyclopedia') !== -1) return 'https://www.amazon.com/dp/B0HQZJGBHM';
+    if (n.indexOf('bedtime stories') !== -1) return 'https://www.amazon.com/dp/B0HQ31NB71';
+    if (n.indexOf('forest of feelings') !== -1) return 'https://www.amazon.com/dp/B0F999P3M7';
+    return '';
+  }
+  function findBookMatch(list, title) {
+    var nt = normTitle(title), i, m;
+    for (i = 0; i < list.length; i++) { if (normTitle(list[i].title) === nt) return i; }
+    var canon = canonicalBookLink(title);
+    if (canon) {
+      for (i = 0; i < list.length; i++) { if (canonicalBookLink(list[i].title) === canon) return i; }
+    }
+    var best = -1, bestLen = 0;
+    for (i = 0; i < list.length; i++) {
+      m = normTitle(list[i].title);
+      if (m.length >= 12 && (nt.indexOf(m) !== -1 || m.indexOf(nt) !== -1) && m.length > bestLen) { best = i; bestLen = m.length; }
+    }
+    return best;
+  }
+  function builtinBooks(grid) {
+    var out = [];
+    var cards = grid.querySelectorAll('article.product');
+    for (var i = 0; i < cards.length; i++) {
+      var h = cards[i].querySelector('h3');
+      if (!h) continue;
+      var p = cards[i].querySelector('p');
+      var img = cards[i].querySelector('img');
+      var a = cards[i].querySelector('a.order-btn');
+      out.push({
+        title: h.textContent.trim(),
+        description: p ? p.textContent.trim() : '',
+        cover_url: img ? (img.getAttribute('src') || '') : '',
+        asset_url: a ? (a.getAttribute('href') || '') : ''
+      });
+    }
+    return out;
+  }
   async function renderShopBooks() {
     try {
-      if (!ZLG.db) return;
-      var r = await ZLG.db.from('content_items')
-        .select('title,description,asset_url,cover_url')
-        .eq('kind', 'book').eq('is_active', true)
-        .order('sort_order', { ascending: true });
-      var books = (r.data || []).filter(function (b) { return b && b.title; });
-      if (r.error || !books.length) return;
       var grid = document.getElementById('book-grid');
       if (!grid) return;
-      grid.innerHTML = books.map(function (b) {
-        var img = b.cover_url || 'img/books/book-alphabet-abc.jpg';
-        var link = b.asset_url || 'https://www.amazon.com/author/zhio';
+      /* Start from the built-in catalog rendered in the HTML, so the shop is
+         correct even if the database is empty, stale or unreachable. */
+      var merged = builtinBooks(grid).map(function (b) {
+        return { title: b.title, description: b.description, cover_url: b.cover_url,
+                 asset_url: canonicalBookLink(b.title) || b.asset_url || 'https://www.amazon.com/author/zhio' };
+      });
+      if (ZLG.db) {
+        var r = await ZLG.db.from('content_items')
+          .select('title,description,asset_url,cover_url')
+          .eq('kind', 'book').eq('is_active', true)
+          .order('sort_order', { ascending: true });
+        if (!r.error) {
+          var books = (r.data || []).filter(function (b) { return b && b.title; });
+          books.forEach(function (b) {
+            var idx = findBookMatch(merged, b.title);
+            if (idx === -1) {
+              merged.push({ title: b.title, description: b.description || '',
+                cover_url: b.cover_url || 'img/books/book-alphabet-abc.jpg',
+                asset_url: canonicalBookLink(b.title) || b.asset_url || 'https://www.amazon.com/author/zhio' });
+            } else {
+              if (b.description) merged[idx].description = b.description;
+              if (b.cover_url) merged[idx].cover_url = b.cover_url;
+              var canon = canonicalBookLink(merged[idx].title) || canonicalBookLink(b.title);
+              if (canon) merged[idx].asset_url = canon; /* newest books always keep their direct dp links */
+              else if (b.asset_url) merged[idx].asset_url = b.asset_url;
+            }
+          });
+        }
+      }
+      if (!merged.length) return;
+      grid.innerHTML = merged.map(function (b) {
         return '<article class="product reveal">' +
-          '<img src="' + esc(img) + '" alt="' + esc(b.title) + ' book cover" loading="lazy">' +
+          '<img src="' + esc(b.cover_url || 'img/books/book-alphabet-abc.jpg') + '" alt="' + esc(b.title) + ' book cover" loading="lazy">' +
           '<h3>' + esc(b.title) + '</h3><p>' + esc(b.description || '') + '</p>' +
-          '<div class="price-row"><a class="order-btn" href="' + esc(link) + '" target="_blank" rel="noopener">Buy on Amazon</a></div>' +
+          '<div class="price-row"><a class="order-btn" href="' + esc(b.asset_url) + '" target="_blank" rel="noopener">Buy on Amazon</a></div>' +
           '</article>';
       }).join('');
       var cnt = document.getElementById('book-count');
-      if (cnt) cnt.innerHTML = 'All ' + books.length + ' books are live on Amazon &mdash; paperbacks made for little hands.';
+      if (cnt) cnt.innerHTML = 'All ' + merged.length + ' books are live on Amazon &mdash; paperbacks made for little hands.';
     } catch (e) { /* keep the built-in cards */ }
   }
   async function init() {
@@ -1175,7 +1243,7 @@ footer .fine a{color:var(--teal-dark)}
         <article class="product reveal">
           <img src="img/books/book-forest-of-feelings.jpg" alt="Romy and the Forest of Feelings book cover" loading="lazy">
           <h3>Romy and the Forest of Feelings</h3><p>A gentle picture book about feelings, friendship, and understanding big emotions.</p>
-          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
+          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/dp/B0F999P3M7" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
         <article class="product reveal">
           <img src="img/books/book-alphabet-adventure-trace.jpg" alt="Romy's Alphabet Adventure Trace Write and Say book cover" loading="lazy">
@@ -1220,7 +1288,7 @@ footer .fine a{color:var(--teal-dark)}
         <article class="product reveal">
           <img src="img/books/book-bedtime-stories.jpg" alt="Romy's Bedtime Stories book cover" loading="lazy">
           <h3>Romy&rsquo;s Bedtime Stories</h3><p>10 magical bedtime stories for little dreamers — kindness, curiosity &amp; confidence, every night.</p>
-          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Buy on Amazon</a></div>
+          <div class="price-row"><a class="order-btn" href="https://www.amazon.com/dp/B0HQ31NB71" target="_blank" rel="noopener">Buy on Amazon</a></div>
         </article>
       </div>
       <div class="reveal" style="text-align:center;margin-top:30px">
