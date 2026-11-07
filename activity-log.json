@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-07T07:03:44-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن بازی + انتشار (Track 3)",
+      "target": "index.html (#calm)",
+      "detail": "بازی جدید Series 8 «Romy's Calm Forest» (۵ مرحله؛ احساس را ببین و انتخاب کن چه چیزی کمک می‌کند) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #8 Romy and the Forest of Feelings چرخید (لینک تأییدشده dp/B0F999P3M7). · commit 63ce2c6 · commit 63ce2c6"
+    },
+    {
       "created_at": "2026-11-06T07:05:42-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن مقاله + انتشار (Track 3)",
