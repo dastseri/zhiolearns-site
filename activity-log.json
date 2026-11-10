@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-10T07:05:15-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن چاپی + انتشار (Track 3)",
+      "target": "printables/ten-night-story-tracker-with-romy.pdf · index.html",
+      "detail": "چاپی رایگان «Ten-Night Story Tracker» (ردیاب ده شب داستان‌های وقت خواب رومی؛ هر داستان یک ستاره) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #11 Romy's Bedtime Stories چرخید (لینک تأییدشده dp/B0HQ31NB71) و کارت چاپی به‌روز شد. · commit d997828"
+    },
+    {
       "created_at": "2026-11-09T07:02:13-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن مقاله + انتشار (Track 3)",
