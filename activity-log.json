@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-11T07:04:27-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن مقاله + انتشار (Track 3)",
+      "target": "for-parents-one-letter-a-week.html · index.html",
+      "detail": "مقاله والدین «One Letter, All Week» (یک حرف، تمام هفته؛ چرا آرام‌رفتن الفبا را ماندگار می‌کند) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #1 Romy's Alphabet: A Fun and Colorful ABC چرخید (لینک صفحه نویسنده) و کارت چاپی به Letter Hunt A–E به‌روز شد. · commit f09d6f7 · commit f09d6f7"
+    },
+    {
       "created_at": "2026-11-10T07:05:15-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن چاپی + انتشار (Track 3)",
