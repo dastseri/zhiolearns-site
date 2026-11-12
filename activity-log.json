@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-12T07:03:24-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن چاپی جدید + انتشار (Track 3)",
+      "target": "printables/letter-hunt-fj-with-romy.pdf · index.html",
+      "detail": "چاپی رایگان «Romy's Letter Hunt F–J» (شکار حروف F تا J؛ ادامهٔ A–E) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #2 Romy's Alphabet Adventure: Let's Explore the World of Letters چرخید (لینک صفحه نویسنده) و کارت چاپی و لینک گوشه والدین به چاپی جدید به‌روز شد. · commit 6ecfc2b"
+    },
+    {
       "created_at": "2026-11-11T07:04:27-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن مقاله + انتشار (Track 3)",
