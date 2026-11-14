@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-14T07:03:55-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن بازی + انتشار (Track 3)",
+      "target": "index.html (#everyday)",
+      "detail": "بازی جدید Series 9 «Romy's Everyday Words» (۵ مرحله؛ نام‌بردن واژه‌های روزمره apple/door/tree/sun/rain بر اساس سرنخ) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #4 Romy's Alphabet – Everyday Edition چرخید (لینک صفحه نویسنده). · commit ec8ecee"
+    },
+    {
       "created_at": "2026-11-13T07:04:05-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن مقاله + انتشار (Track 3)",
