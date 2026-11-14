@@ -384,14 +384,15 @@ footer .fine a{color:var(--teal-dark)}
     patterns:  { section: 'patterns',  total: 5, fallbackFree: 2, name: "Romy's Mandala Patterns" },
     writing:   { section: 'writing',   total: 5, fallbackFree: 2, name: "Romy's Writing Trail" },
     sounds:    { section: 'sounds',    total: 5, fallbackFree: 2, name: "Romy's First Sounds" },
-    calm:      { section: 'calm',      total: 5, fallbackFree: 2, name: "Romy's Calm Forest" }
+    calm:      { section: 'calm',      total: 5, fallbackFree: 2, name: "Romy's Calm Forest" },
+    everyday:  { section: 'everyday',  total: 5, fallbackFree: 2, name: "Romy's Everyday Words" }
   };
   var AUTH_URL = 'auth.html';
 
   /* Public handle used by the game code further down this page. */
   var ZLG = window.ZLG = {
     user: null, isMember: false, isAdmin: false, ready: false,
-    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2, patterns: 2, writing: 2, sounds: 2, calm: 2 },
+    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2, patterns: 2, writing: 2, sounds: 2, calm: 2, everyday: 2 },
     db: null
   };
 
@@ -825,7 +826,7 @@ footer .fine a{color:var(--teal-dark)}
       <div class="play-copy reveal">
         <p class="eyebrow">Game series</p>
         <h2 class="section-title">Pick a game, play the levels!</h2>
-        <p>Eight series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
+        <p>Nine series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
       </div>
       <div class="series-grid reveal">
         <a class="series-card" href="#adventure">
@@ -874,6 +875,12 @@ footer .fine a{color:var(--teal-dark)}
           <span class="series-emoji">🌲</span>
           <h3>Romy's Calm Forest</h3>
           <p>5 levels &middot; meet a feeling, choose what helps</p>
+          <span class="series-go">Play &rarr;</span>
+        </a>
+        <a class="series-card" href="#everyday">
+          <span class="series-emoji">🏠</span>
+          <h3>Romy's Everyday Words</h3>
+          <p>5 levels &middot; name the everyday things Romy finds</p>
           <span class="series-go">Play &rarr;</span>
         </a>
       </div>
@@ -1020,6 +1027,24 @@ footer .fine a{color:var(--teal-dark)}
         </div>
         <div id="calm-stage"></div>
         <p class="game-note" id="calm-note" aria-live="polite">Romy is cheering for you.</p>
+      </div>
+    </section>
+
+
+    <section id="everyday">
+      <div class="play-copy reveal">
+        <p class="eyebrow">Series 9 &middot; Romy's Everyday Words &middot; New!</p>
+        <h2 class="section-title">Which everyday word is it?</h2>
+        <p>Five friendly levels &mdash; Romy gives a clue about an everyday thing, and you pick its word: apple, door, tree, sun and rain. Made to go with <em>Romy&rsquo;s Alphabet &ndash; Everyday Edition</em>.</p>
+      </div>
+      <div class="game reveal" aria-labelledby="every-status">
+        <div class="adv-hud">
+          <span class="adv-pill" id="every-level">Level 1 of 5</span>
+          <div class="adv-progress" aria-hidden="true"><span id="every-bar"></span></div>
+          <span class="adv-pill adv-score">⭐ <span id="every-score">0</span></span>
+        </div>
+        <div id="every-stage"></div>
+        <p class="game-note" id="every-note" aria-live="polite">Romy is cheering for you.</p>
       </div>
     </section>
 
@@ -1225,11 +1250,11 @@ footer .fine a{color:var(--teal-dark)}
       </div>
       <div class="print-grid reveal" style="margin-bottom:18px">
         <div class="spotlight-card">
-          <img src="img/books/book-alphabet-adventure-trace.jpg" alt="Romy's Alphabet Adventure: Trace, Write & Say from A to Z book cover" loading="lazy">
+          <img src="img/books/book-alphabet-everyday-edition.jpg" alt="Romy's Alphabet – Everyday Edition book cover" loading="lazy">
           <div>
             <span class="new-badge">Book Spotlight &middot; Today</span>
-            <h3>Romy's Alphabet Adventure: Trace, Write &amp; Say from A to Z</h3>
-            <p>Knowing a letter is one thing &mdash; writing it is a whole new superpower. Big, traceable letters with room to try alone, and each letter said out loud as little hands trace, tying the sound to the shape. For ages 3&ndash;6 with a pencil they&rsquo;re proud to hold.</p>
+            <h3>Romy's Alphabet &ndash; Everyday Edition</h3>
+            <p>A is for the apple on the breakfast table. This edition builds the alphabet from words your child already says &mdash; home, food, animals, the park &mdash; so letters connect to real life instead of floating in the abstract. A favourite for ages 3&ndash;5, and a gentle friend for ESL families growing English vocabulary one familiar word at a time.</p>
             <a class="order-btn" href="https://www.amazon.com/author/zhio" target="_blank" rel="noopener">Find it on Amazon</a>
           </div>
         </div>
@@ -2116,6 +2141,48 @@ footer .fine a{color:var(--teal-dark)}
         document.getElementById('calm-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','calm');CALM.level=0;CALM.score=0;calmNote.textContent='Level 1 — here we go!';calmRender();});
       }
       if(calmStage)calmStart();
+
+
+      /* ---- Series 9: Romy's Everyday Words (5 levels + score) — Daily 2026-11-14, spotlight: Romy's Alphabet – Everyday Edition ---- */
+      var everyStage=document.getElementById('every-stage');
+      var everyNote=document.getElementById('every-note');
+      var everyLevelEl=document.getElementById('every-level');
+      var everyBar=document.getElementById('every-bar');
+      var everyScoreEl=document.getElementById('every-score');
+      var EVERY={level:0,score:0,lock:false,levels:[
+        {head:'Breakfast time! Romy eats a red fruit that starts with A. Which word is it?',emoji:'🍽️',answer:'Apple',opts:[['🍌','Banana'],['🍎','Apple'],['🍇','Grapes']]},
+        {head:'Romy is home. You open it to go outside, and it starts with D. Which word is it?',emoji:'🏠',answer:'Door',opts:[['🚪','Door'],['🪟','Window'],['🪑','Chair']]},
+        {head:'In the park, Romy sits in the shade under its green leaves. It starts with T. Which word is it?',emoji:'🌳',answer:'Tree',opts:[['🌼','Flower'],['🪨','Rock'],['🌳','Tree']]},
+        {head:'Outside, something yellow and warm shines in the sky. It starts with S. Which word is it?',emoji:'☀️',answer:'Sun',opts:[['🌙','Moon'],['☀️','Sun'],['⭐','Star']]},
+        {head:'Grey clouds! Drops of water fall from the sky for Romy\u2019s garden. It starts with R. Which word is it?',emoji:'🌧️',answer:'Rain',opts:[['❄️','Snow'],['💨','Wind'],['🌧️','Rain']]}
+      ]};
+      function everyHUD(){everyLevelEl.textContent='Level '+Math.min(EVERY.level+1,5)+' of 5';everyBar.style.width=(EVERY.level/5*100)+'%';everyScoreEl.textContent=EVERY.score;}
+      function everyNext(){var zlN=EVERY.level+1;if(window.ZLG&&!window.ZLG.canPlay('everyday',zlN)){window.ZLG.unlockPrompt('everyday');return;}EVERY.level++;if(window.zlgTrack)window.zlgTrack('level_complete','everyday',String(EVERY.level));everyHUD();if(EVERY.level>=EVERY.levels.length){everyFinale();return;}everyNote.textContent='Level complete! Get ready...';setTimeout(everyRender,1100);}
+      function everyEarn(el){EVERY.score+=10;everyHUD();advGood();advPop(el);everyNote.textContent=advPraise()+' +10 points! You named that everyday word!';setTimeout(everyNext,950);}
+      function everyRender(){
+        if(!everyStage)return;EVERY.lock=false;everyHUD();
+        var L=EVERY.levels[EVERY.level];if(!L)return;
+        everyStage.innerHTML='<p class="game-status" id="every-status">'+L.head+'</p><div class="pat-row" aria-hidden="true"><span class="pat-cell">'+L.emoji+'</span></div><div class="feel-choices">'+L.opts.map(function(o){return '<button type="button" class="feel-btn" data-pick="'+o[1]+'" aria-label="'+o[1]+'"><span class="f-emoji">'+o[0]+'</span><span class="f-word">'+o[1]+'</span></button>';}).join('')+'</div>';
+        everyStage.querySelectorAll('.feel-btn').forEach(function(btn){
+          btn.addEventListener('click',function(){
+            if(EVERY.lock)return;
+            if(btn.getAttribute('data-pick')===L.answer){EVERY.lock=true;everyEarn(btn);}
+            else{advOops();advShake(btn);everyNote.textContent='Good try — listen to Romy\u2019s clue again: which word fits?';}
+          });
+        });
+      }
+      function everyStart(){
+        everyHUD();
+        everyStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🏠</div><p class="game-status" id="every-status">Ready to name everyday words with Romy?</p><p class="game-note" style="margin-top:0">5 levels &middot; earn points &middot; no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="every-play">▶ Play</button></div></div>';
+        document.getElementById('every-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('everyday',0)){window.ZLG.unlockPrompt('everyday');return;}if(window.zlgTrack)window.zlgTrack('game_start','everyday');EVERY.level=0;EVERY.score=0;everyNote.textContent='Level 1 — here we go!';everyRender();});
+      }
+      function everyFinale(){
+        everyBar.style.width='100%';advFanfare();
+        everyStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="every-status">Everyday words star!</p><p class="game-note" style="margin-top:0">Romy is so proud — you earned <strong>'+EVERY.score+' points</strong> and named every everyday word: apple, door, tree, sun and rain!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="every-again">Play again</button></div></div>';
+        boom(everyStage);everyNote.textContent='Amazing — all 5 everyday-word levels complete!';
+        document.getElementById('every-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','everyday');EVERY.level=0;EVERY.score=0;everyNote.textContent='Level 1 — here we go!';everyRender();});
+      }
+      if(everyStage)everyStart();
 
       /* ---- Coloring ---- */
       var paletteColors=['#ff6b6b','#ffa94d','#ffd43b','#69b56b','#4dabf7','#b197fc'];
