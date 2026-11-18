@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-18T07:03:14-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن مقاله + انتشار (Track 3)",
+      "target": "for-parents-say-what-you-see.html · index.html",
+      "detail": "مقاله والدین «Say What You See: Name the Feeling Before You Fix It» (روایت‌کردن احساس به‌جای پرسیدن «چی شده؟»؛ اول نام ببر، بعد درستش کن) اضافه و منتشر شد؛ به چاپی رایگان «Romy's Feelings Check-In & Calm Breathing» لینک شد؛ اسپات‌لایت فروشگاه به کتاب #8 Romy and the Forest of Feelings چرخید (لینک تأییدشده dp/B0F999P3M7) و کارت چاپی برجسته به Feelings Check-In به‌روز شد. · commit 7731a72"
+    },
+    {
       "created_at": "2026-11-17T07:05:34-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن چاپی + انتشار (Track 3)",
