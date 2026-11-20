@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-20T07:02:00-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن مقاله + انتشار (Track 3)",
+      "target": "for-parents-red-and-round.html · index.html",
+      "detail": "مقاله والدین «Red and Round: Why Two Little Words Are Better Than One» (دو کلمه با هم: رنگ + شکل؛ توصیف‌کردن به‌جای فقط نام‌بردن) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #10 Romy's Shape & Color Adventure چرخید (لینک صفحه نویسنده) و کارت چاپی به Shape & Colour Hunt و کارت گوشه والدین به مقاله جدید به‌روز شد. · commit f669f17"
+    },
+    {
       "created_at": "2026-11-19T07:04:20-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن چاپی + انتشار (Track 3)",
