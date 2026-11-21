@@ -385,14 +385,15 @@ footer .fine a{color:var(--teal-dark)}
     writing:   { section: 'writing',   total: 5, fallbackFree: 2, name: "Romy's Writing Trail" },
     sounds:    { section: 'sounds',    total: 5, fallbackFree: 2, name: "Romy's First Sounds" },
     calm:      { section: 'calm',      total: 5, fallbackFree: 2, name: "Romy's Calm Forest" },
-    everyday:  { section: 'everyday',  total: 5, fallbackFree: 2, name: "Romy's Everyday Words" }
+    everyday:  { section: 'everyday',  total: 5, fallbackFree: 2, name: "Romy's Everyday Words" },
+    bedtime:   { section: 'bedtime',   total: 5, fallbackFree: 2, name: "Romy's Bedtime Stars" }
   };
   var AUTH_URL = 'auth.html';
 
   /* Public handle used by the game code further down this page. */
   var ZLG = window.ZLG = {
     user: null, isMember: false, isAdmin: false, ready: false,
-    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2, patterns: 2, writing: 2, sounds: 2, calm: 2, everyday: 2 },
+    free: { adventure: 3, puzzle: 2, maze: 2, feelings: 2, patterns: 2, writing: 2, sounds: 2, calm: 2, everyday: 2, bedtime: 2 },
     db: null
   };
 
@@ -826,7 +827,7 @@ footer .fine a{color:var(--teal-dark)}
       <div class="play-copy reveal">
         <p class="eyebrow">Game series</p>
         <h2 class="section-title">Pick a game, play the levels!</h2>
-        <p>Nine series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
+        <p>Ten series to choose from &mdash; each one has its own levels, points and stars. Which first?</p>
       </div>
       <div class="series-grid reveal">
         <a class="series-card" href="#adventure">
@@ -881,6 +882,12 @@ footer .fine a{color:var(--teal-dark)}
           <span class="series-emoji">🏠</span>
           <h3>Romy's Everyday Words</h3>
           <p>5 levels &middot; name the everyday things Romy finds</p>
+          <span class="series-go">Play &rarr;</span>
+        </a>
+        <a class="series-card" href="#bedtime">
+          <span class="series-emoji">🌙</span>
+          <h3>Romy's Bedtime Stars</h3>
+          <p>5 levels &middot; help Romy wind down, one calm choice at a time</p>
           <span class="series-go">Play &rarr;</span>
         </a>
       </div>
@@ -1049,6 +1056,23 @@ footer .fine a{color:var(--teal-dark)}
     </section>
 
 
+    <section id="bedtime">
+      <div class="play-copy reveal">
+        <p class="eyebrow">Series 10 &middot; Romy's Bedtime Stars &middot; New!</p>
+        <h2 class="section-title">What helps Romy get sleepy?</h2>
+        <p>Five calm levels &mdash; Romy is winding down for the night, and you pick each gentle next step: pyjamas, a story, the moon, a pillow and a dream. Made to go with <em>Romy&rsquo;s Bedtime Stories</em>.</p>
+      </div>
+      <div class="game reveal" aria-labelledby="bed-status">
+        <div class="adv-hud">
+          <span class="adv-pill" id="bed-level">Level 1 of 5</span>
+          <div class="adv-progress" aria-hidden="true"><span id="bed-bar"></span></div>
+          <span class="adv-pill adv-score">⭐ <span id="bed-score">0</span></span>
+        </div>
+        <div id="bed-stage"></div>
+        <p class="game-note" id="bed-note" aria-live="polite">Romy is cheering for you.</p>
+      </div>
+    </section>
+
     <section id="letters">
       <div class="play-copy reveal">
         <p class="eyebrow">Letters with Romy</p>
@@ -1167,12 +1191,12 @@ footer .fine a{color:var(--teal-dark)}
       </div>
       <div class="print-grid reveal" style="margin-bottom:18px">
         <div class="spotlight-card">
-          <img src="img/printables/shape-colour-hunt-preview.png" alt="Preview of Romy's Shape and Colour Hunt printable" loading="lazy">
+          <img src="img/books/book-bedtime-stories.jpg" alt="Romy's Bedtime Stories book cover" loading="lazy">
           <div>
-            <span class="new-badge">Featured &middot; Free</span>
-            <h3>Romy&rsquo;s Shape &amp; Colour Hunt</h3>
-            <p>Colour six big shapes by their colour words, then hunt for the real shapes hiding in your own home &mdash; tick boxes, draw boxes, and a colour-hunt star strip. The printable that follows today&rsquo;s spotlight book, Romy&rsquo;s Shape &amp; Color Adventure. Two pages, ages 3&ndash;6.</p>
-            <a class="order-btn" href="printables/shape-colour-hunt-with-romy.pdf" download>Download PDF</a>
+            <span class="new-badge">Book Spotlight &middot; Today</span>
+            <h3>Romy&rsquo;s Bedtime Stories</h3>
+            <p>Ten short, gentle stories &mdash; each one finished before the yawns win. No cliffhangers, no villains: just soft pacing and cosy endings that slow the whole evening down. For ages 3&ndash;6, and for making bedtime something your child asks for.</p>
+            <a class="order-btn" href="https://www.amazon.com/dp/B0HQ31NB71" target="_blank" rel="noopener">Find it on Amazon</a>
           </div>
         </div>
       </div>
@@ -2183,6 +2207,48 @@ footer .fine a{color:var(--teal-dark)}
         document.getElementById('every-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','everyday');EVERY.level=0;EVERY.score=0;everyNote.textContent='Level 1 — here we go!';everyRender();});
       }
       if(everyStage)everyStart();
+
+
+      /* ---- Series 10: Romy's Bedtime Stars (5 levels + score) — Daily 2026-11-21, spotlight: Romy's Bedtime Stories ---- */
+      var bedStage=document.getElementById('bed-stage');
+      var bedNote=document.getElementById('bed-note');
+      var bedLevelEl=document.getElementById('bed-level');
+      var bedBar=document.getElementById('bed-bar');
+      var bedScoreEl=document.getElementById('bed-score');
+      var BED={level:0,score:0,lock:false,levels:[
+        {head:'Bath is done and teeth are brushed. What does Romy put on to get cosy for bed?',emoji:'🛁',answer:'Pyjamas',opts:[['👕','Pyjamas'],['👟','Shoes'],['🧢','Hat']]},
+        {head:'Romy is in bed. What does he choose for one calm story before sleep?',emoji:'📖',answer:'Story',opts:[['📺','Cartoon'],['📖','Story'],['🎲','Game']]},
+        {head:'Outside the window, something round and gentle shines in the night sky. What is it?',emoji:'🌙',answer:'Moon',opts:[['☀️','Sun'],['🌙','Moon'],['🌈','Rainbow']]},
+        {head:'Romy rests his head on something soft and squishy. What is it?',emoji:'🛏️',answer:'Pillow',opts:[['📚','Book'],['🧸','Teddy'],['🛏️','Pillow']]},
+        {head:'Lights are off and Romy is sleepy. What lovely thing comes next?',emoji:'💤',answer:'Dream',opts:[['💤','Dream'],['🍪','Snack'],['🏃','Run']]}
+      ]};
+      function bedHUD(){bedLevelEl.textContent='Level '+Math.min(BED.level+1,5)+' of 5';bedBar.style.width=(BED.level/5*100)+'%';bedScoreEl.textContent=BED.score;}
+      function bedNext(){var zlN=BED.level+1;if(window.ZLG&&!window.ZLG.canPlay('bedtime',zlN)){window.ZLG.unlockPrompt('bedtime');return;}BED.level++;if(window.zlgTrack)window.zlgTrack('level_complete','bedtime',String(BED.level));bedHUD();if(BED.level>=BED.levels.length){bedFinale();return;}bedNote.textContent='Level complete! Get ready...';setTimeout(bedRender,1100);}
+      function bedEarn(el){BED.score+=10;bedHUD();advGood();advPop(el);bedNote.textContent=advPraise()+' +10 points! That was a calm, sleepy choice!';setTimeout(bedNext,950);}
+      function bedRender(){
+        if(!bedStage)return;BED.lock=false;bedHUD();
+        var L=BED.levels[BED.level];if(!L)return;
+        bedStage.innerHTML='<p class="game-status" id="bed-status">'+L.head+'</p><div class="pat-row" aria-hidden="true"><span class="pat-cell">'+L.emoji+'</span></div><div class="feel-choices">'+L.opts.map(function(o){return '<button type="button" class="feel-btn" data-pick="'+o[1]+'" aria-label="'+o[1]+'"><span class="f-emoji">'+o[0]+'</span><span class="f-word">'+o[1]+'</span></button>';}).join('')+'</div>';
+        bedStage.querySelectorAll('.feel-btn').forEach(function(btn){
+          btn.addEventListener('click',function(){
+            if(BED.lock)return;
+            if(btn.getAttribute('data-pick')===L.answer){BED.lock=true;bedEarn(btn);}
+            else{advOops();advShake(btn);bedNote.textContent='Good try — think: what would help Romy feel calm and sleepy?';}
+          });
+        });
+      }
+      function bedStart(){
+        bedHUD();
+        bedStage.innerHTML='<div class="adv-screen"><div class="adv-romy">🌙</div><p class="game-status" id="bed-status">Ready to wind down with Romy?</p><p class="game-note" style="margin-top:0">5 levels &middot; earn points &middot; no losing, just try again!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="bed-play">▶ Play</button></div></div>';
+        document.getElementById('bed-play').addEventListener('click',function(){if(window.ZLG&&!window.ZLG.canPlay('bedtime',0)){window.ZLG.unlockPrompt('bedtime');return;}if(window.zlgTrack)window.zlgTrack('game_start','bedtime');BED.level=0;BED.score=0;bedNote.textContent='Level 1 — here we go!';bedRender();});
+      }
+      function bedFinale(){
+        bedBar.style.width='100%';advFanfare();
+        bedStage.innerHTML='<div class="adv-screen"><div class="adv-stars">⭐⭐⭐</div><p class="game-status" id="bed-status">Bedtime star!</p><p class="game-note" style="margin-top:0">Romy is so proud — you earned <strong>'+BED.score+' points</strong> and helped Romy wind down: pyjamas, a story, the moon, a pillow and a dream!</p><div style="margin-top:16px"><button type="button" class="adv-btn" id="bed-again">Play again</button></div></div>';
+        boom(bedStage);bedNote.textContent='Amazing — all 5 bedtime levels complete!';
+        document.getElementById('bed-again').addEventListener('click',function(){if(window.zlgTrack)window.zlgTrack('game_start','bedtime');BED.level=0;BED.score=0;bedNote.textContent='Level 1 — here we go!';bedRender();});
+      }
+      if(bedStage)bedStart();
 
       /* ---- Coloring ---- */
       var paletteColors=['#ff6b6b','#ffa94d','#ffd43b','#69b56b','#4dabf7','#b197fc'];
