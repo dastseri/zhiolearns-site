@@ -2,6 +2,13 @@
   "about": "ZhioLearns site activity log — who did what, and when. Newest first. Shown in admin.html under «لاگ فعالیت / Activity Log». Agent-side changes are appended with tools/log_activity.py (see LOGGING.md).",
   "entries": [
     {
+      "created_at": "2026-11-28T07:00:00-05:00",
+      "actor": "Muse — برنامه روزانه",
+      "action": "افزودن بازی + انتشار (Track 3)",
+      "target": "index.html",
+      "detail": "بازی جدید Series 11 «Romy's Counting Steps» (۵ مرحله: لمس کن و بشمار — ۳ توت‌فرنگی، ۵ ستاره، ۴ سیب، ۶ گل، ۷ بلوبری) اضافه و منتشر شد؛ اسپات‌لایت فروشگاه به کتاب #7 Romy's Number Adventure چرخید (لینک صفحهٔ نویسنده، بدون ASIN تأییدشده)."
+    },
+    {
       "created_at": "2026-11-27T07:01:54-05:00",
       "actor": "Muse — برنامه روزانه",
       "action": "افزودن مقاله و انتشار (Track 3)",
